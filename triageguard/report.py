@@ -20,20 +20,30 @@ Risk score (0-100) with justification, Recommendations.
 Cite the finding id in square brackets, e.g. [F3], after every factual claim."""
 
 
+# max findings counted per severity, so a pile of low-severity context (e.g. the
+# certificate store in a full dump) cannot add up to a critical score on its own
+SEV_CAP = {"critical": 4, "high": 4, "medium": 4, "low": 5}
+
+
 def risk_score(findings):
-    """Rule-based risk score: sum of severity points, capped at 100."""
-    return min(100, sum(SEV_POINTS.get(f["severity"], 0) for f in findings))
+    """Rule-based risk score: severity points with a per-tier cap, at most 100."""
+    counts = {}
+    for f in findings:
+        counts[f["severity"]] = counts.get(f["severity"], 0) + 1
+    return min(100, sum(SEV_POINTS.get(s, 0) * min(n, SEV_CAP.get(s, 0)) for s, n in counts.items()))
 
 
 def key_strength(findings):
-    scores = [f["data"]["strength"] for f in findings if f["kind"] == "rsa_key"]
+    scores = [f["data"]["strength"] for f in findings if f["kind"] == "rsa_key" and f["data"].get("strength") is not None]
     return min(scores) if scores else None
 
 
 def compact(findings, max_chars=24_000):
     """Trim findings to fit a free-tier context window."""
     out = []
-    for f in findings:
+    # most severe first, so truncation drops info rows rather than the incident
+    order = ["critical", "high", "medium", "low", "info"]
+    for f in sorted(findings, key=lambda f: order.index(f["severity"]) if f["severity"] in order else len(order)):
         d = json.dumps(f["data"], default=str)
         if len(d) > 800:
             d = d[:800] + "...(truncated)"
@@ -85,7 +95,7 @@ def rule_report(findings):
             lines.append("")
 
     section("Cipher identification", lambda f: f["kind"] == "algorithm")
-    section("RSA keys", lambda f: f["kind"] == "rsa_key")
+    section("RSA keys", lambda f: f["kind"] in ("rsa_key", "rsa_summary"))
     section("Encrypted / packed regions", lambda f: f["kind"] == "entropy")
     section("Credentials", lambda f: f["module"] == "credentials")
     section("Processes and memory", lambda f: f["module"] == "memory")
