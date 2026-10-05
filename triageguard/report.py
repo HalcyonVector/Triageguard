@@ -46,16 +46,19 @@ def key_strength(findings):
     return min(scores) if scores else None
 
 
-def compact(findings, max_chars=24_000):
-    """Trim findings to fit a free-tier context window."""
+def compact(findings, max_chars=10_000):
+    """Trim findings to fit the free tier: one Groq request may not exceed 8k tokens,
+    and the defended retry sends the findings plus the first answer, so keep this
+    around 3k tokens (JSON and hex run at roughly 3 characters per token)."""
     out = []
     # most severe first, so truncation drops info rows rather than the incident
     order = ["critical", "high", "medium", "low", "info"]
     for f in sorted(findings, key=lambda f: order.index(f["severity"]) if f["severity"] in order else len(order)):
-        d = json.dumps(f["data"], default=str)
-        if len(d) > 400:  # free tier is 8k tokens/min, keep each call small
-            d = d[:400] + "...(truncated)"
-        out.append(f"[{f['ref']}] ({f['module']}/{f['kind']}, {f['severity']}) {f['title']} | {d}")
+        line = f"[{f['ref']}] ({f['module']}/{f['kind']}, {f['severity']}) {f['title']}"
+        if f["severity"] not in ("low", "info"):  # the title already says enough for context rows
+            d = json.dumps(f["data"], default=str)
+            line += " | " + (d[:400] + "...(truncated)" if len(d) > 400 else d)
+        out.append(line)
     text = "\n".join(out)
     return text[:max_chars]
 
