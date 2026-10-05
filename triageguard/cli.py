@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+from pathlib import Path
 
 from . import crypto, pipeline, redteam
 
@@ -31,9 +32,27 @@ def main(argv=None):
 
     d = sub.add_parser("dashboard", help="open the local results dashboard")
     d.add_argument("--port", type=int, default=8765)
-    d.add_argument("--results", default="results", help="folder with the saved reports and red-team CSV")
-    d.add_argument("--db", default="triageguard.db")
+    d.add_argument("--results", default="results", help="folder with the saved dumps and red-team CSV")
     d.add_argument("--no-browser", action="store_true")
+
+    e = sub.add_parser("export", help="save one analysed dump's results under results/dumps/<name> for the dashboard")
+    e.add_argument("db")
+    e.add_argument("name", help="folder name, e.g. win10")
+    e.add_argument("--run", type=int, default=1)
+    e.add_argument("--results", default="results")
+    e.add_argument("--title", default="")
+    e.add_argument("--os", default="")
+    e.add_argument("--source", default="")
+    e.add_argument("--size", default="")
+    e.add_argument("--pcap", default="")
+    e.add_argument("--order", type=int, default=99, help="position in the dashboard")
+
+    g = sub.add_parser("report", help="(re)generate the LLM report for an analysed dump from its database")
+    g.add_argument("db")
+    g.add_argument("--run", type=int, default=1)
+    g.add_argument("--out", required=True, help="markdown file to write, e.g. results/dumps/win10/report_llm.md")
+    g.add_argument("--undefended", action="store_true", help="baseline prompt without defences")
+    g.add_argument("--model", help="LLM model id")
 
     args = ap.parse_args(argv)
     if getattr(args, "model", None):
@@ -51,7 +70,26 @@ def main(argv=None):
         print(f"{len(r['high_entropy_regions'])} high-entropy regions")
     elif args.cmd == "dashboard":
         from . import dashboard
-        dashboard.serve(args.port, args.results, args.db, not args.no_browser)
+        dashboard.serve(args.port, args.results, not args.no_browser)
+    elif args.cmd == "export":
+        from . import dashboard
+        meta = {k: getattr(args, k) for k in ("title", "os", "source", "size", "pcap", "order")}
+        out = Path(args.results) / "dumps" / args.name
+        print(json.dumps(dashboard.export_dump(args.db, out, args.run, meta)), "->", out)
+    elif args.cmd == "report":
+        from . import report
+        from .store import Store
+        store = Store(args.db)
+        try:
+            findings = store.findings(args.run)
+        finally:
+            store.close()
+        text, mode = report.generate(findings, True, not args.undefended)
+        if mode == "rules":  # the LLM call failed; keep any existing report rather than overwrite it
+            raise SystemExit("LLM report failed (see the message above), nothing written")
+        Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.out).write_text(text, encoding="utf-8")
+        print(mode, "->", args.out)
     elif args.cmd == "redteam":
         print(redteam.run(args.trials, args.dry_run, args.out, rescore=args.rescore))
 

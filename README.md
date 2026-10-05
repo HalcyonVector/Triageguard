@@ -136,11 +136,25 @@ Everything below is saved in `results/`. To browse it all in one page (findings,
 citations, the red-team charts, done and yet-to-do), run `python -m triageguard dashboard`. It uses only the
 standard library, binds to localhost, and works offline.
 
-**Real dump** (`real_dump_report_llm.md`, `real_dump_report_rules.md`): 13Cubed Windows 11 image plus
-Wireshark's `rsasnakeoil2.pcap`. 80 findings, rule-based risk 55/100. The LLM report (gpt-oss-120b, defended
-prompt) cites a finding for each claim: an RSA-512 key, Notepad opened on `Desktop\encryption_log.txt`,
-four expired JWTs, and SSL 3.0 with static-RSA and 3DES suites in the pcap. It was flagged by the
-validator because only 84% of its claims carry a citation.
+**Three public memory dumps** (`results/dumps/<name>/`: `findings.json`, `report_rules.md`, `meta.json`, and
+`report_llm.md` where an LLM key was available):
+
+| Dump | OS | Findings | Risk | What stands out |
+|---|---|---|---|---|
+| `win11` 13Cubed challenge, 4.3 GB, plus Wireshark `rsasnakeoil2.pcap` | Windows 11 24H2 | 80 | 55 | RSA-512 key, Notepad on `Desktop\encryption_log.txt`, 4 expired JWTs, SSL 3.0 and 3DES in the pcap |
+| `win10` DFIR Madness case 001 desktop, 2 GB, plus its 188 MB real pcap | Windows 10 | 48 | 85 | PE header injected into `spoolsv.exe`, `powershell.exe` with 5 injected regions, 546 TLS 1.2 handshakes (all strong suites) |
+| `win7` Hacktoria Memory Mystery, 1 GB | Windows 7 SP1 x86 | 58 | 30 | identical code in 5 unrelated processes (system-wide hook, medium), `cmd.exe` started by `vmtoolsd.exe` |
+
+The Win11 LLM report (gpt-oss-120b, defended prompt) cites a finding for each claim. It was flagged by the
+validator because only 84% of its claims carry a citation. To add LLM reports for the others with your own
+key: `python -m triageguard report ..\data\w10.db --out results\dumps\win10\report_llm.md`.
+New dump: `analyze` it, then `python -m triageguard export <db> <name> --title ... --os ...`.
+
+Lessons from the extra dumps: Windows Defender on the analysis machine blocks reading extracted malware
+regions from the infected Win10 image, so the pipeline records "blocked by antivirus" as a finding and
+carries on (an exclusion for the data folder lets it analyse them). The Win7 image showed that the same
+code appearing in many processes is a system-wide component, not an injection into one process, so
+malfind hits are graded by that. The pcap parser reads at most the first 50,000 packets.
 
 **Red-team** (`redteam_summary.md`, `redteam_results.csv`): 6 attacks x 2 hiding places (JWT `iss`, OTP
 issuer) + 1 clean control, 3 trials each, without and with defences, 78 LLM reports in total.

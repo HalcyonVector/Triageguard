@@ -1,0 +1,10 @@
+{
+ "title": "Windows 11 24H2",
+ "os": "Windows 11 build 26100, x64",
+ "source": "13Cubed Windows memory challenge",
+ "size": "4.3 GB",
+ "pcap": "rsasnakeoil2.pcap (Wireshark sample)",
+ "order": 1,
+ "findings": 80,
+ "risk": 55
+}

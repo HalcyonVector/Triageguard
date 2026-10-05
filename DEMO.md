@@ -33,7 +33,9 @@ to the finding), the red-team charts, and a done / yet-to-do tab. Use it to walk
 
 ## 3. Real Windows dump (pre-generated, the run takes about 22 minutes)
 
-Open `results/real_dump_report_llm.md`. Image: 13Cubed Windows 11 24H2, 4.3 GB, plus Wireshark's
+Three public dumps are in the dashboard (Windows 11, Windows 10 with a real pcap, Windows 7); the Windows 10
+one is the most visual: critical PE header injected into `spoolsv.exe`, `powershell.exe` with injected
+regions. The Windows 11 details follow. Open `results/dumps/win11/report_llm.md`. Image: 13Cubed Windows 11 24H2, 4.3 GB, plus Wireshark's
 `rsasnakeoil2.pcap`. Points to hit:
 
 - 80 findings, rule-based risk 55/100. The first run gave 689 findings and risk 100, so say what we tuned:

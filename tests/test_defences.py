@@ -120,8 +120,24 @@ def test_risk_score_regex_handles_real_llm_layouts():
 def test_dashboard_loads_snapshot_and_redteam(tmp_path):
     import json
     from triageguard import dashboard
-    (tmp_path / "real_dump_findings.json").write_text(json.dumps([{"ref": "F1", "severity": "info"}]), encoding="utf-8")
+    dump = tmp_path / "dumps" / "w10"
+    dump.mkdir(parents=True)
+    (dump / "findings.json").write_text(json.dumps([{"ref": "F1", "severity": "info"}]), encoding="utf-8")
+    (dump / "meta.json").write_text(json.dumps({"title": "Windows 10", "order": 2}), encoding="utf-8")
     (tmp_path / "redteam_results.csv").write_text("attack,mode,attack_success\ncontrol,baseline,\n", encoding="utf-8")
-    d = dashboard.load(tmp_path, tmp_path / "missing.db")
-    assert d["findings"][0]["ref"] == "F1" and d["redteam"][0]["mode"] == "baseline"
-    assert d["findings_source"].endswith("real_dump_findings.json") and d["report_llm"] == ""
+    d = dashboard.load(tmp_path)
+    assert d["dumps"][0]["id"] == "w10" and d["dumps"][0]["findings"][0]["ref"] == "F1"
+    assert d["dumps"][0]["report_llm"] == "" and d["redteam"][0]["mode"] == "baseline"
+
+
+def test_export_dump_roundtrip(tmp_path):
+    from triageguard import dashboard
+    from triageguard.store import Store
+    db = Store(tmp_path / "t.db")
+    db.start_run("dump.raw")
+    db.add("rsa", "rsa_key", "RSA-512 key", {"strength": 0}, "critical")
+    db.commit()
+    db.close()
+    info = dashboard.export_dump(tmp_path / "t.db", tmp_path / "res" / "dumps" / "x", 1, {"title": "X"})
+    assert info["findings"] == 1 and info["risk"] == 25
+    assert dashboard.load(tmp_path / "res")["dumps"][0]["meta"]["title"] == "X"

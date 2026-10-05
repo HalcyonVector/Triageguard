@@ -95,6 +95,13 @@ a.cite { color: var(--cyan); font-weight: 700; text-decoration: none; border-bot
 .tick { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; color: #0a0f2c; }
 .tick.done { background: var(--cyan); } .tick.todo { background: transparent; border: 2px solid var(--amber); color: var(--amber); }
 .task b { display: block; } .task span { color: var(--muted); font-size: 14px; }
+.dumpcard { cursor: pointer; transition: transform .15s, border-color .15s; }
+.dumpcard:hover { transform: translateY(-2px); }
+.dumpcard.sel { border-color: var(--cyan); box-shadow: 0 0 0 1px var(--cyan) inset; }
+.dumpcard h3 { margin-bottom: 4px; }
+.two { display: flex; gap: 18px; margin-top: 14px; }
+.two b { display: block; font-size: 28px; line-height: 1.1; } .two span { color: var(--muted); font-size: 12.5px; }
+.filters button[disabled] { opacity: .45; cursor: not-allowed; }
 .hidden { display: none; }
 .note { font-size: 13px; color: var(--faint); margin-top: 10px; }
 </style>
@@ -127,8 +134,19 @@ const SEV = ["critical", "high", "medium", "low", "info"];
 const SEV_COL = {critical: "#f43f5e", high: "#fb923c", medium: "#fbbf24", low: "#60a5fa", info: "#94a3b8"};
 const POINTS = {critical: 25, high: 12, medium: 5, low: 2, info: 0};
 const CAP = {critical: 4, high: 4, medium: 4, low: 5};
-let D = {findings: [], redteam: [], report_llm: "", report_rules: ""};
-let filterSev = "all", filterMod = "all", query = "", highlight = null, reportKind = "llm";
+let D = {dumps: [], redteam: []};
+let cur = null, filterSev = "all", filterMod = "all", query = "", highlight = null, reportKind = "llm";
+const dump = () => D.dumps.find((d) => d.id === cur) || D.dumps[0] || {id: "", meta: {}, findings: [], report_llm: "", report_rules: ""};
+function picker(tab) {
+  if (D.dumps.length < 2) return "";
+  return `<div class="filters"><span class="muted">Dump:</span>${D.dumps.map((d) =>
+    `<button data-dump="${d.id}" data-for="${tab}" class="${d.id === dump().id ? "on" : ""}">${esc(d.meta.title || d.id)}</button>`).join("")}</div>`;
+}
+function renderAll() { renderOverview(); renderFindings(); renderReport(); }
+function bindPicker(root) {
+  // one dump is selected for the whole page, so every tab that shows it re-renders
+  root.querySelectorAll("[data-dump]").forEach((b) => b.onclick = () => { cur = b.dataset.dump; highlight = null; renderAll(); });
+}
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
@@ -162,21 +180,35 @@ function stats() {
 }
 
 /* ---------- Overview ---------- */
-function renderOverview() {
-  const fs = D.findings, s = stats();
-  const counts = {}; SEV.forEach((k) => counts[k] = fs.filter((f) => f.severity === k).length);
+function sevBar(fs) {
   const total = fs.length || 1;
+  return `<div class="bar">${SEV.map((k) => `<span style="width:${fs.filter((f) => f.severity === k).length / total * 100}%;background:${SEV_COL[k]}"></span>`).join("")}</div>`;
+}
+function renderOverview() {
+  const dd = dump(), fs = dd.findings, s = stats();
+  const counts = {}; SEV.forEach((k) => counts[k] = fs.filter((f) => f.severity === k).length);
   const hits = fs.filter((f) => ["critical", "high", "medium"].includes(f.severity));
-  $("overview").innerHTML = `
+  const compare = D.dumps.length > 1 ? `
+    <h2>Public memory dumps analysed</h2>
+    <div class="grid g4">${D.dumps.map((d) => `
+      <div class="card dumpcard ${d.id === dd.id ? "sel" : ""}" data-dump="${d.id}">
+        <h3>${esc(d.meta.title || d.id)}</h3>
+        <div class="muted" style="font-size:13.5px;margin-bottom:12px">${esc(d.meta.os || "")} &middot; ${esc(d.meta.size || "")}<br>${esc(d.meta.source || "")}${d.meta.pcap ? "<br>+ " + esc(d.meta.pcap) : ""}</div>
+        ${sevBar(d.findings)}
+        <div class="two"><div><b>${d.findings.length}</b><span>findings</span></div><div><b>${riskScore(d.findings)}</b><span>risk /100</span></div>
+        <div><b>${d.findings.filter((f) => ["critical", "high"].includes(f.severity)).length}</b><span>critical + high</span></div></div>
+      </div>`).join("")}</div>` : "";
+  $("overview").innerHTML = `${compare}
+    <h2>${esc(dd.meta.title || "Findings")}</h2>
     <div class="grid g4">
-      <div class="card stat g1"><div class="num" id="n1">0</div><div class="lab">Findings from the real Windows 11 dump</div></div>
+      <div class="card stat g1"><div class="num" id="n1">0</div><div class="lab">Findings in ${esc(dd.meta.title || "this dump")}</div></div>
       <div class="card stat g2c"><div class="num"><span id="n2">0</span><span style="font-size:24px">/100</span></div><div class="lab">Rule-based risk score</div></div>
       <div class="card stat g3"><div class="num">${s.asrB}/${s.n} &rarr; ${s.asrD}/${s.n}</div><div class="lab">Attacks that fooled the LLM report, plain vs defended</div></div>
       <div class="card stat g4c"><div class="num">${Math.round(s.citeB * 100)}% &rarr; ${Math.round(s.citeD * 100)}%</div><div class="lab">Claims backed by a valid citation</div></div>
     </div>
     <h2>Severity mix</h2>
     <div class="card">
-      <div class="bar">${SEV.map((k) => `<span style="width:${counts[k] / total * 100}%;background:${SEV_COL[k]}"></span>`).join("")}</div>
+      ${sevBar(fs)}
       <div class="legend">${SEV.map((k) => `<span><i style="background:${SEV_COL[k]}"></i>${k} ${counts[k]}</span>`).join("")}</div>
     </div>
     <h2>What stands out</h2>
@@ -186,26 +218,28 @@ function renderOverview() {
         <tr><td class="ref"><a class="cite" data-ref="${f.ref}">${f.ref}</a></td><td><span class="chip sev-${f.severity}">${f.severity}</span></td><td class="title">${esc(f.title)}</td></tr>`).join("")
         || `<tr><td colspan="3" class="muted">No findings loaded.</td></tr>`}
     </table></div>
-    <p class="note">Source: ${esc(D.findings_source)}. Real image: 13Cubed Windows 11 24H2 (4.3 GB) plus a public TLS pcap. Synthetic and public data only.</p>`;
+    <p class="note">Public datasets and synthetic keys and tokens only, no malware executed.</p>`;
   countUp($("n1"), fs.length);
   countUp($("n2"), riskScore(fs));
   bindCites($("overview"));
+  bindPicker($("overview"), renderOverview);
 }
 
 /* ---------- Findings ---------- */
 function renderFindings() {
-  const mods = [...new Set(D.findings.map((f) => f.module))].sort();
+  const all = dump().findings;
+  const mods = [...new Set(all.map((f) => f.module))].sort();
   const q = query.toLowerCase();
-  const rows = D.findings
+  const rows = all
     .filter((f) => (filterSev === "all" || f.severity === filterSev) && (filterMod === "all" || f.module === filterMod)
       && (!q || (f.title + f.kind + f.ref + f.location).toLowerCase().includes(q)))
     .sort((a, b) => refNum(a.ref) - refNum(b.ref));
-  $("findings").innerHTML = `
+  $("findings").innerHTML = `${picker("findings")}
     <div class="filters">
       ${["all", ...SEV].map((k) => `<button data-sev="${k}" class="${filterSev === k ? "on" : ""}">${k}</button>`).join("")}
       <select id="mod"><option value="all">all modules</option>${mods.map((m) => `<option ${filterMod === m ? "selected" : ""}>${m}</option>`).join("")}</select>
       <input id="q" placeholder="Search findings" value="${esc(query)}">
-      <span class="muted">${rows.length} of ${D.findings.length}</span>
+      <span class="muted">${rows.length} of ${all.length}</span>
     </div>
     <div class="card"><table>
       <tr><th>Ref</th><th>Severity</th><th>Module</th><th>Finding</th><th>Location</th></tr>
@@ -213,6 +247,7 @@ function renderFindings() {
         <td class="ref">${f.ref}</td><td><span class="chip sev-${f.severity}">${f.severity}</span></td>
         <td>${esc(f.module)}/${esc(f.kind)}</td><td class="title">${esc(f.title)}</td><td class="muted">${esc(f.location)}</td></tr>`).join("")}
     </table></div>`;
+  bindPicker($("findings"), renderFindings);
   $("findings").querySelectorAll("[data-sev]").forEach((b) => b.onclick = () => { filterSev = b.dataset.sev; renderFindings(); });
   $("mod").onchange = (e) => { filterMod = e.target.value; renderFindings(); };
   $("q").oninput = (e) => { query = e.target.value; const pos = e.target.selectionStart; renderFindings(); const i = $("q"); i.focus(); i.setSelectionRange(pos, pos); };
@@ -224,7 +259,7 @@ function inline(s) {
     .replace(/`([^`]+)`/g, "<code>$1</code>")
     .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
     .replace(/(^|[^*])\*([^*\s][^*]*)\*/g, "$1<i>$2</i>")
-    .replace(/\[F(\d+)\]/g, (m, n) => `<a class="cite" data-ref="F${n}" title="${esc((D.findings.find((f) => f.ref === "F" + n) || {}).title || "")}">[F${n}]</a>`);
+    .replace(/\[F(\d+)\]/g, (m, n) => `<a class="cite" data-ref="F${n}" title="${esc((dump().findings.find((f) => f.ref === "F" + n) || {}).title || "")}">[F${n}]</a>`);
 }
 function markdown(src) {
   src = (src || "").replace(/[​⁠]/g, "");
@@ -256,14 +291,16 @@ function markdown(src) {
   return out.join("\n");
 }
 function renderReport() {
-  const text = reportKind === "llm" ? D.report_llm : D.report_rules;
-  $("report").innerHTML = `
+  const dd = dump(), kind = reportKind === "llm" && !dd.report_llm ? "rules" : reportKind;
+  const text = kind === "llm" ? dd.report_llm : dd.report_rules;
+  $("report").innerHTML = `${picker("report")}
     <div class="filters">
-      <button data-kind="llm" class="${reportKind === "llm" ? "on" : ""}">LLM report (defended)</button>
-      <button data-kind="rules" class="${reportKind === "rules" ? "on" : ""}">Rule-based report</button>
+      <button data-kind="llm" class="${kind === "llm" ? "on" : ""}" ${dd.report_llm ? "" : "disabled title='No LLM report saved for this dump yet'"}>LLM report (defended)</button>
+      <button data-kind="rules" class="${kind === "rules" ? "on" : ""}">Rule-based report</button>
       <span class="muted">Click a citation like [F65] to jump to its finding.</span>
     </div>
     <div class="card report">${text ? markdown(text) : "<p class='muted'>No report found in the results folder.</p>"}</div>`;
+  bindPicker($("report"), renderReport);
   $("report").querySelectorAll("[data-kind]").forEach((b) => b.onclick = () => { reportKind = b.dataset.kind; renderReport(); });
   bindCites($("report"));
 }
@@ -318,7 +355,7 @@ const DONE = [
   ["Cipher identification", "AES, DES/3DES, RSA, ChaCha20/Salsa20, AES-GCM, ECC with confidence percentages"],
   ["Weak RSA key tests", "Size, small exponent, shared modulus, shared prime, close primes, strength score"],
   ["Credential module", "JWT, OAuth tokens and OTP secrets, stored redacted"],
-  ["Real data test", "13Cubed Windows 11 dump and a public TLS pcap, tuned from 689 to 80 findings"],
+  ["Three public memory dumps", "Windows 11, Windows 10 (with a real pcap) and Windows 7, tuned from 689 to 80 findings on the first"],
   ["LLM report", "Groq model sees findings only and cites a finding id for every claim"],
   ["Red team and defences", "6 attacks, 78 reports, sanitiser, citation check and rule-based cross-check"],
   ["Literature survey", "Done in Overleaf, in the table format our teacher set"],
@@ -329,7 +366,6 @@ const TODO = [
   ["Post-quantum paragraph", "ML-KEM and ML-DSA, discussion only"],
   ["Close the omission gap", "Force every critical finding into the report"],
   ["Stronger numbers", "More trials per attack and a second LLM"],
-  ["Second public dump", "Check the tuning holds beyond one image"],
 ];
 function renderRoadmap() {
   const task = (kind, t) => `<div class="task"><div class="tick ${kind}">${kind === "done" ? "&#10003;" : "&#8226;"}</div><div><b>${t[0]}</b><span>${t[1]}</span></div></div>`;

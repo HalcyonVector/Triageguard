@@ -80,6 +80,8 @@ def extract(dump, outdir):
 # Processes that legitimately JIT code into private RWX memory (Defender's
 # emulator, browser JS engines), a well-known malfind false positive
 JIT_PROCESSES = {"msmpeng.exe", "msedge.exe", "msedgewebview2.exe", "chrome.exe", "firefox.exe", "mpdefendercoreservice.exe"}
+SHELLS = {"cmd.exe", "powershell.exe", "pwsh.exe"}
+SHELL_PARENTS = {"explorer.exe", "cmd.exe", "powershell.exe", "pwsh.exe", "conhost.exe", "windowsterminal.exe", "wt.exe"}
 CMDLINE_RE = re.compile(r"encrypt|decrypt|ransom|\.locked|vssadmin|shadowcopy|bcdedit|wbadmin|cipher(\.exe)?\s+/w", re.I)
 USER_DIRS_RE = re.compile(r"\\Users\\[^\\]+\\(Desktop|Downloads|AppData\\Local\\Temp)\\", re.I)
 
@@ -99,33 +101,56 @@ def suspicious_processes(results):
     cmdlines = results.get("cmdlines")
     flags = []
     if isinstance(injected, list):
-        by_pid = {}
+        parsed = []
         for row in injected:
-            by_pid.setdefault((row.get("PID"), row.get("Process")), []).append(row)
-        for (pid, name), rows in by_pid.items():
-            heads = []
-            for r in rows:
-                try:
-                    heads.append(_region_head(r))
-                except ValueError:
-                    heads.append(b"")
-            regions = [f"{_hex(r.get('Start VPN'))} {r.get('Protection')}" for r in rows]
-            if any(h.startswith(b"MZ") for h in heads):
+            try:
+                head = _region_head(row)
+            except ValueError:
+                head = b""
+            parsed.append((row, head))
+        # the same code in several unrelated processes is a system-wide component
+        # (security product, hooking engine), not an injection aimed at one process
+        pids_by_head = {}
+        for row, head in parsed:
+            if head[:16].strip(b"\x00"):
+                pids_by_head.setdefault(head[:32], set()).add(row.get("PID"))
+        by_pid = {}
+        for row, head in parsed:
+            name = str(row.get("Process"))
+            if head.startswith(b"MZ"):
                 sev, why = "critical", "contains a PE header (MZ), likely injected DLL/EXE"
-            elif str(name).lower() in JIT_PROCESSES:
+            elif name.lower() in JIT_PROCESSES:
                 sev, why = "low", "known JIT process, RWX private memory is expected"
-            elif all(not h[:16].strip(b"\x00") for h in heads):
+            elif not head[:16].strip(b"\x00"):
                 # shellcode starts executing at the region base; a zeroed head is a data/thunk block
-                sev, why = "low", "regions start with zero bytes, no code at the region base"
+                sev, why = "low", "region starts with zero bytes, no code at the region base"
+            elif len(pids_by_head.get(head[:32], ())) >= 3:
+                sev, why = "medium", f"identical code in {len(pids_by_head[head[:32]])} processes, likely a system-wide hook"
             else:
-                sev, why = "high", "executable private memory with code, not a known JIT process"
-            flags.append({"pid": pid, "process": name, "severity": sev, "regions": regions,
-                          "reason": f"{len(rows)} RWX/injected region(s): {why}"})
+                sev, why = "high", "executable private memory with code unique to this process"
+            entry = by_pid.setdefault((row.get("PID"), name), {"regions": [], "sev": [], "why": {}})
+            entry["regions"].append(f"{_hex(row.get('Start VPN'))} {row.get('Protection')}")
+            entry["sev"].append(sev)
+            entry["why"][why] = entry["why"].get(why, 0) + 1
+        order = ["info", "low", "medium", "high", "critical"]
+        for (pid, name), e in by_pid.items():
+            sev = max(e["sev"], key=order.index)
+            why = "; ".join(f"{n} x {w}" for w, n in e["why"].items())
+            flags.append({"pid": pid, "process": name, "severity": sev, "regions": e["regions"],
+                          "reason": f"{len(e['regions'])} RWX/injected region(s): {why}"})
     if isinstance(procs, list):
         lsass = [p for p in procs if str(p.get("ImageFileName", "")).lower() == "lsass.exe"]
         if len(lsass) > 1:
             for p in lsass:
                 flags.append({"pid": p.get("PID"), "process": "lsass.exe", "severity": "high", "reason": "more than one lsass.exe"})
+    if isinstance(procs, list):
+        names = {p.get("PID"): str(p.get("ImageFileName", "")).lower() for p in procs}
+        for p in procs:
+            if str(p.get("ImageFileName", "")).lower() in SHELLS:
+                parent = names.get(p.get("PPID"))
+                if parent and parent not in SHELL_PARENTS:
+                    flags.append({"pid": p.get("PID"), "process": p.get("ImageFileName"), "severity": "medium",
+                                  "reason": f"shell started by {parent} (PID {p.get('PPID')}), not by a user session or another shell"})
     if isinstance(cmdlines, list):
         for r in cmdlines:
             args = str(r.get("Args") or "")

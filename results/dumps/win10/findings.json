@@ -1,0 +1,434 @@
+[
+ {
+  "ref": "F1",
+  "module": "memory",
+  "kind": "processes",
+  "title": "processes: 95 rows",
+  "severity": "info",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": ""
+ },
+ {
+  "ref": "F2",
+  "module": "memory",
+  "kind": "cmdlines",
+  "title": "cmdlines: 95 rows",
+  "severity": "info",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": ""
+ },
+ {
+  "ref": "F3",
+  "module": "memory",
+  "kind": "network",
+  "title": "network: 115 rows",
+  "severity": "info",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": ""
+ },
+ {
+  "ref": "F4",
+  "module": "memory",
+  "kind": "injected",
+  "title": "injected: 7 rows",
+  "severity": "info",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": ""
+ },
+ {
+  "ref": "F5",
+  "module": "memory",
+  "kind": "usb",
+  "title": "usb: 32 rows",
+  "severity": "info",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": ""
+ },
+ {
+  "ref": "F6",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 2188 spoolsv.exe: 1 RWX/injected region(s): 1 x contains a PE header (MZ), likely injected DLL/EXE",
+  "severity": "critical",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "2188"
+ },
+ {
+  "ref": "F7",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 2404 MsMpEng.exe: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "2404"
+ },
+ {
+  "ref": "F8",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 3316 powershell.exe: 5 RWX/injected region(s): 2 x executable private memory with code unique to this process; 2 x region starts with zero bytes, no code at the region base; 1 x contains a PE header (MZ), likely injected DLL/EXE",
+  "severity": "critical",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "3316"
+ },
+ {
+  "ref": "F9",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.2188.vad.0x1840000-0x1863fff.dmp: entropy 5.368, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\out_w10\\malfind\\pid.2188.vad.0x1840000-0x1863fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F10",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.2404.vad.0x25453170000-0x2545326ffff.dmp: entropy 3.435, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\out_w10\\malfind\\pid.2404.vad.0x25453170000-0x2545326ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F11",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3316.vad.0x10c6bfc0000-0x10c6bff8fff.dmp: entropy 2.734, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\out_w10\\malfind\\pid.3316.vad.0x10c6bfc0000-0x10c6bff8fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F12",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3316.vad.0x10c6c000000-0x10c6c06afff.dmp: entropy 0.185, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\out_w10\\malfind\\pid.3316.vad.0x10c6c000000-0x10c6c06afff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F13",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3316.vad.0x10c6c070000-0x10c6c093fff.dmp: entropy 5.428, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\out_w10\\malfind\\pid.3316.vad.0x10c6c070000-0x10c6c093fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F14",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3316.vad.0x7df4f5a80000-0x7df4f5a8ffff.dmp: entropy 5.45, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\out_w10\\malfind\\pid.3316.vad.0x7df4f5a80000-0x7df4f5a8ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F15",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3316.vad.0x7df4f5a90000-0x7df4f5b2ffff.dmp: entropy 5.272, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\out_w10\\malfind\\pid.3316.vad.0x7df4f5a90000-0x7df4f5b2ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F16",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC P-256 identified (99.3%, implementation constants) in DESKTOP-SDN1RPT.mem",
+  "severity": "info",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0xaa76cc"
+ },
+ {
+  "ref": "F17",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES identified (98.8%, implementation constants) in DESKTOP-SDN1RPT.mem",
+  "severity": "info",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x5d47310"
+ },
+ {
+  "ref": "F18",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES-GCM identified (95.5%, API/string references only) in DESKTOP-SDN1RPT.mem",
+  "severity": "info",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0xaa9bc8"
+ },
+ {
+  "ref": "F19",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "RSA identified (94.0%, implementation constants) in DESKTOP-SDN1RPT.mem",
+  "severity": "info",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x41274e"
+ },
+ {
+  "ref": "F20",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC secp256k1 identified (92.8%, implementation constants) in DESKTOP-SDN1RPT.mem",
+  "severity": "info",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0xaa78a4"
+ },
+ {
+  "ref": "F21",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "generic identified (83.2%, API/string references only) in DESKTOP-SDN1RPT.mem",
+  "severity": "info",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x30467a"
+ },
+ {
+  "ref": "F22",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "3DES identified (75.0%, API/string references only) in DESKTOP-SDN1RPT.mem",
+  "severity": "info",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x4432ee78"
+ },
+ {
+  "ref": "F23",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "DES identified (60.0%, implementation constants) in DESKTOP-SDN1RPT.mem",
+  "severity": "info",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0xaa6300"
+ },
+ {
+  "ref": "F24",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "Curve25519 identified (40.0%, API/string references only) in DESKTOP-SDN1RPT.mem",
+  "severity": "info",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0xaa9dc0"
+ },
+ {
+  "ref": "F25",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x4978dc"
+ },
+ {
+  "ref": "F26",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x96d0e5c"
+ },
+ {
+  "ref": "F27",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x2048d320"
+ },
+ {
+  "ref": "F28",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (CNG blob), strength 40/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x4379060"
+ },
+ {
+  "ref": "F29",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x48c31bc"
+ },
+ {
+  "ref": "F30",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x8507a01"
+ },
+ {
+  "ref": "F31",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x8fed182"
+ },
+ {
+  "ref": "F32",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x8fed94f"
+ },
+ {
+  "ref": "F33",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1536 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0xe6306d8"
+ },
+ {
+  "ref": "F34",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x169b926c"
+ },
+ {
+  "ref": "F35",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x17dab9cb"
+ },
+ {
+  "ref": "F36",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x1946b754"
+ },
+ {
+  "ref": "F37",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-512 key e=65537 (DER SPKI), strength 0/100: modulus size",
+  "severity": "critical",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x1c586337"
+ },
+ {
+  "ref": "F38",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x227a72cb"
+ },
+ {
+  "ref": "F39",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x54a2aed0"
+ },
+ {
+  "ref": "F40",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 40/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x6ce78a6d"
+ },
+ {
+  "ref": "F41",
+  "module": "rsa",
+  "kind": "rsa_summary",
+  "title": "151 RSA keys with no weaknesses and 6 corrupt key-like structures in DESKTOP-SDN1RPT.mem",
+  "severity": "info",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": ""
+ },
+ {
+  "ref": "F42",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "200 high-entropy regions (864256 bytes) in DESKTOP-SDN1RPT.mem",
+  "severity": "info",
+  "source": "..\\data\\case001\\DESKTOP-SDN1RPT.mem",
+  "location": "0x121000"
+ },
+ {
+  "ref": "F43",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "1 high-entropy regions (4096 bytes) in pid.2404.vad.0x25453170000-0x2545326ffff.dmp",
+  "severity": "info",
+  "source": "..\\data\\out_w10\\malfind\\pid.2404.vad.0x25453170000-0x2545326ffff.dmp",
+  "location": "0x3f000"
+ },
+ {
+  "ref": "F44",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES identified (30.0%, API/string references only) in pid.3316.vad.0x10c6bfc0000-0x10c6bff8fff.dmp",
+  "severity": "info",
+  "source": "..\\data\\out_w10\\malfind\\pid.3316.vad.0x10c6bfc0000-0x10c6bff8fff.dmp",
+  "location": "0x23a00"
+ },
+ {
+  "ref": "F45",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "2 high-entropy regions (8192 bytes) in pid.3316.vad.0x10c6bfc0000-0x10c6bff8fff.dmp",
+  "severity": "info",
+  "source": "..\\data\\out_w10\\malfind\\pid.3316.vad.0x10c6bfc0000-0x10c6bff8fff.dmp",
+  "location": "0x4000"
+ },
+ {
+  "ref": "F46",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "1 high-entropy regions (4096 bytes) in pid.3316.vad.0x7df4f5a80000-0x7df4f5a8ffff.dmp",
+  "severity": "info",
+  "source": "..\\data\\out_w10\\malfind\\pid.3316.vad.0x7df4f5a80000-0x7df4f5a8ffff.dmp",
+  "location": "0xb000"
+ },
+ {
+  "ref": "F47",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "6 high-entropy regions (24576 bytes) in pid.3316.vad.0x7df4f5a90000-0x7df4f5b2ffff.dmp",
+  "severity": "info",
+  "source": "..\\data\\out_w10\\malfind\\pid.3316.vad.0x7df4f5a90000-0x7df4f5b2ffff.dmp",
+  "location": "0xb000"
+ },
+ {
+  "ref": "F48",
+  "module": "network",
+  "kind": "pcap_summary",
+  "title": "50 conversations, TLS SNI ['64.media.tumblr.com', '66.media.tumblr.com', '78.media.tumblr.com', 'a.thumbs.redditmedia.com', 'a125375509.cdn.optimizely.com'], weak TLS []",
+  "severity": "info",
+  "source": "..\\data\\case001\\case001.pcap",
+  "location": ""
+ }
+]
