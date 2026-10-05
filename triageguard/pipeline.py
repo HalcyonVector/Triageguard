@@ -21,11 +21,28 @@ def record_crypto(db, path, result, is_full_dump):
         sev = "medium" if strong and not is_full_dump else "info"
         db.add("crypto", "algorithm", f"{a['algorithm']} identified ({a['confidence']}%, {a['basis']}) in {Path(path).name}",
                a, sev, path, a["evidence"][0]["offsets"][0] if a["evidence"] else "")
+    clean, corrupt = [], []
     for k in result["rsa_keys"]:
+        if k.get("corrupt"):
+            corrupt.append(k)
+            continue
+        if not k["issues"] and is_full_dump:
+            clean.append(k)
+            continue
         sev = _worst([i["severity"] for i in k["issues"]])
+        if is_full_dump and not k["factored"] and sev in ("high", "medium"):
+            # a full dump holds the whole certificate store (old 1024-bit roots, e=3
+            # legacy certs), so size/exponent alone is context, not an incident
+            sev = "low"
         issues = "; ".join(i["test"] for i in k["issues"]) or "no weaknesses found"
         db.add("rsa", "rsa_key", f"RSA-{k['bits']} key e={k['e']} ({k['format']}), strength {k['strength']}/100: {issues}",
                k, sev, path, k["offset"])
+    if clean or corrupt:
+        db.add("rsa", "rsa_summary",
+               f"{len(clean)} RSA keys with no weaknesses and {len(corrupt)} corrupt key-like structures in {Path(path).name}",
+               {"clean": [{x: k[x] for x in ("bits", "e", "format", "offset", "fingerprint")} for k in clean[:50]],
+                "corrupt": [{x: k[x] for x in ("bits", "e", "format", "offset")} for k in corrupt[:20]]},
+               "info", path)
     regions = result["high_entropy_regions"]
     if regions:
         total = sum(r["size"] for r in regions)
@@ -47,7 +64,7 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
             continue
         db.add("memory", label, f"{label}: {len(rows)} rows", {"rows": rows[:200]}, "info", dump)
     for flag in memory.suspicious_processes(vol):
-        db.add("memory", "suspicious_process", f"PID {flag['pid']} {flag['process']}: {flag['reason']}", flag, "high", dump, flag["pid"])
+        db.add("memory", "suspicious_process", f"PID {flag['pid']} {flag['process']}: {flag['reason']}", flag, flag["severity"], dump, flag["pid"])
 
     log("[2/6] Static analysis of binaries")
     for b in [*binaries, *dumped]:
