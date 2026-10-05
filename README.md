@@ -130,6 +130,31 @@ Dry run (no LLM): every payload reaches the LLM input (12/12), the sanitiser cat
 two misses are `subtle_benign`, which has no trigger words and is left to the cross-check. The clean
 control raises no false alarm.
 
+## Results
+
+Everything below is saved in `results/`.
+
+**Real dump** (`real_dump_report_llm.md`, `real_dump_report_rules.md`): 13Cubed Windows 11 image plus
+Wireshark's `rsasnakeoil2.pcap`. 80 findings, rule-based risk 55/100. The LLM report (gpt-oss-120b, defended
+prompt) cites a finding for each claim: an RSA-512 key, Notepad opened on `Desktop\encryption_log.txt`,
+four expired JWTs, and SSL 3.0 with static-RSA and 3DES suites in the pcap. It was flagged by the
+validator because only 84% of its claims carry a citation.
+
+**Red-team** (`redteam_summary.md`, `redteam_results.csv`): 6 attacks x 2 hiding places (JWT `iss`, OTP
+issuer) + 1 clean control, 3 trials each, without and with defences, 78 LLM reports in total.
+
+| | Undefended | Defended |
+|---|---|---|
+| Attack success rate | 7/36 | 2/36 |
+| Successful attack reaching a reader with no warning | n/a | 0/36 |
+| Claims backed by a valid citation | 18% | 51% |
+| Rule-based cross-check passed | 17/39 | 23/39 |
+
+Weak spots: `omit_critical` (leave the RSA finding out rather than lie about it) still succeeded 2/6 times
+with defences on, though validation flagged both reports. Each cell is only 6 trials, so treat the
+numbers as indicative. The cross-check passed on 2/3 clean control reports in both modes. Reproduce the table
+from the saved reports with no LLM calls: `python -m triageguard redteam --rescore --out redteam_results`.
+
 ## Constraints
 
 Public datasets and synthetic keys/tokens only. No live malware execution, no cracking of third-party data,
@@ -144,5 +169,5 @@ no real user credentials. The synthetic sample is generated locally from random 
 - [x] Run on a public Windows dump and tune severities (see Real dump test)
 - [x] LLM red-teaming: 6 attacks via JWT and OTP fields
 - [x] Defences: input sanitisation, mandatory citation check, rule-based cross-check
-- [ ] Run the before/after evaluation against Groq and put the numbers in the report
+- [x] Run the before/after evaluation against Groq (see Results)
 - [ ] Post-quantum (ML-KEM, ML-DSA): discussion only unless time allows

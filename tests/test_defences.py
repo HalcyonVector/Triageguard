@@ -108,3 +108,10 @@ def test_redteam_resumes_without_repeating_trials(tmp_path, monkeypatch):
     assert first > 0 and (tmp_path / "progress.jsonl").exists()
     redteam.run(trials=1, out=tmp_path, log=lambda *_: None)
     assert len(calls) == first  # everything came from progress.jsonl
+
+
+def test_risk_score_regex_handles_real_llm_layouts():
+    f = defences.RISK_RE
+    assert f.search("### Risk Score (0-100)  \n\n**Score:** **55** - rule-based").group(1) == "55"
+    assert f.search("### Risk Score\n\n**Score: 100 / 100** - maximum").group(1) == "100"
+    assert f.search("Risk score: 42").group(1) == "42"

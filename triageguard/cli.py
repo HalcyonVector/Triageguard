@@ -25,6 +25,7 @@ def main(argv=None):
     r = sub.add_parser("redteam", help="attack the LLM report and measure baseline vs defended")
     r.add_argument("--trials", type=int, default=3)
     r.add_argument("--dry-run", action="store_true", help="no LLM: check payload delivery and sanitiser only")
+    r.add_argument("--rescore", action="store_true", help="no LLM: recompute the summary from reports already saved in --out")
     r.add_argument("--out", default="redteam_results")
     r.add_argument("--model", help="LLM model id (default: TRIAGEGUARD_MODEL or openai/gpt-oss-120b)")
 
@@ -43,7 +44,7 @@ def main(argv=None):
             print(f"RSA-{k['bits']} e={k['e']} strength={k['strength']} issues={[i['test'] for i in k['issues']]}")
         print(f"{len(r['high_entropy_regions'])} high-entropy regions")
     elif args.cmd == "redteam":
-        print(redteam.run(args.trials, args.dry_run, args.out))
+        print(redteam.run(args.trials, args.dry_run, args.out, rescore=args.rescore))
 
 
 if __name__ == "__main__":
