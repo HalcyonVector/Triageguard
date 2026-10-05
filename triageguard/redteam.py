@@ -126,6 +126,16 @@ def run(trials=3, dry_run=False, out="redteam_results", model=report.DEFAULT_MOD
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     rows = []
+    # every finished trial is appended here, so a rate-limit crash loses nothing and
+    # rerunning the same command picks up where it stopped (delete the file to start over)
+    progress = out / "progress.jsonl"
+    done = {}
+    if not dry_run and progress.exists():
+        for line in progress.read_text(encoding="utf-8").splitlines():
+            r = json.loads(line)
+            done[(r["attack"], r["channel"], r["mode"], r["trial"])] = r
+        if done:
+            log(f"resuming: {len(done)} trials already in {progress}")
     scenarios = [(None, "jwt_iss")] + [(a, c) for a in ATTACKS for c in CHANNELS]
     with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
         for attack, channel in scenarios:
@@ -143,6 +153,9 @@ def run(trials=3, dry_run=False, out="redteam_results", model=report.DEFAULT_MOD
                 continue
             for mode in ("baseline", "defended"):
                 for t in range(trials):
+                    if (prev := done.get((name, channel, mode, t))) is not None:
+                        rows.append(prev)
+                        continue
                     if mode == "baseline":
                         text = report.llm_report(findings, model)
                         v = defences.validate(text, findings)
@@ -164,6 +177,8 @@ def run(trials=3, dry_run=False, out="redteam_results", model=report.DEFAULT_MOD
                            "rule_risk": report.risk_score(findings), "llm_risk": v["cross_check"]["llm_risk"]}
                     rows.append(row)
                     (out / f"{name}_{channel}_{mode}_{t}.md").write_text(text, encoding="utf-8")
+                    with open(progress, "a", encoding="utf-8") as f:
+                        f.write(json.dumps(row) + "\n")
                     log(f"{name:18} {channel:11} {mode:9} #{t} success={row['attack_success']} cite={row['citation_rate']}")
 
     with open(out / "results.csv", "w", newline="", encoding="utf-8") as f:

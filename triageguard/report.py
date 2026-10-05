@@ -7,6 +7,8 @@ the baseline the LLM output can be cross-checked against later.
 
 import json
 import os
+import re
+import time
 import urllib.error
 import urllib.request
 
@@ -15,6 +17,8 @@ GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 # gpt-oss-120b is their listed replacement. Override with TRIAGEGUARD_MODEL or --model.
 FALLBACK_MODEL = "openai/gpt-oss-120b"
 DEFAULT_MODEL = None  # resolved at call time so --model / TRIAGEGUARD_MODEL set after import still apply
+MAX_RETRIES = 6
+MAX_WAIT = 120  # seconds; longer waits mean the daily quota is gone
 SEV_POINTS = {"critical": 25, "high": 12, "medium": 5, "low": 2, "info": 0}
 
 SYSTEM_PROMPT = """You are a malware triage analyst. You receive structured findings from a memory
@@ -49,8 +53,8 @@ def compact(findings, max_chars=24_000):
     order = ["critical", "high", "medium", "low", "info"]
     for f in sorted(findings, key=lambda f: order.index(f["severity"]) if f["severity"] in order else len(order)):
         d = json.dumps(f["data"], default=str)
-        if len(d) > 800:
-            d = d[:800] + "...(truncated)"
+        if len(d) > 400:  # free tier is 8k tokens/min, keep each call small
+            d = d[:400] + "...(truncated)"
         out.append(f"[{f['ref']}] ({f['module']}/{f['kind']}, {f['severity']}) {f['title']} | {d}")
     text = "\n".join(out)
     return text[:max_chars]
@@ -70,13 +74,34 @@ def chat(messages, model=DEFAULT_MODEL, temperature=0.2):
     model = model or os.environ.get("TRIAGEGUARD_MODEL") or FALLBACK_MODEL
     body = {"model": model, "temperature": temperature, "messages": messages}
     req = urllib.request.Request(url, data=json.dumps(body).encode(), method="POST", headers=headers)
-    try:
-        with urllib.request.urlopen(req, timeout=120) as r:
-            return json.load(r)["choices"][0]["message"]["content"]
-    except urllib.error.HTTPError as e:
-        # the API explains itself in the body (model retired, bad key, rate limit); surface it
-        detail = e.read().decode(errors="replace")[:500]
-        raise RuntimeError(f"LLM request failed: HTTP {e.code} from {url} (model {model}): {detail}") from None
+    for attempt in range(MAX_RETRIES + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=120) as r:
+                return json.load(r)["choices"][0]["message"]["content"]
+        except urllib.error.HTTPError as e:
+            # the API explains itself in the body (model retired, bad key, rate limit); surface it
+            detail = e.read().decode(errors="replace")[:500]
+            # free tier is 8k tokens/min, so 429 is normal: wait as long as the API says and retry.
+            # A daily (TPD) limit asks for minutes or hours, which is not worth waiting for here.
+            wait = _retry_after(e, detail)
+            if e.code == 429 and attempt < MAX_RETRIES and wait is not None and wait <= MAX_WAIT:
+                print(f"      rate limited, waiting {wait:.0f}s (retry {attempt + 1}/{MAX_RETRIES})", flush=True)
+                time.sleep(wait + 1)
+                continue
+            raise RuntimeError(f"LLM request failed: HTTP {e.code} from {url} (model {model}): {detail}") from None
+
+
+def _retry_after(err, detail):
+    """Seconds to wait from the Retry-After header or Groq's 'try again in 1m2.5s' text."""
+    if h := err.headers.get("Retry-After"):
+        try:
+            return float(h)
+        except ValueError:
+            pass
+    if m := re.search(r"try again in (?:(\d+)h)?(?:(\d+)m)?(?:([\d.]+)s)?", detail):
+        h, mins, s = (float(x) if x else 0.0 for x in m.groups())
+        return h * 3600 + mins * 60 + s if any(m.groups()) else None
+    return None
 
 
 def llm_report(findings, model=DEFAULT_MODEL):

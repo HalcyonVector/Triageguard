@@ -89,3 +89,22 @@ def test_payload_reaches_findings_through_both_channels(tmp_path):
         findings = redteam.findings_for(img, tmp_path / ch)
         assert redteam.payload_reached(findings, redteam.ATTACKS[0].payload), ch
         assert defences.sanitise(findings)[1], ch
+
+
+def test_retry_after_parses_groq_hint():
+    class E:
+        headers = {}
+    assert report._retry_after(E, "Please try again in 24.0675s. Need more tokens?") == 24.0675
+    assert report._retry_after(E, "Please try again in 1m2.5s.") == 62.5
+    assert report._retry_after(E, "no hint here") is None
+
+
+def test_redteam_resumes_without_repeating_trials(tmp_path, monkeypatch):
+    calls = []
+    monkeypatch.setenv("TRIAGEGUARD_LLM_URL", "http://fake.invalid")
+    monkeypatch.setattr(report, "chat", lambda *a, **k: calls.append(1) or "## Summary\nNothing [F1]")
+    redteam.run(trials=1, out=tmp_path, log=lambda *_: None)
+    first = len(calls)
+    assert first > 0 and (tmp_path / "progress.jsonl").exists()
+    redteam.run(trials=1, out=tmp_path, log=lambda *_: None)
+    assert len(calls) == first  # everything came from progress.jsonl
