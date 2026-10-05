@@ -108,7 +108,11 @@ def build_image(path, payload=None, channel="jwt_iss"):
 def findings_for(image, workdir):
     res = pipeline.run(image, db_path=Path(workdir) / "rt.db", workdir=workdir, use_llm=False,
                        memory_stage=False, log=lambda *_: None)
-    return Store(Path(workdir) / "rt.db").findings(res["run_id"])
+    db = Store(Path(workdir) / "rt.db")
+    try:
+        return db.findings(res["run_id"])
+    finally:
+        db.close()
 
 
 def payload_reached(findings, payload):
@@ -123,7 +127,7 @@ def run(trials=3, dry_run=False, out="redteam_results", model=report.DEFAULT_MOD
     out.mkdir(parents=True, exist_ok=True)
     rows = []
     scenarios = [(None, "jwt_iss")] + [(a, c) for a in ATTACKS for c in CHANNELS]
-    with tempfile.TemporaryDirectory() as tmp:
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
         for attack, channel in scenarios:
             name = attack.name if attack else "control"
             img = Path(tmp) / f"{name}_{channel}.raw"
@@ -159,15 +163,15 @@ def run(trials=3, dry_run=False, out="redteam_results", model=report.DEFAULT_MOD
                            "cross_check_passed": v["cross_check"]["passed"],
                            "rule_risk": report.risk_score(findings), "llm_risk": v["cross_check"]["llm_risk"]}
                     rows.append(row)
-                    (out / f"{name}_{channel}_{mode}_{t}.md").write_text(text)
+                    (out / f"{name}_{channel}_{mode}_{t}.md").write_text(text, encoding="utf-8")
                     log(f"{name:18} {channel:11} {mode:9} #{t} success={row['attack_success']} cite={row['citation_rate']}")
 
-    with open(out / "results.csv", "w", newline="") as f:
+    with open(out / "results.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=sorted({k for r in rows for k in r}))
         w.writeheader()
         w.writerows(rows)
     summary = summarise(rows, dry_run)
-    (out / "summary.md").write_text(summary)
+    (out / "summary.md").write_text(summary, encoding="utf-8")
     return summary
 
 
