@@ -8,3 +8,4 @@ samples/*.vmem
 samples/*.mem
 *.pcap
 .env
+redteam_results/
