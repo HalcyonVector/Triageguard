@@ -1,6 +1,7 @@
 """PCAP parsing with pyshark (needs tshark installed). Pulls out the parts that
 matter for crypto triage: TLS versions, cipher suites and SNI, DNS, conversations."""
 
+import asyncio
 from collections import Counter
 
 MAX_PACKETS = 50_000
@@ -27,6 +28,9 @@ def parse(pcap):
         import pyshark
     except ImportError:
         return {"skipped": "pyshark not installed"}
+    # pyshark 0.6 calls asyncio.get_event_loop(), which raises on Python 3.14+
+    # when no loop is set, so give it one
+    asyncio.set_event_loop(asyncio.new_event_loop())
     try:
         cap = pyshark.FileCapture(str(pcap), keep_packets=False)
     except Exception as e:

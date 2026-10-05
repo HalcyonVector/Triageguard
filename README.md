@@ -67,6 +67,24 @@ Keys are pulled from CAPI blobs, CNG blobs, DER SubjectPublicKeyInfo and PEM, th
 size (<=512 critical, <1024 high, <2048 medium), small exponent, shared modulus with different exponents,
 shared prime via pairwise GCD, close primes via Fermat, and small factors. Each key gets a 0 to 100 strength score.
 
+### Real dump test
+
+Run on the public 13Cubed Windows memory challenge (Windows 11 24H2 build 26100, 4.3 GB crash dump) plus
+Wireshark's `rsasnakeoil2.pcap`, on Windows 11 with Python 3.14, Volatility3 2.28 and tshark. Full run takes
+about 22 minutes. What changed after it:
+
+| Problem on real data | Fix |
+|---|---|
+| pyshark crashed on Python 3.14 (no event loop) | create one before opening the capture |
+| one truncated PEM block in memory aborted the run | bad PEM fragments are skipped |
+| `windows.netscan` returns nothing on 24H2 | falls back to `windows.netstat` (52 connections) |
+| 636 RSA keys from the certificate store, "small factor" criticals | moduli with tiny factors are corrupt memory, not keys; clean keys go into one summary; size/exponent issues in a full dump are low |
+| Defender (MsMpEng) JIT regions flagged high by malfind | one finding per process; known JIT processes and zeroed regions are low, a PE header is critical |
+| risk score stuck at 100 | points per severity are capped, so low findings cannot add up to critical |
+
+Result: 689 findings down to 80, risk 55. The command line check picks up Notepad holding
+`Desktop\encryption_log.txt` open, which is the lead the challenge is built around.
+
 ## Constraints
 
 Public datasets and synthetic keys/tokens only. No live malware execution, no cracking of third-party data,
@@ -78,7 +96,7 @@ no real user credentials. The synthetic sample is generated locally from random 
 - [x] Crypto module: entropy, cipher ID (widened scope), RSA weak keys
 - [x] Credential module, rule-based report, Groq report
 - [x] Tested on real process memory + locally captured TLS pcap
-- [ ] Run on a public Windows dump and tune severities
+- [x] Run on a public Windows dump and tune severities (see below)
 - [ ] LLM red-teaming: misleading content embedded in the dump (fake strings, prompt injection in findings)
 - [ ] Defences: input sanitisation, mandatory citation check, rule-based cross-check; before/after metrics
 - [ ] Post-quantum (ML-KEM, ML-DSA): discussion only unless time allows

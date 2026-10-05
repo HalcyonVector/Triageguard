@@ -19,6 +19,7 @@ from cryptography.hazmat.primitives.serialization import load_der_public_key, lo
 
 CAPI_HDR = re.compile(rb"[\x06\x07]\x02\x00\x00(?:\x00\xa4|\x00\x24)\x00\x00(RSA[12])")
 RSA_OID = bytes.fromhex("06092a864886f70d010101")
+STANDARD_E = {3, 5, 17, 257, 65537}
 PEM_RE = re.compile(rb"-----BEGIN (RSA PRIVATE KEY|PUBLIC KEY|RSA PUBLIC KEY|PRIVATE KEY)-----(.+?)-----END \1-----", re.S)
 
 
@@ -95,8 +96,8 @@ def _der(data, source):
 def _pem(data, source):
     keys = []
     for m in PEM_RE.finditer(data):
-        body = base64.b64decode(b"".join(m.group(2).split()))
-        try:
+        try:  # PEM fragments in memory are often truncated or corrupt
+            body = base64.b64decode(b"".join(m.group(2).split()))
             if b"PRIVATE" in m.group(1):
                 nums = load_pem_private_key(m.group(0), password=None).public_key().public_numbers()
             else:
@@ -171,9 +172,17 @@ def assess(keys):
         elif bits < 2048:
             k["issues"].append({"test": "modulus size", "severity": "medium", "detail": f"{bits}-bit modulus is below the NIST 2048-bit minimum"})
         if e < 65537:
-            k["issues"].append({"test": "small exponent", "severity": "high" if e == 3 else "medium",
+            # Hastad needs about e ciphertexts of one message, so only tiny e is a practical risk
+            k["issues"].append({"test": "small exponent", "severity": "high" if e == 3 else "medium" if e <= 17 else "low",
                                 "detail": f"e={e}; vulnerable to Hastad broadcast / cube-root attacks without proper padding"})
         if (f := _small_factor(n)) or (f := _pollard_rho(n)):
+            if bits >= 512:
+                # no RSA key generator produces this; in a memory dump it means the
+                # bytes were partly overwritten or the structure was mis-parsed
+                k["issues"] = [{"test": "invalid modulus", "severity": "info",
+                                "detail": f"n has small factor {f}; not a real RSA modulus, likely corrupt memory"}]
+                k["corrupt"] = True
+                continue
             k["issues"].append({"test": "small factor", "severity": "critical", "detail": f"n has factor {f}"})
             k["factor"] = f
         elif (pq := _fermat(n)):
@@ -181,21 +190,29 @@ def assess(keys):
                                 "detail": f"|p-q| small, factored: p={hex(pq[0])[:18]}..."})
             k["factor"] = pq[0]
 
-    # cross-key tests
-    for i, a in enumerate(keys):
-        for b in keys[i + 1:]:
+    # cross-key tests (corrupt moduli would only produce bogus shared-prime hits)
+    valid = [k for k in keys if not k.get("corrupt")]
+    for i, a in enumerate(valid):
+        for b in valid[i + 1:]:
             if a["n"] == b["n"] and a["e"] != b["e"]:
+                # an odd e next to a standard one is usually a damaged copy of the same key
+                odd = {a["e"], b["e"]} - STANDARD_E
                 for k, other in ((a, b), (b, a)):
-                    k["issues"].append({"test": "shared modulus", "severity": "critical",
-                                        "detail": f"same n as key {other['fingerprint']} with different e; common-modulus attack recovers plaintext"})
+                    k["issues"].append({"test": "shared modulus", "severity": "low" if odd else "critical",
+                                        "detail": f"same n as key {other['fingerprint']} with different e"
+                                                  + (f"; non-standard e {sorted(odd)} suggests a corrupt copy" if odd
+                                                     else "; common-modulus attack recovers plaintext")})
             elif a["n"] != b["n"] and (g := math.gcd(a["n"], b["n"])) > 1:
                 for k, other in ((a, b), (b, a)):
                     k["issues"].append({"test": "shared prime (GCD)", "severity": "critical",
                                         "detail": f"gcd with key {other['fingerprint']} is a prime factor; both keys broken"})
                     k["factor"] = g
 
-    penalty = {"critical": 100, "high": 50, "medium": 25}
+    penalty = {"critical": 100, "high": 50, "medium": 25, "low": 10, "info": 0}
     for k in keys:
+        if k.get("corrupt"):
+            k["strength"] = None
+            continue
         base = 100 if k["bits"] >= 3072 else 90 if k["bits"] >= 2048 else 60
         k["strength"] = max(0, base - max([penalty[x["severity"]] for x in k["issues"]], default=0))
     return keys

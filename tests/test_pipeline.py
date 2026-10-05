@@ -58,3 +58,26 @@ def test_weak_tls_flags():
     assert "forward secrecy" in w["TLS_RSA_WITH_AES_128_CBC_SHA (0x002f)"]
     assert "TLS_AES_256_GCM_SHA384 (0x1302)" not in w
     assert "TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA (0xc012)" in w and "TLS 1.0" in w and "TLS 1.3" not in w
+
+
+def test_corrupt_modulus_is_not_a_weak_key():
+    # a 2048-bit "modulus" divisible by 3 is damaged memory, not a broken key
+    n = 3 * ((1 << 2046) + 12345)
+    k = rsa_weak.assess([rsa_weak._key(n, 65537, "x", 0, "DER SPKI")])[0]
+    assert k["corrupt"] and k["strength"] is None and k["issues"][0]["severity"] == "info"
+
+
+def test_malfind_and_cmdline_heuristics():
+    from triageguard.memory import suspicious_processes
+    code = " ".join(["48"] * 64)
+    vol = {
+        "injected": [
+            {"PID": 1, "Process": "MsMpEng.exe", "Start VPN": 0x1000, "Protection": "PAGE_EXECUTE_READWRITE", "Hexdump": code},
+            {"PID": 2, "Process": "evil.exe", "Start VPN": 0x2000, "Protection": "PAGE_EXECUTE_READWRITE", "Hexdump": code},
+            {"PID": 3, "Process": "host.exe", "Start VPN": 0x3000, "Protection": "PAGE_EXECUTE_READWRITE",
+             "Hexdump": "4d 5a 90 00" + " 00" * 60},
+        ],
+        "cmdlines": [{"PID": 4, "Process": "notepad.exe", "Args": r'notepad.exe "C:\Users\a\Desktop\ransom_note.txt"'}],
+    }
+    sev = {f["pid"]: f["severity"] for f in suspicious_processes(vol)}
+    assert sev == {1: "low", 2: "high", 3: "critical", 4: "medium"}
