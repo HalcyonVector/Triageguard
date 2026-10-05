@@ -58,3 +58,7 @@ class Store:
 
     def commit(self):
         self.db.commit()
+
+    def close(self):
+        # Windows cannot delete an open SQLite file, so callers using temp dirs must close
+        self.db.close()

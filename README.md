@@ -18,7 +18,8 @@ pytest -q
 ```
 
 For the LLM report, set `GROQ_API_KEY` (free tier) and drop `--no-llm`. Model defaults to
-`llama-3.3-70b-versatile`, override with `TRIAGEGUARD_MODEL`.
+`openai/gpt-oss-120b` (Groq retired `llama-3.3-70b-versatile` in August 2026), override with
+`--model` or `TRIAGEGUARD_MODEL`.
 
 Volatility3 downloads Windows symbols from the Microsoft symbol server on first use. If that is blocked,
 download ISF symbol tables (e.g. JPCERTCC/Windows-Symbol-Tables) and set `TRIAGEGUARD_VOL_SYMBOLS=/path/to/symbols`.

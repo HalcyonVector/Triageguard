@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 
 from . import crypto, pipeline, redteam
 
@@ -16,6 +17,7 @@ def main(argv=None):
     a.add_argument("--out", default="out")
     a.add_argument("--no-llm", action="store_true", help="rule-based report only")
     a.add_argument("--undefended", action="store_true", help="baseline LLM report without defences")
+    a.add_argument("--model", help="LLM model id (default: TRIAGEGUARD_MODEL or openai/gpt-oss-120b)")
 
     c = sub.add_parser("crypto", help="crypto analysis only, on any file")
     c.add_argument("file")
@@ -24,8 +26,11 @@ def main(argv=None):
     r.add_argument("--trials", type=int, default=3)
     r.add_argument("--dry-run", action="store_true", help="no LLM: check payload delivery and sanitiser only")
     r.add_argument("--out", default="redteam_results")
+    r.add_argument("--model", help="LLM model id (default: TRIAGEGUARD_MODEL or openai/gpt-oss-120b)")
 
     args = ap.parse_args(argv)
+    if getattr(args, "model", None):
+        os.environ["TRIAGEGUARD_MODEL"] = args.model
     if args.cmd == "analyze":
         res = pipeline.run(args.dump, args.pcap, args.binary, args.db, args.out,
                            use_llm=not args.no_llm, defended=not args.undefended)

@@ -102,8 +102,9 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
 
     log("[6/6] Report")
     findings = db.findings()
+    db.close()
     text, mode = report.generate(findings, use_llm, defended)
     out = workdir / f"report_run{run_id}.md"
-    out.write_text(text)
+    out.write_text(text, encoding="utf-8")  # LLM output often has non-cp1252 characters
     return {"run_id": run_id, "findings": len(findings), "report": str(out), "report_mode": mode,
             "risk_score": report.risk_score(findings)}

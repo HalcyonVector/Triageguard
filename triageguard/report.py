@@ -7,10 +7,14 @@ the baseline the LLM output can be cross-checked against later.
 
 import json
 import os
+import urllib.error
 import urllib.request
 
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
-DEFAULT_MODEL = os.environ.get("TRIAGEGUARD_MODEL", "llama-3.3-70b-versatile")
+# llama-3.3-70b-versatile was shut down by Groq on 2026-08-16 (404 model not found);
+# gpt-oss-120b is their listed replacement. Override with TRIAGEGUARD_MODEL or --model.
+FALLBACK_MODEL = "openai/gpt-oss-120b"
+DEFAULT_MODEL = None  # resolved at call time so --model / TRIAGEGUARD_MODEL set after import still apply
 SEV_POINTS = {"critical": 25, "high": 12, "medium": 5, "low": 2, "info": 0}
 
 SYSTEM_PROMPT = """You are a malware triage analyst. You receive structured findings from a memory
@@ -63,10 +67,16 @@ def chat(messages, model=DEFAULT_MODEL, temperature=0.2):
     headers = {"Content-Type": "application/json", "User-Agent": "triageguard"}
     if os.environ.get("GROQ_API_KEY") and url == GROQ_URL:
         headers["Authorization"] = f"Bearer {os.environ['GROQ_API_KEY']}"
+    model = model or os.environ.get("TRIAGEGUARD_MODEL") or FALLBACK_MODEL
     body = {"model": model, "temperature": temperature, "messages": messages}
     req = urllib.request.Request(url, data=json.dumps(body).encode(), method="POST", headers=headers)
-    with urllib.request.urlopen(req, timeout=120) as r:
-        return json.load(r)["choices"][0]["message"]["content"]
+    try:
+        with urllib.request.urlopen(req, timeout=120) as r:
+            return json.load(r)["choices"][0]["message"]["content"]
+    except urllib.error.HTTPError as e:
+        # the API explains itself in the body (model retired, bad key, rate limit); surface it
+        detail = e.read().decode(errors="replace")[:500]
+        raise RuntimeError(f"LLM request failed: HTTP {e.code} from {url} (model {model}): {detail}") from None
 
 
 def llm_report(findings, model=DEFAULT_MODEL):
