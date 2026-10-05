@@ -6,6 +6,7 @@ runs (crypto and credential scans work on raw bytes).
 """
 
 import json
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -20,6 +21,9 @@ PLUGINS = [
     ("usb", ["windows.registry.printkey"], ["--key", r"ControlSet001\Enum\USBSTOR"]),
 ]
 TIMEOUT = 1800
+# Offline symbol tables (ISF JSON) for networks that block the Microsoft symbol
+# server, e.g. JPCERTCC/Windows-Symbol-Tables. Point this at the folder.
+SYMBOLS = os.environ.get("TRIAGEGUARD_VOL_SYMBOLS")
 
 
 def _vol():
@@ -28,6 +32,8 @@ def _vol():
 
 def run_plugin(dump, plugin, extra=(), outdir=None):
     cmd = [_vol(), "-q", "-r", "json", "-f", str(dump)]
+    if SYMBOLS:
+        cmd += ["-s", SYMBOLS]
     if outdir:
         cmd += ["-o", str(outdir)]
     cmd += [plugin, *extra]
@@ -53,6 +59,10 @@ def extract(dump, outdir):
             except Exception as e:  # wrong plugin name, unsupported OS profile, timeout...
                 err = str(e)
         else:
+            if "kernel.symbol_table_name" in (err or ""):
+                # no Windows kernel found: every other plugin will fail the same way, so stop here
+                reason = "no Windows kernel found (not a Windows image, or symbols could not be downloaded; see TRIAGEGUARD_VOL_SYMBOLS)"
+                return {lbl: {"skipped": reason} for lbl, _, _ in PLUGINS}, dumped
             results[label] = {"skipped": err}
     # malfind --dump writes one .dmp per injected region; these go to crypto/static analysis
     dumped = sorted(outdir.glob("*.dmp"))

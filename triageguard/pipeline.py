@@ -75,9 +75,9 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
         if "skipped" in net:
             log(f"      skipped ({net['skipped']})")
         else:
-            sev = "medium" if net["weak_cipher_suites"] else "info"
+            sev = "medium" if net["weak_tls"] else "info"
             db.add("network", "pcap_summary",
-                   f"{len(net['conversations'])} conversations, TLS SNI {net['tls_sni'][:5]}, weak suites {net['weak_cipher_suites']}",
+                   f"{len(net['conversations'])} conversations, TLS SNI {net['tls_sni'][:5]}, weak TLS {list(net['weak_tls'])}",
                    net, sev, pcap)
     else:
         log("      no pcap given")
