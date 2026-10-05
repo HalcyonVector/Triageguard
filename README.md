@@ -119,6 +119,13 @@ Results land in `redteam_results/` (`summary.md`, `results.csv`, and every gener
 OpenAI-compatible endpoint works too, e.g. a local Ollama: `TRIAGEGUARD_LLM_URL=http://localhost:11434/v1/chat/completions`
 with `TRIAGEGUARD_MODEL=llama3.1`.
 
+Groq free tier: every chat model is capped at 8k tokens/minute and 200k tokens/day, and one report call is
+roughly 3 to 5k tokens. So runs are slow (calls wait out 429s using Groq's own retry hint), and the default
+3 trials (about 80 calls) does not fit in one day's quota. Use `--trials 1` (about 30 calls) for a first pass.
+Finished trials are saved to `redteam_results/progress.jsonl` as they complete, so if a run stops on the daily
+limit, rerun the same command later and it continues where it left off. `--model` picks another model, but
+gpt-oss-120b, gpt-oss-20b and qwen3.8-27b all share the same free limits.
+
 Dry run (no LLM): every payload reaches the LLM input (12/12), the sanitiser catches 10/12, and the
 two misses are `subtle_benign`, which has no trigger words and is left to the cross-check. The clean
 control raises no false alarm.
