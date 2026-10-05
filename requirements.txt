@@ -1,0 +1,6 @@
+cryptography>=42
+pefile>=2023.2.7
+volatility3>=2.7
+pyshark>=0.6        # also needs tshark (Wireshark) installed
+yara-python>=4.5    # optional
+pytest>=8

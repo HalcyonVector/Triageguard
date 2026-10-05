@@ -1,0 +1,16 @@
+[project]
+name = "triageguard"
+version = "0.1.0"
+description = "AI-assisted memory forensics and cryptographic malware triage pipeline"
+requires-python = ">=3.10"
+dependencies = ["cryptography>=42", "pefile>=2023.2.7"]
+
+[project.optional-dependencies]
+full = ["volatility3>=2.7", "pyshark>=0.6", "yara-python>=4.5"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+triageguard = "triageguard.cli:main"
+
+[tool.setuptools]
+packages = ["triageguard", "triageguard.crypto"]
