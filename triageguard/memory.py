@@ -10,6 +10,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 # (label, plugin names to try in order, extra args). Newer vol3 releases moved
@@ -30,7 +31,9 @@ SYMBOLS = os.environ.get("TRIAGEGUARD_VOL_SYMBOLS")
 
 
 def _vol():
-    return shutil.which("vol") or shutil.which("vol3")
+    # also look next to the running interpreter, so a venv works without being activated
+    here = str(Path(sys.executable).parent)
+    return shutil.which("vol") or shutil.which("vol3") or shutil.which("vol", path=here) or shutil.which("vol3", path=here)
 
 
 def run_plugin(dump, plugin, extra=(), outdir=None):
