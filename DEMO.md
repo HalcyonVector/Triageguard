@@ -22,6 +22,15 @@ python -m triageguard analyze samples/synthetic.raw --no-llm
 
 Say: Volatility3 is skipped here because it is not a Windows image; crypto, credentials and report still run.
 
+## 2b. Dashboard (live, offline)
+
+```powershell
+python -m triageguard dashboard
+```
+
+Opens a local page with the real-dump findings, both reports with clickable citations (click `[F65]` to jump
+to the finding), the red-team charts, and a done / yet-to-do tab. Use it to walk through steps 3 and 4 below.
+
 ## 3. Real Windows dump (pre-generated, the run takes about 22 minutes)
 
 Open `results/real_dump_report_llm.md`. Image: 13Cubed Windows 11 24H2, 4.3 GB, plus Wireshark's

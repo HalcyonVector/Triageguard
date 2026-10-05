@@ -132,7 +132,9 @@ control raises no false alarm.
 
 ## Results
 
-Everything below is saved in `results/`.
+Everything below is saved in `results/`. To browse it all in one page (findings, both reports with clickable
+citations, the red-team charts, done and yet-to-do), run `python -m triageguard dashboard`. It uses only the
+standard library, binds to localhost, and works offline.
 
 **Real dump** (`real_dump_report_llm.md`, `real_dump_report_rules.md`): 13Cubed Windows 11 image plus
 Wireshark's `rsasnakeoil2.pcap`. 80 findings, rule-based risk 55/100. The LLM report (gpt-oss-120b, defended

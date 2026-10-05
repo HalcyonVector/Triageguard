@@ -115,3 +115,13 @@ def test_risk_score_regex_handles_real_llm_layouts():
     assert f.search("### Risk Score (0-100)  \n\n**Score:** **55** - rule-based").group(1) == "55"
     assert f.search("### Risk Score\n\n**Score: 100 / 100** - maximum").group(1) == "100"
     assert f.search("Risk score: 42").group(1) == "42"
+
+
+def test_dashboard_loads_snapshot_and_redteam(tmp_path):
+    import json
+    from triageguard import dashboard
+    (tmp_path / "real_dump_findings.json").write_text(json.dumps([{"ref": "F1", "severity": "info"}]), encoding="utf-8")
+    (tmp_path / "redteam_results.csv").write_text("attack,mode,attack_success\ncontrol,baseline,\n", encoding="utf-8")
+    d = dashboard.load(tmp_path, tmp_path / "missing.db")
+    assert d["findings"][0]["ref"] == "F1" and d["redteam"][0]["mode"] == "baseline"
+    assert d["findings_source"].endswith("real_dump_findings.json") and d["report_llm"] == ""

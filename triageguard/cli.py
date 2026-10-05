@@ -29,6 +29,12 @@ def main(argv=None):
     r.add_argument("--out", default="redteam_results")
     r.add_argument("--model", help="LLM model id (default: TRIAGEGUARD_MODEL or openai/gpt-oss-120b)")
 
+    d = sub.add_parser("dashboard", help="open the local results dashboard")
+    d.add_argument("--port", type=int, default=8765)
+    d.add_argument("--results", default="results", help="folder with the saved reports and red-team CSV")
+    d.add_argument("--db", default="triageguard.db")
+    d.add_argument("--no-browser", action="store_true")
+
     args = ap.parse_args(argv)
     if getattr(args, "model", None):
         os.environ["TRIAGEGUARD_MODEL"] = args.model
@@ -43,6 +49,9 @@ def main(argv=None):
         for k in r["rsa_keys"]:
             print(f"RSA-{k['bits']} e={k['e']} strength={k['strength']} issues={[i['test'] for i in k['issues']]}")
         print(f"{len(r['high_entropy_regions'])} high-entropy regions")
+    elif args.cmd == "dashboard":
+        from . import dashboard
+        dashboard.serve(args.port, args.results, args.db, not args.no_browser)
     elif args.cmd == "redteam":
         print(redteam.run(args.trials, args.dry_run, args.out, rescore=args.rescore))
 
