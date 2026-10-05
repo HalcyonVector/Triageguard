@@ -33,14 +33,14 @@ def record_crypto(db, path, result, is_full_dump):
                {"regions": regions[:20]}, "info", path, regions[0]["start"])
 
 
-def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", use_llm=True, log=print):
+def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", use_llm=True, defended=True, memory_stage=True, log=print):
     workdir = Path(workdir)
     workdir.mkdir(parents=True, exist_ok=True)
     db = Store(db_path)
     run_id = db.start_run(dump, pcap)
 
     log("[1/6] Volatility3 extraction")
-    vol, dumped = memory.extract(dump, workdir / "malfind")
+    vol, dumped = memory.extract(dump, workdir / "malfind") if memory_stage else ({}, [])
     for label, rows in vol.items():
         if isinstance(rows, dict) and "skipped" in rows:
             log(f"      {label}: skipped ({rows['skipped']})")
@@ -85,7 +85,7 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
 
     log("[6/6] Report")
     findings = db.findings()
-    text, mode = report.generate(findings, use_llm)
+    text, mode = report.generate(findings, use_llm, defended)
     out = workdir / f"report_run{run_id}.md"
     out.write_text(text)
     return {"run_id": run_id, "findings": len(findings), "report": str(out), "report_mode": mode,

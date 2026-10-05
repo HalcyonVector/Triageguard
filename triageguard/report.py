@@ -1,7 +1,7 @@
 """Report generation. The LLM only ever sees the structured findings from
 SQLite (never raw dump bytes) and is asked to cite finding ids like [F3].
 
-Without GROQ_API_KEY, a rule-based report is produced instead, which is also
+Without GROQ_API_KEY (or TRIAGEGUARD_LLM_URL), a rule-based report is produced instead, which is also
 the baseline the LLM output can be cross-checked against later.
 """
 
@@ -42,23 +42,31 @@ def compact(findings, max_chars=24_000):
     return text[:max_chars]
 
 
-def llm_report(findings, model=DEFAULT_MODEL):
-    key = os.environ.get("GROQ_API_KEY")
-    if not key:
-        return None
-    body = {
-        "model": model,
-        "temperature": 0.2,
-        "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": f"Rule-based risk score: {risk_score(findings)}\n\nFindings:\n{compact(findings)}"},
-        ],
-    }
-    req = urllib.request.Request(GROQ_URL, data=json.dumps(body).encode(), method="POST",
-                                 headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json",
-                                          "User-Agent": "triageguard"})
+def llm_available():
+    return bool(os.environ.get("TRIAGEGUARD_LLM_URL") or os.environ.get("GROQ_API_KEY"))
+
+
+def chat(messages, model=DEFAULT_MODEL, temperature=0.2):
+    """One chat completion against Groq, or any OpenAI-compatible endpoint set in
+    TRIAGEGUARD_LLM_URL (e.g. a local Ollama at http://localhost:11434/v1/chat/completions)."""
+    url = os.environ.get("TRIAGEGUARD_LLM_URL") or GROQ_URL
+    headers = {"Content-Type": "application/json", "User-Agent": "triageguard"}
+    if os.environ.get("GROQ_API_KEY") and url == GROQ_URL:
+        headers["Authorization"] = f"Bearer {os.environ['GROQ_API_KEY']}"
+    body = {"model": model, "temperature": temperature, "messages": messages}
+    req = urllib.request.Request(url, data=json.dumps(body).encode(), method="POST", headers=headers)
     with urllib.request.urlopen(req, timeout=120) as r:
         return json.load(r)["choices"][0]["message"]["content"]
+
+
+def llm_report(findings, model=DEFAULT_MODEL):
+    """Baseline (undefended) LLM report."""
+    if not llm_available():
+        return None
+    return chat([
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": f"Rule-based risk score: {risk_score(findings)}\n\nFindings:\n{compact(findings)}"},
+    ], model)
 
 
 def rule_report(findings):
@@ -86,12 +94,16 @@ def rule_report(findings):
     return "\n".join(lines)
 
 
-def generate(findings, use_llm=True):
+def generate(findings, use_llm=True, defended=True):
     if use_llm:
         try:
-            text = llm_report(findings)
+            if defended:
+                from .defences import defended_report
+                text = defended_report(findings)
+            else:
+                text = llm_report(findings)
             if text:
-                return text, "llm"
+                return text, "llm-defended" if defended else "llm"
         except Exception as e:
             print(f"[report] LLM call failed ({e}); falling back to rule-based report")
     return rule_report(findings), "rules"
