@@ -20,6 +20,12 @@ pytest -q
 For the LLM report, set `GROQ_API_KEY` (free tier) and drop `--no-llm`. Model defaults to
 `llama-3.3-70b-versatile`, override with `TRIAGEGUARD_MODEL`.
 
+Volatility3 downloads Windows symbols from the Microsoft symbol server on first use. If that is blocked,
+download ISF symbol tables (e.g. JPCERTCC/Windows-Symbol-Tables) and set `TRIAGEGUARD_VOL_SYMBOLS=/path/to/symbols`.
+
+To test on real process memory without a Windows image, `samples/dump_process.py <pid> out.raw` dumps a
+running Linux process (e.g. one holding synthetic keys), which the crypto and credential stages scan as is.
+
 Real dumps: any public Windows image works, e.g. the Volatility Foundation samples, MemLabs, or CTF
 memory challenges. `python -m triageguard analyze dump.raw --pcap traffic.pcap --binary dropped.exe`
 
@@ -31,7 +37,7 @@ memory challenges. `python -m triageguard analyze dump.raw --pcap traffic.pcap -
 | 2. Static | `static.py` | strings, PE headers, section entropy, crypto imports, YARA (`rules/`) |
 | 3. Crypto | `crypto/` | entropy regions, cipher ID with confidence %, RSA key extraction + weak key tests |
 | 4. Credentials | `credentials.py` | JWT decode + checks, OAuth/API tokens, `otpauth://` OTP secrets (stored redacted) |
-| 5. Network | `network.py` | pyshark: conversations, DNS, TLS SNI, versions, cipher suites |
+| 5. Network | `network.py` | pyshark: conversations, DNS, TLS SNI, negotiated version and cipher suite (flags no forward secrecy, CBC, deprecated versions) |
 | 6. Report | `report.py` | Groq LLM report citing finding ids `[F3]`, or rule-based fallback |
 
 Everything lands in SQLite (`store.py`), one row per finding with a citation id.
@@ -71,6 +77,7 @@ no real user credentials. The synthetic sample is generated locally from random 
 - [x] Pipeline skeleton, SQLite store, CLI
 - [x] Crypto module: entropy, cipher ID (widened scope), RSA weak keys
 - [x] Credential module, rule-based report, Groq report
+- [x] Tested on real process memory + locally captured TLS pcap
 - [ ] Run on a public Windows dump and tune severities
 - [ ] LLM red-teaming: misleading content embedded in the dump (fake strings, prompt injection in findings)
 - [ ] Defences: input sanitisation, mandatory citation check, rule-based cross-check; before/after metrics

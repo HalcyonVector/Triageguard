@@ -49,3 +49,12 @@ def test_end_to_end(sample, tmp_path):
     res = pipeline.run(sample, db_path=tmp_path / "t.db", workdir=tmp_path / "out", use_llm=False, log=lambda *_: None)
     text = Path(res["report"]).read_text()
     assert res["findings"] > 10 and "[F1]" in text and res["report_mode"] == "rules"
+
+
+def test_weak_tls_flags():
+    from triageguard.network import weak_tls
+    w = weak_tls({"TLS_RSA_WITH_AES_128_CBC_SHA (0x002f)": 1, "TLS_AES_256_GCM_SHA384 (0x1302)": 1,
+                  "TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA (0xc012)": 1}, {"TLS 1.0": 1, "TLS 1.3": 1})
+    assert "forward secrecy" in w["TLS_RSA_WITH_AES_128_CBC_SHA (0x002f)"]
+    assert "TLS_AES_256_GCM_SHA384 (0x1302)" not in w
+    assert "TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA (0xc012)" in w and "TLS 1.0" in w and "TLS 1.3" not in w
