@@ -205,5 +205,6 @@ no real user credentials. The synthetic sample is generated locally from random 
       memory dump, then measure how many ciphers and keys TriageGuard finds and how many false alarms it raises
 - [ ] More public dumps for variety (another Windows 10/11 image with ransomware-style activity, a Windows Server image)
 - [ ] Stronger red-team: harder attacks (several fields at once, no trigger words), more trials per attack, a second LLM
+- [ ] Optional: run an analysis from the dashboard (dump path box, Run button, live progress log, automatic export)
 - [ ] Final report
 - [ ] Post-quantum (ML-KEM, ML-DSA): discussion only unless time allows
