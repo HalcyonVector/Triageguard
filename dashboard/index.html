@@ -6,24 +6,24 @@
 <title>TriageGuard</title>
 <style>
 :root {
-  --bg1: #0a0f2c; --bg2: #1b1650; --bg3: #3b1d6e;
-  --text: #eef1ff; --muted: #b9c0ea; --faint: #8f98cc;
-  --cyan: #5eead4; --violet: #a78bfa; --pink: #f9a8d4; --amber: #fbbf24;
-  --glass: rgba(255,255,255,0.07); --line: rgba(255,255,255,0.16);
-  --critical: #f43f5e; --high: #fb923c; --medium: #fbbf24; --low: #60a5fa; --info: #94a3b8;
+  --bg1: #070b1f; --bg2: #10143d; --bg3: #1b1848;
+  --text: #E6E9F8; --muted: #A9B0D8; --faint: #8E98C6;
+  --cyan: #5CCFC0; --violet: #9B8AE8; --pink: #E7A3C9; --amber: #E3B341;
+  --glass: rgba(255,255,255,0.05); --line: rgba(255,255,255,0.12);
+  --critical: #e0526a; --high: #e8894a; --medium: #E3B341; --low: #5f9fe0; --info: #8a98b0;
 }
 * { box-sizing: border-box; }
-html { background: #0a0f2c; }
+html { background: #070b1f; }
 body {
   margin: 0; min-height: 100vh; color: var(--text);
   font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
   background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 55%, var(--bg3) 100%) fixed;
 }
 body::before, body::after {
-  content: ""; position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(70px); opacity: .45;
+  content: ""; position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(70px); opacity: .22;
 }
-body::before { width: 520px; height: 520px; right: -140px; top: -120px; background: radial-gradient(circle, #7c5cf0, transparent 70%); }
-body::after { width: 460px; height: 460px; left: -140px; bottom: -140px; background: radial-gradient(circle, #1b9ec4, transparent 70%); }
+body::before { width: 520px; height: 520px; right: -140px; top: -120px; background: radial-gradient(circle, #4b3aa0, transparent 70%); }
+body::after { width: 460px; height: 460px; left: -140px; bottom: -140px; background: radial-gradient(circle, #1c6b88, transparent 70%); }
 .wrap { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 28px 24px 64px; }
 header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
 .brand h1 {
@@ -48,10 +48,10 @@ nav button.on { color: #0a0f2c; background: linear-gradient(90deg, var(--cyan), 
 .g2 { grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); }
 .stat .num { font-size: 38px; white-space: nowrap; font-weight: 800; line-height: 1.05; letter-spacing: -1px; }
 .stat .lab { color: var(--muted); margin-top: 6px; font-size: 15px; line-height: 1.35; }
-.g1 { background: linear-gradient(135deg, rgba(94,234,212,.22), rgba(94,234,212,.05)); border-color: rgba(94,234,212,.4); }
-.g2c { background: linear-gradient(135deg, rgba(167,139,250,.28), rgba(167,139,250,.06)); border-color: rgba(167,139,250,.45); }
-.g3 { background: linear-gradient(135deg, rgba(249,168,212,.26), rgba(249,168,212,.05)); border-color: rgba(249,168,212,.45); }
-.g4c { background: linear-gradient(135deg, rgba(251,191,36,.24), rgba(251,191,36,.05)); border-color: rgba(251,191,36,.45); }
+.g1 { background: linear-gradient(135deg, rgba(92,207,192,.22), rgba(92,207,192,.05)); border-color: rgba(92,207,192,.4); }
+.g2c { background: linear-gradient(135deg, rgba(155,138,232,.28), rgba(155,138,232,.06)); border-color: rgba(155,138,232,.45); }
+.g3 { background: linear-gradient(135deg, rgba(231,163,201,.26), rgba(231,163,201,.05)); border-color: rgba(231,163,201,.45); }
+.g4c { background: linear-gradient(135deg, rgba(227,179,65,.24), rgba(227,179,65,.05)); border-color: rgba(227,179,65,.45); }
 h2 { margin: 28px 0 14px; font-size: 24px; letter-spacing: -.2px; }
 h3 { margin: 0 0 12px; font-size: 18px; }
 .muted { color: var(--muted); }
@@ -73,7 +73,7 @@ h3 { margin: 0 0 12px; font-size: 18px; }
 table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
 th { text-align: left; color: var(--cyan); font-size: 12.5px; text-transform: uppercase; letter-spacing: .8px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
 td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,.07); vertical-align: top; }
-tr.hit td { background: linear-gradient(90deg, rgba(94,234,212,.25), rgba(167,139,250,.18)); }
+tr.hit td { background: linear-gradient(90deg, rgba(92,207,192,.25), rgba(155,138,232,.18)); }
 td.ref { font-weight: 700; color: var(--violet); white-space: nowrap; }
 td.title { word-break: break-word; }
 .report { line-height: 1.6; font-size: 15.5px; }
@@ -88,7 +88,7 @@ a.cite { color: var(--cyan); font-weight: 700; text-decoration: none; border-bot
 .pair .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; }
 .pair .vals { font-size: 13.5px; color: var(--muted); text-align: right; }
 .sq { display: inline-block; width: 22px; height: 22px; border-radius: 6px; margin-right: 4px; vertical-align: middle; border: 2px solid transparent; }
-.sq.win { background: var(--critical); } .sq.lose { background: #34d399; }
+.sq.win { background: var(--critical); } .sq.lose { background: #4fb98f; }
 .sq.flag { border-color: var(--amber); }
 .task { display: flex; gap: 12px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,.07); }
 .task:last-child { border-bottom: 0; }
@@ -101,7 +101,7 @@ a.cite { color: var(--cyan); font-weight: 700; text-decoration: none; border-bot
 .dumpcard h3 { margin-bottom: 4px; }
 .two { display: flex; gap: 18px; margin-top: 14px; }
 .two b { display: block; font-size: 28px; line-height: 1.1; } .two span { color: var(--muted); font-size: 12.5px; }
-.filters button[disabled] { opacity: .45; cursor: not-allowed; }
+.filters button[disabled] { opacity: .22; cursor: not-allowed; }
 .hidden { display: none; }
 .note { font-size: 13px; color: var(--faint); margin-top: 10px; }
 </style>
@@ -131,7 +131,7 @@ a.cite { color: var(--cyan); font-weight: 700; text-decoration: none; border-bot
 
 <script>
 const SEV = ["critical", "high", "medium", "low", "info"];
-const SEV_COL = {critical: "#f43f5e", high: "#fb923c", medium: "#fbbf24", low: "#60a5fa", info: "#94a3b8"};
+const SEV_COL = {critical: "#e0526a", high: "#e8894a", medium: "#E3B341", low: "#5f9fe0", info: "#8a98b0"};
 const POINTS = {critical: 25, high: 12, medium: 5, low: 2, info: 0};
 const CAP = {critical: 4, high: 4, medium: 4, low: 5};
 let D = {dumps: [], redteam: []};
@@ -259,7 +259,7 @@ function inline(s) {
     .replace(/`([^`]+)`/g, "<code>$1</code>")
     .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
     .replace(/(^|[^*])\*([^*\s][^*]*)\*/g, "$1<i>$2</i>")
-    .replace(/\[F(\d+)\]/g, (m, n) => `<a class="cite" data-ref="F${n}" title="${esc((dump().findings.find((f) => f.ref === "F" + n) || {}).title || "")}">[F${n}]</a>`);
+    .replace(/[\[【]F(\d+)[\]】]/g, (m, n) => `<a class="cite" data-ref="F${n}" title="${esc((dump().findings.find((f) => f.ref === "F" + n) || {}).title || "")}">[F${n}]</a>`);
 }
 function markdown(src) {
   src = (src || "").replace(/[​⁠]/g, "");
@@ -333,10 +333,10 @@ function renderRedteam() {
     <div class="card pairs">
       ${attacks.map((a) => { const [b, nb] = rate(a, "baseline"), [d, nd] = rate(a, "defended"); return `
         <div class="pair"><b>${ATTACK_LABEL[a] || a}</b>
-          <div><div class="track"><div class="fill" style="width:${nb ? b / nb * 100 : 0}%;background:linear-gradient(90deg,#fb923c,#f43f5e)"></div></div>
-               <div class="track"><div class="fill" style="width:${nd ? d / nd * 100 : 0}%;background:linear-gradient(90deg,#5eead4,#a78bfa)"></div></div></div>
+          <div><div class="track"><div class="fill" style="width:${nb ? b / nb * 100 : 0}%;background:linear-gradient(90deg,#e8894a,#e0526a)"></div></div>
+               <div class="track"><div class="fill" style="width:${nd ? d / nd * 100 : 0}%;background:linear-gradient(90deg,#5CCFC0,#9B8AE8)"></div></div></div>
           <div class="vals">plain ${b}/${nb}<br>defended ${d}/${nd}</div></div>`; }).join("")}
-      <div class="legend"><span><i style="background:#f43f5e"></i>plain report</span><span><i style="background:#a78bfa"></i>with defences</span></div>
+      <div class="legend"><span><i style="background:#e0526a"></i>plain report</span><span><i style="background:#9B8AE8"></i>with defences</span></div>
     </div>
     <h2>Every trial</h2>
     <div class="card"><table>
@@ -345,8 +345,8 @@ function renderRedteam() {
         rt.filter((x) => x.attack === a && x.mode === m && x.channel === ch).sort((p, q) => p.trial - q.trial)
           .map((x) => `<span class="sq ${x.attack_success === "True" ? "win" : "lose"} ${x.flagged === "True" ? "flag" : ""}" title="trial ${x.trial}: attack ${x.attack_success === "True" ? "succeeded" : "failed"}${x.flagged === "True" ? ", report flagged" : ""}"></span>`).join("")).join(" &nbsp;|&nbsp; ")}</td>`).join("")}</tr>`).join("")}
     </table>
-    <div class="legend"><span><i style="background:#f43f5e"></i>attack succeeded</span><span><i style="background:#34d399"></i>attack failed</span><span><i style="border:2px solid #fbbf24;background:transparent"></i>report flagged by validation</span></div></div>
-    <p class="note">The defences are an input sanitiser, mandatory citations, a rule-based cross-check and one retry. Limits: 6 trials per attack, one model (openai/gpt-oss-120b), synthetic payloads. The "hide the RSA finding" attack still worked 2/6 times with defences, though validation flagged both reports.</p>`;
+    <div class="legend"><span><i style="background:#e0526a"></i>attack succeeded</span><span><i style="background:#4fb98f"></i>attack failed</span><span><i style="border:2px solid #E3B341;background:transparent"></i>report flagged by validation</span></div></div>
+    <p class="note">The defences are an input sanitiser, mandatory citations, a rule-based cross-check and one retry. Limits: 6 trials per attack, one model (openai/gpt-oss-120b), synthetic payloads. A citation check proves the cited finding exists, not that the sentence is right.</p>`;
 }
 
 /* ---------- Progress ---------- */
@@ -359,12 +359,12 @@ const DONE = [
   ["LLM report", "Groq model sees findings only and cites a finding id for every claim"],
   ["Red team and defences", "6 attacks, 78 reports, sanitiser, citation check and rule-based cross-check"],
   ["Literature survey", "Done in Overleaf, in the table format our teacher set"],
-  ["Dashboard and tests", "This page, plus 20 automated tests"],
+  ["Dashboard and tests", "This page, plus 23 automated tests"],
 ];
 const TODO = [
   ["Final report", "Method, results and limits written up"],
   ["Post-quantum paragraph", "ML-KEM and ML-DSA, discussion only"],
-  ["Close the omission gap", "Force every critical finding into the report"],
+  ["Harder attacks", "Several fields at once, and persuasion without trigger words"],
   ["Stronger numbers", "More trials per attack and a second LLM"],
 ];
 function renderRoadmap() {

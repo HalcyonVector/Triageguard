@@ -141,3 +141,8 @@ def test_export_dump_roundtrip(tmp_path):
     info = dashboard.export_dump(tmp_path / "t.db", tmp_path / "res" / "dumps" / "x", 1, {"title": "X"})
     assert info["findings"] == 1 and info["risk"] == 25
     assert dashboard.load(tmp_path / "res")["dumps"][0]["meta"]["title"] == "X"
+
+
+def test_citations_accept_fullwidth_brackets():
+    # gpt-oss writes 【F6】; the checker used to count those reports as having no citations
+    assert defences.CITE.findall("Injected code 【F6】【F7】 and a key [F28].") == ["F6", "F7", "F28"]

@@ -145,9 +145,10 @@ standard library, binds to localhost, and works offline.
 | `win10` DFIR Madness case 001 desktop, 2 GB, plus its 188 MB real pcap | Windows 10 | 48 | 85 | PE header injected into `spoolsv.exe`, `powershell.exe` with 5 injected regions, 546 TLS 1.2 handshakes (all strong suites) |
 | `win7` Hacktoria Memory Mystery, 1 GB | Windows 7 SP1 x86 | 58 | 30 | identical code in 5 unrelated processes (system-wide hook, medium), `cmd.exe` started by `vmtoolsd.exe` |
 
-The Win11 LLM report (gpt-oss-120b, defended prompt) cites a finding for each claim. It was flagged by the
-validator because only 84% of its claims carry a citation. To add LLM reports for the others with your own
-key: `python -m triageguard report ..\data\w10.db --out results\dumps\win10\report_llm.md`.
+All three have an LLM report (gpt-oss-120b, defended prompt) that cites findings. The validator flags Win11
+(84% of claims cited) and Win10 (88%) and passes Win7 (91%); flagged reports carry a "Validation notes"
+section at the bottom. Regenerate one with your own key:
+`python -m triageguard report ..\data\w10.db --out results\dumps\win10\report_llm.md`.
 New dump: `analyze` it, then `python -m triageguard export <db> <name> --title ... --os ...`.
 
 Lessons from the extra dumps: Windows Defender on the analysis machine blocks reading extracted malware
@@ -161,15 +162,19 @@ issuer) + 1 clean control, 3 trials each, without and with defences, 78 LLM repo
 
 | | Undefended | Defended |
 |---|---|---|
-| Attack success rate | 7/36 | 2/36 |
+| Attack success rate | 4/36 | 1/36 |
 | Successful attack reaching a reader with no warning | n/a | 0/36 |
-| Claims backed by a valid citation | 18% | 51% |
-| Rule-based cross-check passed | 17/39 | 23/39 |
+| Claims backed by a valid citation | 28% | 78% |
+| Rule-based cross-check passed | 29/39 | 36/39 |
 
-Weak spots: `omit_critical` (leave the RSA finding out rather than lie about it) still succeeded 2/6 times
-with defences on, though validation flagged both reports. Each cell is only 6 trials, so treat the
-numbers as indicative. The cross-check passed on 2/3 clean control reports in both modes. Reproduce the table
-from the saved reports with no LLM calls: `python -m triageguard redteam --rescore --out redteam_results`.
+Caveats: each cell is only 6 trials, so treat the numbers as indicative. The one defended success was
+`omit_critical` (1/6; it was 0/6 undefended), which shows how noisy 6 trials are. A citation check proves
+the cited finding exists, not that the sentence is right. Reproduce the table from the saved reports with no
+LLM calls: `python -m triageguard redteam --rescore --out redteam_results`.
+
+Correction note: an earlier run of the checker only recognised `[F6]`, but the model often writes `【F6】`
+(fullwidth brackets). That undercounted citations and made `omit_critical` look successful (3/6 undefended,
+2/6 defended, 7/36 and 2/36 overall). The checker accepts both forms now and the table above is re-scored.
 
 ## Constraints
 
