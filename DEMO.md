@@ -44,7 +44,7 @@ regions. The Windows 11 details follow. Open `results/dumps/win11/report_llm.md`
 - RSA-512 key in memory (critical, strength 0/100).
 - Notepad opened on `Desktop\encryption_log.txt` and DumpIt.exe on the Desktop: the story of the image.
 - 4 expired JWTs, and in the pcap SSL 3.0 with static RSA key exchange and 3DES (no forward secrecy).
-- The LLM report cites a finding id for its claims; the validator still flags it (84% cited), which shows the
+- The LLM report cites a finding id for its claims; the validator still flags it (72% cited), which shows the
   check is not a rubber stamp.
 
 ## 4. Red-teaming the LLM (pre-generated, 78 LLM calls)
