@@ -452,7 +452,7 @@ function renderRedteam() {
 const WORKSTREAMS = [
   ["Pipeline", [["Memory (Volatility3)", 1], ["Static analysis", 1], ["Crypto module", 1], ["Credentials", 1], ["Network (pcap)", 1], ["Report and store", 1]]],
   ["Cipher and key analysis", [["AES, DES and 3DES", 1], ["ChaCha20, Salsa20, AES-GCM", 1], ["ECC: P-256, secp256k1, Curve25519", 1], ["RSA weak-key tests", 1], ["Post-quantum paragraph", 0]]],
-  ["Evaluation", [["Windows 11 dump", 1], ["Windows 10 dump and real pcap", 1], ["Windows 7 dump", 1], ["Red team, 78 LLM reports", 1], ["Harder attacks", 0], ["More trials and a second LLM", 0]]],
+  ["Evaluation", [["Windows 11 dump", 1], ["Windows 10 dump and real pcap", 1], ["Windows 7 dump", 1], ["Red team, 78 LLM reports", 1], ["Ground-truth crypto test (own VM, known keys)", 0], ["More public dumps", 0], ["Stronger red team: harder attacks, more trials, second LLM", 0]]],
   ["Write-up", [["Literature survey", 1], ["README and demo script", 1], ["Dashboard and slide deck", 1], ["Final report", 0]]],
 ];
 const TIMELINE = [
@@ -464,7 +464,9 @@ const TIMELINE = [
   ["Three public dumps", "Windows 11, Windows 10 with a real pcap, and Windows 7", "done"],
   ["Dashboard and deck", "This page and the progress-evaluation slides", "done"],
   ["Final report and post-quantum paragraph", "Method, results and limits written up", "next"],
-  ["Stronger evaluation", "Harder attacks, more trials per attack, a second LLM", "todo"],
+  ["Ground-truth crypto test", "Own VM and keys we generate, then measure ciphers and keys found and false alarms", "todo"],
+  ["More public dumps", "Another Windows 10 or 11 image with ransomware-style activity, and a Windows Server image", "todo"],
+  ["Stronger red team", "Harder attacks, more trials per attack, a second LLM", "todo"],
 ];
 function renderRoadmap() {
   const all = WORKSTREAMS.flatMap((w) => w[1]), done = all.filter((x) => x[1]).length, p = Math.round(done / all.length * 100);

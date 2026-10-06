@@ -200,4 +200,9 @@ no real user credentials. The synthetic sample is generated locally from random 
 - [x] LLM red-teaming: 6 attacks via JWT and OTP fields
 - [x] Defences: input sanitisation, mandatory citation check, rule-based cross-check
 - [x] Run the before/after evaluation against Groq (see Results)
+- [ ] Ground-truth crypto test: a harmless program in our own VM using keys we generate (AES, ChaCha20, RSA, EC),
+      memory dump, then measure how many ciphers and keys TriageGuard finds and how many false alarms it raises
+- [ ] More public dumps for variety (another Windows 10/11 image with ransomware-style activity, a Windows Server image)
+- [ ] Stronger red-team: harder attacks (several fields at once, no trigger words), more trials per attack, a second LLM
+- [ ] Final report
 - [ ] Post-quantum (ML-KEM, ML-DSA): discussion only unless time allows
