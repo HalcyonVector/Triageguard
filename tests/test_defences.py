@@ -157,3 +157,27 @@ def test_dashboard_llm_check_reads_fullwidth_citations_and_notes():
     c = dashboard.llm_check(text, findings)
     assert c["flagged"] and c["llm_risk"] == 25 and c["rule_risk"] == 25
     assert c["cited_refs"] == 1 and 0 < c["citation_rate"] < 1
+
+
+def test_chat_warns_when_answer_is_cut_off_and_passes_opt_in_knobs(monkeypatch, capsys):
+    import io, json
+    sent = {}
+
+    class Resp(io.BytesIO):
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+    def fake_urlopen(req, timeout=0):
+        sent.update(json.loads(req.data))
+        return Resp(json.dumps({"choices": [{"finish_reason": "length", "message": {"content": "cut"}}]}).encode())
+
+    monkeypatch.setattr(report.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setenv("TRIAGEGUARD_LLM_URL", "http://fake.invalid")
+    monkeypatch.setenv("TRIAGEGUARD_REASONING_EFFORT", "low")
+    monkeypatch.setenv("TRIAGEGUARD_MAX_TOKENS", "4096")
+    assert report.chat([{"role": "user", "content": "hi"}], "m") == "cut"
+    assert "cut off" in capsys.readouterr().out
+    assert sent["reasoning_effort"] == "low" and sent["max_completion_tokens"] == 4096

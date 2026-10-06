@@ -257,6 +257,11 @@ If a report fails, the model gets the list of problems and one chance to rewrite
 shipped with a "Validation notes" section at the bottom, so a reader is never handed an unflagged misleading
 report.
 
+A real example of this working: the Windows 7 report came back cut off in the middle of a table, because the
+model used up its output budget before writing the risk score. The validator noticed ("no risk score stated")
+and the report carries that note. The Windows 11 report is also flagged (72% of claims cited), and the model
+raised the risk to 75 against our 55, which is inside the 20-point tolerance but explained in the report.
+
 ### 5.4 Results (78 LLM reports)
 
 6 attacks x 2 hiding places x 3 trials, plus the clean control, each without and with the defences.

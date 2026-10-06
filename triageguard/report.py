@@ -80,11 +80,21 @@ def chat(messages, model=DEFAULT_MODEL, temperature=0.2):
         headers["Authorization"] = f"Bearer {os.environ['GROQ_API_KEY']}"
     model = model or os.environ.get("TRIAGEGUARD_MODEL") or FALLBACK_MODEL
     body = {"model": model, "temperature": temperature, "messages": messages}
+    # opt-in knobs for reasoning models, whose hidden reasoning can use up the output budget
+    # and leave the report cut off: TRIAGEGUARD_REASONING_EFFORT=low, TRIAGEGUARD_MAX_TOKENS=4096
+    if effort := os.environ.get("TRIAGEGUARD_REASONING_EFFORT"):
+        body["reasoning_effort"] = effort
+    if limit := os.environ.get("TRIAGEGUARD_MAX_TOKENS"):
+        body["max_completion_tokens"] = int(limit)
     req = urllib.request.Request(url, data=json.dumps(body).encode(), method="POST", headers=headers)
     for attempt in range(MAX_RETRIES + 1):
         try:
             with urllib.request.urlopen(req, timeout=120) as r:
-                return json.load(r)["choices"][0]["message"]["content"]
+                choice = json.load(r)["choices"][0]
+            if choice.get("finish_reason") == "length":
+                print("      warning: the model's answer was cut off at its output limit "
+                      "(try TRIAGEGUARD_REASONING_EFFORT=low); the validator will flag the report", flush=True)
+            return choice["message"]["content"]
         except urllib.error.HTTPError as e:
             # the API explains itself in the body (model retired, bad key, rate limit); surface it
             detail = e.read().decode(errors="replace")[:500]
