@@ -334,7 +334,7 @@ triageguard/        the code
   pipeline.py  cli.py  dashboard.py                    wiring, commands, dashboard server
 rules/crypto.yar    YARA starter rules
 samples/            make_synthetic.py builds a test image with planted keys and tokens
-tests/              automated tests (27)
+tests/              automated tests (28)
 results/dumps/<name>/   findings.json, report_rules.md, report_llm.md, meta.json for each dump
 results/            redteam_summary.md and redteam_results.csv
 dashboard/index.html    the dashboard page
