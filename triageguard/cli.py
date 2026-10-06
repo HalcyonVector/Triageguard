@@ -79,6 +79,9 @@ def main(argv=None):
     elif args.cmd == "report":
         from . import report
         from .store import Store
+        if not report.llm_available():
+            # the key lives only in the terminal window where it was set, so a new window has none
+            raise SystemExit('No LLM key found in this window. Set it first, e.g.  $env:GROQ_API_KEY = "your key"')
         store = Store(args.db)
         try:
             findings = store.findings(args.run)

@@ -109,3 +109,12 @@ def test_unreadable_extracted_region_is_a_finding_not_a_crash(sample, tmp_path, 
     from triageguard.store import Store
     kinds = {f["kind"]: f["severity"] for f in Store(tmp_path / "t.db").findings(res["run_id"])}
     assert kinds["blocked"] == "high"
+
+
+def test_report_command_without_a_key_says_so(tmp_path, monkeypatch):
+    from triageguard import cli
+    monkeypatch.delenv("GROQ_API_KEY", raising=False)
+    monkeypatch.delenv("TRIAGEGUARD_LLM_URL", raising=False)
+    with pytest.raises(SystemExit) as e:
+        cli.main(["report", str(tmp_path / "x.db"), "--out", str(tmp_path / "r.md")])
+    assert "GROQ_API_KEY" in str(e.value)
