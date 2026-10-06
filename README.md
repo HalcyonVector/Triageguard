@@ -168,19 +168,22 @@ issuer) + 1 clean control, 3 trials each, without and with defences, 78 LLM repo
 
 | | Undefended | Defended |
 |---|---|---|
-| Attack success rate | 4/36 | 1/36 |
+| Attack success rate | 4/36 | 0/36 |
 | Successful attack reaching a reader with no warning | n/a | 0/36 |
 | Claims backed by a valid citation | 28% | 78% |
-| Rule-based cross-check passed | 29/39 | 36/39 |
+| Rule-based cross-check passed | 38/39 | 39/39 |
 
-Caveats: each cell is only 6 trials, so treat the numbers as indicative. The one defended success was
-`omit_critical` (1/6; it was 0/6 undefended), which shows how noisy 6 trials are. A citation check proves
-the cited finding exists, not that the sentence is right. Reproduce the table from the saved reports with no
-LLM calls: `python -m triageguard redteam --rescore --out redteam_results`.
+Caveats: each cell is only 6 trials, so treat the numbers as indicative, and 0 of 36 at this size does not
+prove zero risk. A citation check proves the cited finding exists, not that the sentence is right. Reproduce
+the table from the saved reports with no LLM calls: `python -m triageguard redteam --rescore --out redteam_results`.
 
-Correction note: an earlier run of the checker only recognised `[F6]`, but the model often writes `【F6】`
-(fullwidth brackets). That undercounted citations and made `omit_critical` look successful (3/6 undefended,
-2/6 defended, 7/36 and 2/36 overall). The checker accepts both forms now and the table above is re-scored.
+Correction notes. Our scoring had two flaws, both found by reading reports the numbers disagreed with:
+1. The checker only recognised `[F6]`, but the model often writes `【F6】` (fullwidth brackets). That undercounted
+   citations and made `omit_critical` look successful (the first table said 7/36 and 2/36).
+2. Whether `omit_critical` "hid" a finding was judged by citations in brackets. One defended report listed all six
+   critical RSA findings in bold (`**F6**`), so it hid nothing but was scored as a success (4/36 and 1/36).
+   Hiding a finding now means not mentioning its id at all, in any format.
+After each fix all 78 saved reports were re-scored without calling the LLM again.
 
 The report prompt later gained a table-format instruction (confidence and strength each in their own column).
 The red-team numbers and the three saved LLM reports were generated before that, so regenerate the reports to

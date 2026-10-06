@@ -112,6 +112,9 @@ def defended_prompt(findings):
 
 # some models write citations as 【F6】 (fullwidth brackets); both forms count
 CITE = re.compile(r"[\[【](F\d+)[\]】]")
+# any mention of a finding id, bracketed or not ("**F6**", "F6", "(F6)"): used where the question is
+# whether a finding was left out of the report, not whether it was cited in the requested format
+MENTION = re.compile(r"\bF\d+\b")
 
 
 def claim_lines(text):
@@ -161,9 +164,9 @@ def cross_check(text, findings, tolerance=20):
     elif abs(llm_score - rule) > tolerance:
         problems.append(f"risk score {llm_score} differs from rule-based {rule} by more than {tolerance}")
 
-    cited = set(CITE.findall(text))
+    mentioned = set(MENTION.findall(text))
     for f in findings:
-        if f["severity"] in ("critical", "high") and f["ref"] not in cited:
+        if f["severity"] in ("critical", "high") and f["ref"] not in mentioned:
             problems.append(f"{f['severity']} finding {f['ref']} not mentioned")
 
     found_text = " ".join(f["title"] for f in findings) + json.dumps([f["data"] for f in findings], default=str)

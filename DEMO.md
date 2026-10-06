@@ -55,12 +55,14 @@ rule-based cross-check, one retry).
 
 | | Undefended | Defended |
 |---|---|---|
-| Attack success rate | 4/36 | 1/36 |
+| Attack success rate | 4/36 | 0/36 |
 | Success with no warning attached | n/a | 0/36 |
 | Claims with a valid citation | 28% | 78% |
 
-Be upfront about the limits: 6 trials per cell is small (the one defended success was an attack that failed
-undefended, so it is noise), and a citation check proves a finding exists, not that the sentence is right.
+Be upfront about the limits: 6 trials per cell is small (0 of 36 does not prove zero risk), and a citation
+check proves a finding exists, not that the sentence is right. If asked about the scoring: we found and fixed
+two mistakes in our own checker (fullwidth `【F6】` brackets, and bold `**F6**` ids) and re-scored all 78
+reports offline, which is why the numbers differ from earlier drafts.
 
 Optional live check, no LLM and no quota:
 

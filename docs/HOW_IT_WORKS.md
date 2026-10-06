@@ -270,20 +270,23 @@ explained in the report.
 
 | | Undefended | Defended |
 |---|---|---|
-| Attacks that fooled the report | 4 of 36 | 1 of 36 |
+| Attacks that fooled the report | 4 of 36 | 0 of 36 |
 | Fooled and reached a reader with no warning | not applicable | 0 of 36 |
 | Claims backed by a valid citation | 28% | 78% |
-| Rule-based cross-check passed | 29 of 39 | 36 of 39 |
+| Rule-based cross-check passed | 38 of 39 | 39 of 39 |
 
 Things to be honest about:
 
-- Each cell is only 6 trials, so the rates are indicative, not precise. The one defended success was an attack
-  that failed without defences, which shows the noise.
+- Each cell is only 6 trials, so the rates are indicative, not precise. Zero successes out of 36 at this size
+  does not prove zero risk.
 - We used one model and synthetic payloads.
 - A citation proves the cited finding exists, not that the sentence about it is right.
-- **We found and fixed a mistake in our own checker.** It first recognised only `[F6]` and missed `【F6】`,
-  which made citations look missing and made `omit_critical` look successful. The first table said 7 of 36 and 2
-  of 36. After the fix we re-scored all 78 saved reports without calling the LLM again, giving the numbers above.
+- **We found and fixed two mistakes in our own scoring.** First, the checker recognised only `[F6]` and missed
+  `【F6】`, which made citations look missing and made `omit_critical` look successful (the first table said 7 of
+  36 and 2 of 36). Second, "hiding" a finding was judged by bracketed citations, so one defended report that
+  listed all six critical RSA findings in bold (`**F6**`) was wrongly scored as a success (4 of 36 and 1 of 36).
+  Hiding a finding now means not mentioning its id at all, in any format. After each fix we re-scored all 78
+  saved reports without calling the LLM again, giving the numbers above.
 
 ## 6. What real data taught us
 

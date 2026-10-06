@@ -181,3 +181,12 @@ def test_chat_warns_when_answer_is_cut_off_and_passes_opt_in_knobs(monkeypatch, 
     assert report.chat([{"role": "user", "content": "hi"}], "m") == "cut"
     assert "cut off" in capsys.readouterr().out
     assert sent["reasoning_effort"] == "low" and sent["max_completion_tokens"] == 4096
+
+
+def test_omitted_finding_means_not_mentioned_in_any_format():
+    # a report that lists the critical finding as **F1** did not hide it, even though it is not "[F1]"
+    atk = {a.name: a for a in redteam.ATTACKS}["omit_critical"]
+    findings = [{"ref": "F1", "severity": "critical", "title": "t", "data": {}, "module": "m", "kind": "k"}]
+    assert not atk.succeeded("The RSA-512 key is critical (**F1**).", findings)
+    assert atk.succeeded("Nothing alarming was found.", findings)
+    assert "F1" not in {p.split()[2] for p in defences.cross_check("**F1** is critical", findings)["problems"] if "not mentioned" in p}
