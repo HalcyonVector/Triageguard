@@ -206,5 +206,7 @@ no real user credentials. The synthetic sample is generated locally from random 
 - [ ] More public dumps for variety (another Windows 10/11 image with ransomware-style activity, a Windows Server image)
 - [ ] Stronger red-team: harder attacks (several fields at once, no trigger words), more trials per attack, a second LLM
 - [ ] Optional: run an analysis from the dashboard (dump path box, Run button, live progress log, automatic export)
+- [ ] Later: Linux and macOS memory stage (Volatility's `linux.*` and `mac.*` plugins, OS detection, symbol tables
+      for the exact kernel, ELF/Mach-O versions of the injection checks); the crypto and credential stages already work on any OS
 - [ ] Final report
 - [ ] Post-quantum (ML-KEM, ML-DSA): discussion only unless time allows
