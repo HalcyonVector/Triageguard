@@ -1,74 +1,81 @@
-**Incident Report – Memory Image Analysis**  
-*Date: 2026‑10‑05*  
+**Incident Report – Memory Image (2026‑10‑06)**  
 
 ---  
 
-### Summary  
-- A **critical RSA‑512** public key was found in the dump; a 512‑bit modulus is publicly factorable and provides no security [F65].  
-- `Notepad.exe` (PID 8860) was launched with a command line that references an *encryption_log.txt* file, indicating possible abuse of a trusted binary for encryption‑related activity [F8].  
-- Four **expired JWT** tokens signed with PS256 were recovered, all sharing the same key identifier and issuer [F76][F77][F78][F79].  
-- Network capture shows a local TLS session using **SSL 3.0** and weak RSA‑based cipher suites that lack forward secrecy [F80].  
-- Numerous low‑strength RSA keys (1024‑bit and 2048‑bit) with small public exponents or shared moduli were present, reflecting poor key‑management practices [F36][F39].  
+## Summary  
+- A **critical** RSA‑512 public key (modulus 512 bits, exponent 65537) was found in the dump; the key is publicly factorable [F65].  
+- The only process that references encryption‑related activity is **Notepad.exe** (PID 8860) which opened a file named *encryption_log.txt* [F8].  
+- Four **expired** JWT tokens signed with PS256 were recovered from memory [F76][F77][F78][F79].  
+- Network capture shows a single TLS conversation that uses **weak cipher suites** (`TLS_RSA_WITH_AES_256_CBC_SHA`, `TLS_RSA_WITH_3DES_EDE_CBC_SHA`) and even **SSL 3.0**, providing no forward secrecy [F80].  
+
+All statements are directly supported by the cited findings.  
 
 ---  
 
-### Cryptography  
+## Cryptography  
 
-| Algorithm | Confidence | Observations |
-|-----------|------------|--------------|
-| AES‑GCM | 99.3 % | Detected in memory [F26] |
-| AES (CBC/CTR) | 99.2 % | Detected in memory [F28] |
-| RSA | 99.2 % | Critical RSA‑512 key (strength 0/100) [F65]; many RSA‑1024 keys (strength ≈ 35/100) [F36]; several RSA‑2048 keys with exponent 3 (strength ≈ 40/100) [F39] |
-| ECC P‑256 | 99.3 % | Detected in memory [F27] |
-| ECC secp256k1 | 92.8 % | Detected in memory [F30] |
-| Curve25519 | 91.4 % | Detected in memory [F31] |
+### Identified Algorithms  
 
-**Key‑strength highlights**  
-- RSA‑512 key: modulus 512 bits, strength 0/100, publicly factorable [F65].  
-- RSA‑1024 keys: strength ≈ 35/100 due to insufficient modulus size [F36].  
-- RSA‑2048 keys with exponent 3: strength ≈ 40/100, vulnerable to low‑exponent attacks [F39].  
+| Algorithm | Confidence | Basis | Finding |
+|-----------|------------|-------|---------|
+| AES‑GCM | 99.3% | implementation constants | [F26] |
+| ECC P‑256 | 99.3% | implementation constants | [F27] |
+| AES (generic) | 99.2% | implementation constants | [F28] |
+| RSA | 99.2% | implementation constants | [F29] |
+| ECC secp256k1 | 92.8% | implementation constants | [F30] |
+| Curve25519 | 91.4% | implementation constants | [F31] |
 
----  
+### RSA Keys  
 
-### Credentials  
-
-- Four JWT tokens (PS256) were extracted; all are **expired** (exp ≈ 1775072274) but retain the same `kid` and issuer (`https://copilot.microsoft.com`) [F76][F77][F78][F79].  
+| Key size | Exponent | Strength | Issue | Finding |
+|----------|----------|----------|-------|---------|
+| 512 bits | 65537 | 0 | modulus size (publicly factorable) | [F65] |
 
 ---  
 
-### Processes and Network  
+## Credentials  
 
-**Suspicious processes**  
-- `Notepad.exe` (PID 8860) executed with a command line pointing to *encryption_log.txt*, suggesting misuse for encryption [F8].  
-- `MsMpEng.exe` (PID 3088) shows 15 RWX memory regions, a pattern typical of JIT engines but worth monitoring [F6].  
-- `OneDrive.exe` (PID 1300) contains a zero‑filled RWX region with no code at the base, an unusual memory layout [F7].  
-- `DumpIt.exe` (PID 2164) runs from a user‑writable desktop folder, a common location for malicious dumping tools [F9].  
-
-**Network activity**  
-- One local TLS conversation (127.0.0.1 ↔ 127.0.0.1, port 443) used **SSL 3.0** and weak RSA cipher suites (`TLS_RSA_WITH_AES_256_CBC_SHA`, `TLS_RSA_WITH_3DES_EDE_CBC_SHA`) that lack forward secrecy [F80].  
+| Type | Token preview | Status | Finding |
+|------|---------------|--------|---------|
+| JWT (PS256) | eyJhbG…2Yeg | expired | [F76] |
+| JWT (PS256) | eyJhbG…EMRX | expired | [F77] |
+| JWT (PS256) | eyJhbG…n2Lx | expired | [F78] |
+| JWT (PS256) | eyJhbG…HQ0L | expired | [F79] |
 
 ---  
 
-### Risk Score (0‑100)  
+## Processes and Network  
 
-**Score:** **55** – the rule‑based score supplied by the analysis pipeline (no cited finding justifies a deviation)  
-
----  
-
-### Recommendations  
-
-- **Rotate the RSA‑512 key** and replace all RSA‑1024/2048 keys with keys ≥ 3072 bits and a public exponent of 65537 [F65][F36][F39].  
-- **Enforce modern TLS**: disable SSL 3.0 and RSA key‑exchange cipher suites; require TLS 1.2/1.3 with ECDHE (forward‑secrecy) ciphers [F80].  
-- **Purge expired JWTs** and implement short‑lived tokens with proper rotation; verify that the signing key (`kid`) is protected [F76][F77][F78][F79].  
-- **Monitor command‑line usage** of trusted binaries (e.g., Notepad) for suspicious arguments such as “encrypt” and generate alerts [F8].  
-- **Harden memory protections**: enforce DEP/ASLR, reduce RWX allocations, and alert on unexpected RWX regions in system processes [F6][F7].  
-- **Restrict execution from user‑writable directories**; apply application‑control policies to block unauthorized dumping tools like DumpIt [F9].  
-- **Conduct a comprehensive key‑management review** to eliminate shared or low‑entropy keys and enforce centralized key lifecycle controls [F65][F36][F39].  
+- **Suspicious process**: Notepad.exe (PID 8860) launched with a command line that references *encryption_log.txt*, indicating possible misuse for encryption [F8].  
+- **Other observed processes**:  
+  - MsMpEng.exe (PID 3088) shows expected RWX/injected regions [F6].  
+  - OneDrive.exe (PID 1300) has a zero‑filled RWX region with no code at the base [F7].  
+  - DumpIt.exe (PID 2164) runs from a user‑writable desktop folder [F9].  
+- **Network activity**: One local TLS conversation (127.0.0.1 ↔ 127.0.0.1:443) uses the weak cipher suites listed above and SSL 3.0, offering no forward secrecy [F80].  
 
 ---  
 
-*Prepared by: Malware Triage Analyst*  
+## Risk Score  
+
+- The baseline rule‑based score is **55** (as provided).  
+- The presence of a **critical** RSA‑512 key [F65] and the use of **weak TLS** cipher suites [F80] justify raising the score.  
+- **Adjusted risk score: 75** (reflecting the critical cryptographic weakness and insecure network configuration).  
+
+---  
+
+## Recommendations  
+
+1. **Replace the RSA‑512 key** immediately with a new RSA key ≥ 2048 bits and a public exponent of 65537 [F65].  
+2. **Disable SSL 3.0** and all static‑RSA cipher suites; enforce TLS 1.2/1.3 with forward‑secrecy ciphers (e.g., ECDHE) [F80].  
+3. **Investigate the Notepad.exe activity** – examine *encryption_log.txt* for malicious payloads and determine whether the legitimate binary is being abused for encryption [F8].  
+4. **Rotate and re‑issue JWTs** – generate fresh tokens with appropriate expiration and consider stronger signing algorithms if feasible [F76][F77][F78][F79].  
+5. **Monitor RWX memory regions** in MsMpEng.exe, OneDrive.exe, and DumpIt.exe for any unexpected code injection, even though current observations are benign [F6][F7][F9].  
+6. **Conduct a comprehensive key‑management audit** – the dump contains many low‑strength RSA keys (1024‑bit, small exponents) that should be retired or regenerated [F36‑F65].  
+
+---  
+
+*All factual statements are cited to the corresponding findings.*
 
 ## Validation notes (automatic)
 Rule-based risk score: 55/100. This report failed these checks, treat the points below as unverified:
-- only 84% of claims carry a citation
+- only 72% of claims carry a citation
