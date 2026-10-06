@@ -1,0 +1,10 @@
+{
+ "title": "Windows 10 (case 001)",
+ "os": "Windows 10, x64",
+ "source": "DFIR Madness: Stolen Szechuan Sauce, desktop",
+ "size": "2 GB",
+ "pcap": "case001.pcap, 188 MB real traffic",
+ "order": 2,
+ "findings": 48,
+ "risk": 85
+}

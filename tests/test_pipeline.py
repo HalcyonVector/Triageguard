@@ -81,3 +81,31 @@ def test_malfind_and_cmdline_heuristics():
     }
     sev = {f["pid"]: f["severity"] for f in suspicious_processes(vol)}
     assert sev == {1: "low", 2: "high", 3: "critical", 4: "medium"}
+
+
+def test_shared_code_and_shell_parent_heuristics():
+    from triageguard.memory import suspicious_processes
+    stub = " ".join(["b0", "00", "eb", "70"] * 16)
+    vol = {
+        "injected": [{"PID": p, "Process": n, "Start VPN": 0x1000, "Protection": "PAGE_EXECUTE_READWRITE", "Hexdump": stub}
+                     for p, n in ((10, "svchost.exe"), (11, "explorer.exe"), (12, "notepad.exe"))]
+                    + [{"PID": 13, "Process": "evil.exe", "Start VPN": 0x2000, "Protection": "PAGE_EXECUTE_READWRITE",
+                        "Hexdump": " ".join(["90"] * 64)}],
+        "processes": [{"PID": 1, "PPID": 0, "ImageFileName": "vmtoolsd.exe"}, {"PID": 2, "PPID": 1, "ImageFileName": "cmd.exe"},
+                      {"PID": 3, "PPID": 4, "ImageFileName": "cmd.exe"}, {"PID": 4, "PPID": 0, "ImageFileName": "explorer.exe"}],
+    }
+    sev = {f["pid"]: f["severity"] for f in suspicious_processes(vol)}
+    assert sev == {10: "medium", 11: "medium", 12: "medium", 13: "high", 2: "medium"}  # shared code is medium, unique code high
+
+
+def test_unreadable_extracted_region_is_a_finding_not_a_crash(sample, tmp_path, monkeypatch):
+    from triageguard import memory, static
+    region = tmp_path / "pid.1.vad.dmp"
+    region.write_bytes(b"x" * 64)
+    monkeypatch.setattr(memory, "extract", lambda dump, out: ({}, [region]))
+    real = static.analyse
+    monkeypatch.setattr(static, "analyse", lambda p: (_ for _ in ()).throw(OSError(22, "blocked")) if str(p) == str(region) else real(p))
+    res = pipeline.run(sample, db_path=tmp_path / "t.db", workdir=tmp_path / "out", use_llm=False, log=lambda *_: None)
+    from triageguard.store import Store
+    kinds = {f["kind"]: f["severity"] for f in Store(tmp_path / "t.db").findings(res["run_id"])}
+    assert kinds["blocked"] == "high"

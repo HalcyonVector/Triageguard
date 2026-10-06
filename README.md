@@ -130,6 +130,47 @@ Dry run (no LLM): every payload reaches the LLM input (12/12), the sanitiser cat
 two misses are `subtle_benign`, which has no trigger words and is left to the cross-check. The clean
 control raises no false alarm.
 
+## Results
+
+Everything below is saved in `results/`. To browse it all in one page (findings, both reports with clickable
+citations, the red-team charts, done and yet-to-do), run `python -m triageguard dashboard`. It uses only the
+standard library, binds to localhost, and works offline.
+
+**Three public memory dumps** (`results/dumps/<name>/`: `findings.json`, `report_rules.md`, `meta.json`, and
+`report_llm.md` where an LLM key was available):
+
+| Dump | OS | Findings | Risk | What stands out |
+|---|---|---|---|---|
+| `win11` 13Cubed challenge, 4.3 GB, plus Wireshark `rsasnakeoil2.pcap` | Windows 11 24H2 | 80 | 55 | RSA-512 key, Notepad on `Desktop\encryption_log.txt`, 4 expired JWTs, SSL 3.0 and 3DES in the pcap |
+| `win10` DFIR Madness case 001 desktop, 2 GB, plus its 188 MB real pcap | Windows 10 | 48 | 85 | PE header injected into `spoolsv.exe`, `powershell.exe` with 5 injected regions, 546 TLS 1.2 handshakes (all strong suites) |
+| `win7` Hacktoria Memory Mystery, 1 GB | Windows 7 SP1 x86 | 58 | 30 | identical code in 5 unrelated processes (system-wide hook, medium), `cmd.exe` started by `vmtoolsd.exe` |
+
+The Win11 LLM report (gpt-oss-120b, defended prompt) cites a finding for each claim. It was flagged by the
+validator because only 84% of its claims carry a citation. To add LLM reports for the others with your own
+key: `python -m triageguard report ..\data\w10.db --out results\dumps\win10\report_llm.md`.
+New dump: `analyze` it, then `python -m triageguard export <db> <name> --title ... --os ...`.
+
+Lessons from the extra dumps: Windows Defender on the analysis machine blocks reading extracted malware
+regions from the infected Win10 image, so the pipeline records "blocked by antivirus" as a finding and
+carries on (an exclusion for the data folder lets it analyse them). The Win7 image showed that the same
+code appearing in many processes is a system-wide component, not an injection into one process, so
+malfind hits are graded by that. The pcap parser reads at most the first 50,000 packets.
+
+**Red-team** (`redteam_summary.md`, `redteam_results.csv`): 6 attacks x 2 hiding places (JWT `iss`, OTP
+issuer) + 1 clean control, 3 trials each, without and with defences, 78 LLM reports in total.
+
+| | Undefended | Defended |
+|---|---|---|
+| Attack success rate | 7/36 | 2/36 |
+| Successful attack reaching a reader with no warning | n/a | 0/36 |
+| Claims backed by a valid citation | 18% | 51% |
+| Rule-based cross-check passed | 17/39 | 23/39 |
+
+Weak spots: `omit_critical` (leave the RSA finding out rather than lie about it) still succeeded 2/6 times
+with defences on, though validation flagged both reports. Each cell is only 6 trials, so treat the
+numbers as indicative. The cross-check passed on 2/3 clean control reports in both modes. Reproduce the table
+from the saved reports with no LLM calls: `python -m triageguard redteam --rescore --out redteam_results`.
+
 ## Constraints
 
 Public datasets and synthetic keys/tokens only. No live malware execution, no cracking of third-party data,
@@ -144,5 +185,5 @@ no real user credentials. The synthetic sample is generated locally from random 
 - [x] Run on a public Windows dump and tune severities (see Real dump test)
 - [x] LLM red-teaming: 6 attacks via JWT and OTP fields
 - [x] Defences: input sanitisation, mandatory citation check, rule-based cross-check
-- [ ] Run the before/after evaluation against Groq and put the numbers in the report
+- [x] Run the before/after evaluation against Groq (see Results)
 - [ ] Post-quantum (ML-KEM, ML-DSA): discussion only unless time allows

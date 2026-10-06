@@ -1,0 +1,722 @@
+[
+ {
+  "ref": "F1",
+  "module": "memory",
+  "kind": "processes",
+  "title": "processes: 160 rows",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F2",
+  "module": "memory",
+  "kind": "cmdlines",
+  "title": "cmdlines: 160 rows",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F3",
+  "module": "memory",
+  "kind": "network",
+  "title": "network: 52 rows",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F4",
+  "module": "memory",
+  "kind": "injected",
+  "title": "injected: 16 rows",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F5",
+  "module": "memory",
+  "kind": "usb",
+  "title": "usb: 50 rows",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F6",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 3088 MsMpEng.exe: 15 RWX/injected region(s): known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "3088"
+ },
+ {
+  "ref": "F7",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 1300 OneDrive.exe: 1 RWX/injected region(s): regions start with zero bytes, no code at the region base",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "1300"
+ },
+ {
+  "ref": "F8",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 8860 Notepad.exe: command line mentions 'encrypt': \"C:\\Program Files\\WindowsApps\\Microsoft.WindowsNotepad_11.2412.16.0_x64__8wekyb3d8bbwe\\Notepad\\Notepad.exe\" \"C:\\Users\\Robert Paulson\\Desktop\\encryption_log.txt\"",
+  "severity": "medium",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "8860"
+ },
+ {
+  "ref": "F9",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 2164 DumpIt.exe: runs from a user-writable folder: \"C:\\Users\\Robert Paulson\\Desktop\\DumpIt.exe\" ",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "2164"
+ },
+ {
+  "ref": "F10",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1300.vad.0x2786eb20000-0x2786eb2ffff.dmp: entropy 0.403, crypto imports [], yara []",
+  "severity": "info",
+  "source": "out\\malfind\\pid.1300.vad.0x2786eb20000-0x2786eb2ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F11",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3088.vad.0x231985c0000-0x231986ccfff.dmp: entropy 1.715, crypto imports [], yara []",
+  "severity": "info",
+  "source": "out\\malfind\\pid.3088.vad.0x231985c0000-0x231986ccfff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F12",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3088.vad.0x231986d0000-0x231987dcfff.dmp: entropy 0.333, crypto imports [], yara []",
+  "severity": "info",
+  "source": "out\\malfind\\pid.3088.vad.0x231986d0000-0x231987dcfff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F13",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3088.vad.0x231987e0000-0x231988ecfff.dmp: entropy 4.043, crypto imports [], yara []",
+  "severity": "info",
+  "source": "out\\malfind\\pid.3088.vad.0x231987e0000-0x231988ecfff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F14",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3088.vad.0x23198db0000-0x23198ebcfff.dmp: entropy 4.264, crypto imports [], yara []",
+  "severity": "info",
+  "source": "out\\malfind\\pid.3088.vad.0x23198db0000-0x23198ebcfff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F15",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3088.vad.0x2319dea0000-0x2319dea0fff.dmp: entropy 0.13, crypto imports [], yara []",
+  "severity": "info",
+  "source": "out\\malfind\\pid.3088.vad.0x2319dea0000-0x2319dea0fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F16",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3088.vad.0x231a80d0000-0x231a80d0fff.dmp: entropy 0.13, crypto imports [], yara []",
+  "severity": "info",
+  "source": "out\\malfind\\pid.3088.vad.0x231a80d0000-0x231a80d0fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F17",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3088.vad.0x231a80f0000-0x231a80f0fff.dmp: entropy 0.13, crypto imports [], yara []",
+  "severity": "info",
+  "source": "out\\malfind\\pid.3088.vad.0x231a80f0000-0x231a80f0fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F18",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3088.vad.0x231a8120000-0x231a8121fff.dmp: entropy 0.071, crypto imports [], yara []",
+  "severity": "info",
+  "source": "out\\malfind\\pid.3088.vad.0x231a8120000-0x231a8121fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F19",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3088.vad.0x231a81b0000-0x231a81b2fff.dmp: entropy 0.049, crypto imports [], yara []",
+  "severity": "info",
+  "source": "out\\malfind\\pid.3088.vad.0x231a81b0000-0x231a81b2fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F20",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3088.vad.0x231a81d0000-0x231a81d0fff.dmp: entropy 0.13, crypto imports [], yara []",
+  "severity": "info",
+  "source": "out\\malfind\\pid.3088.vad.0x231a81d0000-0x231a81d0fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F21",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3088.vad.0x231a82a0000-0x231a82a1fff.dmp: entropy 0.071, crypto imports [], yara []",
+  "severity": "info",
+  "source": "out\\malfind\\pid.3088.vad.0x231a82a0000-0x231a82a1fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F22",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3088.vad.0x231a8340000-0x231a8340fff.dmp: entropy 0.13, crypto imports [], yara []",
+  "severity": "info",
+  "source": "out\\malfind\\pid.3088.vad.0x231a8340000-0x231a8340fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F23",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3088.vad.0x231a8380000-0x231a838afff.dmp: entropy 0.015, crypto imports [], yara []",
+  "severity": "info",
+  "source": "out\\malfind\\pid.3088.vad.0x231a8380000-0x231a838afff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F24",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3088.vad.0x231a8900000-0x231a89fffff.dmp: entropy 4.92, crypto imports [], yara []",
+  "severity": "info",
+  "source": "out\\malfind\\pid.3088.vad.0x231a8900000-0x231a89fffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F25",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3088.vad.0x231a8a00000-0x231a8bfffff.dmp: entropy 2.523, crypto imports [], yara []",
+  "severity": "info",
+  "source": "out\\malfind\\pid.3088.vad.0x231a8a00000-0x231a8bfffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F26",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES-GCM identified (99.3%, implementation constants) in memory.dmp",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x1a6e7f40"
+ },
+ {
+  "ref": "F27",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC P-256 identified (99.3%, implementation constants) in memory.dmp",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x1154135c"
+ },
+ {
+  "ref": "F28",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES identified (99.2%, implementation constants) in memory.dmp",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x560c53c0"
+ },
+ {
+  "ref": "F29",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "RSA identified (99.2%, implementation constants) in memory.dmp",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x1755e4"
+ },
+ {
+  "ref": "F30",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC secp256k1 identified (92.8%, implementation constants) in memory.dmp",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x2737d010"
+ },
+ {
+  "ref": "F31",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "Curve25519 identified (91.4%, implementation constants) in memory.dmp",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x1d9eee40"
+ },
+ {
+  "ref": "F32",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ChaCha20/Salsa20 identified (91.0%, implementation constants) in memory.dmp",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x1cdbf700"
+ },
+ {
+  "ref": "F33",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "3DES identified (87.5%, API/string references only) in memory.dmp",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0xc697963c"
+ },
+ {
+  "ref": "F34",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "generic identified (83.2%, API/string references only) in memory.dmp",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x3c53d5"
+ },
+ {
+  "ref": "F35",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "DES identified (72.0%, implementation constants) in memory.dmp",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x4b82b30"
+ },
+ {
+  "ref": "F36",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0xf164eec"
+ },
+ {
+  "ref": "F37",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x47b3c09f"
+ },
+ {
+  "ref": "F38",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0xd7ef5d40"
+ },
+ {
+  "ref": "F39",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 40/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x1e3cab3"
+ },
+ {
+  "ref": "F40",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 40/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x1e3cec9"
+ },
+ {
+  "ref": "F41",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x21dc7b0"
+ },
+ {
+  "ref": "F42",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x41e79bb"
+ },
+ {
+  "ref": "F43",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x427ab8c"
+ },
+ {
+  "ref": "F44",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0xafeda9b"
+ },
+ {
+  "ref": "F45",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 40/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0xb8d9afc"
+ },
+ {
+  "ref": "F46",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0xdbfb18c"
+ },
+ {
+  "ref": "F47",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=65537 (DER SPKI), strength 80/100: shared modulus",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0xeaa4924"
+ },
+ {
+  "ref": "F48",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0xfe0adf1"
+ },
+ {
+  "ref": "F49",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x12d695bb"
+ },
+ {
+  "ref": "F50",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x145f8041"
+ },
+ {
+  "ref": "F51",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 50/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x145f8c70"
+ },
+ {
+  "ref": "F52",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=40409 (DER SPKI), strength 90/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x1d0dc79c"
+ },
+ {
+  "ref": "F53",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=50557 (DER SPKI), strength 80/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x2553a248"
+ },
+ {
+  "ref": "F54",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 40/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x2cf063e1"
+ },
+ {
+  "ref": "F55",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=65671 (DER SPKI), strength 80/100: shared modulus",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x324deedb"
+ },
+ {
+  "ref": "F56",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x3a9c1232"
+ },
+ {
+  "ref": "F57",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 50/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x464fff58"
+ },
+ {
+  "ref": "F58",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 40/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x46500641"
+ },
+ {
+  "ref": "F59",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 50/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x46500f1a"
+ },
+ {
+  "ref": "F60",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=43147 (DER SPKI), strength 80/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x465126b8"
+ },
+ {
+  "ref": "F61",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=62353 (DER SPKI), strength 90/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x46512ae4"
+ },
+ {
+  "ref": "F62",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 40/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x465194ab"
+ },
+ {
+  "ref": "F63",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 40/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x4651b5ed"
+ },
+ {
+  "ref": "F64",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 50/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x46525e23"
+ },
+ {
+  "ref": "F65",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-512 key e=65537 (DER SPKI), strength 0/100: modulus size",
+  "severity": "critical",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x62622887"
+ },
+ {
+  "ref": "F66",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x8224310d"
+ },
+ {
+  "ref": "F67",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x89542a9f"
+ },
+ {
+  "ref": "F68",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0xa3dfa2b3"
+ },
+ {
+  "ref": "F69",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0xb03e7ac9"
+ },
+ {
+  "ref": "F70",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0xb138e892"
+ },
+ {
+  "ref": "F71",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 50/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0xb13c2122"
+ },
+ {
+  "ref": "F72",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1536 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0xc0df5360"
+ },
+ {
+  "ref": "F73",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 40/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0xc1d5e383"
+ },
+ {
+  "ref": "F74",
+  "module": "rsa",
+  "kind": "rsa_summary",
+  "title": "593 RSA keys with no weaknesses and 5 corrupt key-like structures in memory.dmp",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F75",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "200 high-entropy regions (847872 bytes) in memory.dmp",
+  "severity": "info",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0xee000"
+ },
+ {
+  "ref": "F76",
+  "module": "credentials",
+  "kind": "JWT",
+  "title": "JWT eyJhbG...2Yeg: token expired",
+  "severity": "medium",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x2b82c0c0"
+ },
+ {
+  "ref": "F77",
+  "module": "credentials",
+  "kind": "JWT",
+  "title": "JWT eyJhbG...EMRX: token expired",
+  "severity": "medium",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x42b98e20"
+ },
+ {
+  "ref": "F78",
+  "module": "credentials",
+  "kind": "JWT",
+  "title": "JWT eyJhbG...n2Lx: token expired",
+  "severity": "medium",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x7c132e73"
+ },
+ {
+  "ref": "F79",
+  "module": "credentials",
+  "kind": "JWT",
+  "title": "JWT eyJhbG...HQ0L: token expired",
+  "severity": "medium",
+  "source": "..\\data\\memory\\memory.dmp",
+  "location": "0x877f8e30"
+ },
+ {
+  "ref": "F80",
+  "module": "network",
+  "kind": "pcap_summary",
+  "title": "1 conversations, TLS SNI [], weak TLS ['TLS_RSA_WITH_AES_256_CBC_SHA (0x0035)', 'TLS_RSA_WITH_3DES_EDE_CBC_SHA (0x000a)', 'SSL 3.0']",
+  "severity": "medium",
+  "source": "..\\data\\rsasnakeoil2.pcap",
+  "location": ""
+ }
+]

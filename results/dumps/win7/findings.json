@@ -1,0 +1,524 @@
+[
+ {
+  "ref": "F1",
+  "module": "memory",
+  "kind": "processes",
+  "title": "processes: 42 rows",
+  "severity": "info",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F2",
+  "module": "memory",
+  "kind": "cmdlines",
+  "title": "cmdlines: 42 rows",
+  "severity": "info",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F3",
+  "module": "memory",
+  "kind": "network",
+  "title": "network: 65 rows",
+  "severity": "info",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F4",
+  "module": "memory",
+  "kind": "injected",
+  "title": "injected: 7 rows",
+  "severity": "info",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F5",
+  "module": "memory",
+  "kind": "usb",
+  "title": "usb: 13 rows",
+  "severity": "info",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F6",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 776 svchost.exe: 1 RWX/injected region(s): 1 x identical code in 5 processes, likely a system-wide hook",
+  "severity": "medium",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "776"
+ },
+ {
+  "ref": "F7",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 1052 svchost.exe: 1 RWX/injected region(s): 1 x identical code in 5 processes, likely a system-wide hook",
+  "severity": "medium",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "1052"
+ },
+ {
+  "ref": "F8",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 1312 explorer.exe: 2 RWX/injected region(s): 1 x identical code in 5 processes, likely a system-wide hook; 1 x region starts with zero bytes, no code at the region base",
+  "severity": "medium",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "1312"
+ },
+ {
+  "ref": "F9",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 2316 wmpnetwk.exe: 1 RWX/injected region(s): 1 x identical code in 5 processes, likely a system-wide hook",
+  "severity": "medium",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "2316"
+ },
+ {
+  "ref": "F10",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 2956 notepad.exe: 2 RWX/injected region(s): 1 x region starts with zero bytes, no code at the region base; 1 x identical code in 5 processes, likely a system-wide hook",
+  "severity": "medium",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "2956"
+ },
+ {
+  "ref": "F11",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 3940 cmd.exe: shell started by vmtoolsd.exe (PID 1756), not by a user session or another shell",
+  "severity": "medium",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "3940"
+ },
+ {
+  "ref": "F12",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1052.vad.0x610000-0x611fff.dmp: entropy 5.009, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\out_hack\\malfind\\pid.1052.vad.0x610000-0x611fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F13",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1312.vad.0x1e80000-0x1e81fff.dmp: entropy 5.014, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\out_hack\\malfind\\pid.1312.vad.0x1e80000-0x1e81fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F14",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1312.vad.0x3130000-0x3130fff.dmp: entropy 2.575, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\out_hack\\malfind\\pid.1312.vad.0x3130000-0x3130fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F15",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.2316.vad.0x970000-0x971fff.dmp: entropy 5.009, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\out_hack\\malfind\\pid.2316.vad.0x970000-0x971fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F16",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.2956.vad.0x2a00000-0x2a00fff.dmp: entropy 2.019, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\out_hack\\malfind\\pid.2956.vad.0x2a00000-0x2a00fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F17",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.2956.vad.0x2bd0000-0x2bd1fff.dmp: entropy 5.022, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\out_hack\\malfind\\pid.2956.vad.0x2bd0000-0x2bd1fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F18",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.776.vad.0xde0000-0xde1fff.dmp: entropy 5.009, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\out_hack\\malfind\\pid.776.vad.0xde0000-0xde1fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F19",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC P-256 identified (99.8%, implementation constants) in Challenge.vmem",
+  "severity": "info",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x2d85a1c"
+ },
+ {
+  "ref": "F20",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES identified (98.8%, implementation constants) in Challenge.vmem",
+  "severity": "info",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x5c530"
+ },
+ {
+  "ref": "F21",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "RSA identified (98.2%, implementation constants) in Challenge.vmem",
+  "severity": "info",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x14c4c4"
+ },
+ {
+  "ref": "F22",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES-GCM identified (95.5%, API/string references only) in Challenge.vmem",
+  "severity": "info",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x9ed40"
+ },
+ {
+  "ref": "F23",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC secp256k1 identified (92.8%, implementation constants) in Challenge.vmem",
+  "severity": "info",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x27c46090"
+ },
+ {
+  "ref": "F24",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "generic identified (83.2%, API/string references only) in Challenge.vmem",
+  "severity": "info",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x6a224"
+ },
+ {
+  "ref": "F25",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "3DES identified (75.0%, API/string references only) in Challenge.vmem",
+  "severity": "info",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0xd75970"
+ },
+ {
+  "ref": "F26",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "DES identified (60.0%, implementation constants) in Challenge.vmem",
+  "severity": "info",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x333b00"
+ },
+ {
+  "ref": "F27",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ChaCha20/Salsa20 identified (40.0%, implementation constants) in Challenge.vmem",
+  "severity": "info",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x10588fb0"
+ },
+ {
+  "ref": "F28",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x15cddb4"
+ },
+ {
+  "ref": "F29",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0xd34b83d"
+ },
+ {
+  "ref": "F30",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0xe1c4d80"
+ },
+ {
+  "ref": "F31",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x13039418"
+ },
+ {
+  "ref": "F32",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x130394b0"
+ },
+ {
+  "ref": "F33",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x13039548"
+ },
+ {
+  "ref": "F34",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x31fba260"
+ },
+ {
+  "ref": "F35",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x3a1c8810"
+ },
+ {
+  "ref": "F36",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x3d7d2b68"
+ },
+ {
+  "ref": "F37",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (CNG blob), strength 40/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x35e3598"
+ },
+ {
+  "ref": "F38",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x11cfd54"
+ },
+ {
+  "ref": "F39",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1536 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x30c9088"
+ },
+ {
+  "ref": "F40",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x68cb2be"
+ },
+ {
+  "ref": "F41",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x6a8c2ac"
+ },
+ {
+  "ref": "F42",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x84147be"
+ },
+ {
+  "ref": "F43",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x859527a"
+ },
+ {
+  "ref": "F44",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x889628b"
+ },
+ {
+  "ref": "F45",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x8a579ec"
+ },
+ {
+  "ref": "F46",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x8b186f9"
+ },
+ {
+  "ref": "F47",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 40/100: small exponent",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0xaa8bb10"
+ },
+ {
+  "ref": "F48",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0xaf2e029"
+ },
+ {
+  "ref": "F49",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0xc7ef7e4"
+ },
+ {
+  "ref": "F50",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0xc7efbaf"
+ },
+ {
+  "ref": "F51",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x1e9266dc"
+ },
+ {
+  "ref": "F52",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x273f3240"
+ },
+ {
+  "ref": "F53",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1536 key e=3 (DER SPKI), strength 10/100: modulus size; small exponent",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x2743032f"
+ },
+ {
+  "ref": "F54",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x2756f158"
+ },
+ {
+  "ref": "F55",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x309000d2"
+ },
+ {
+  "ref": "F56",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size",
+  "severity": "low",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x30900bad"
+ },
+ {
+  "ref": "F57",
+  "module": "rsa",
+  "kind": "rsa_summary",
+  "title": "80 RSA keys with no weaknesses and 2 corrupt key-like structures in Challenge.vmem",
+  "severity": "info",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F58",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "200 high-entropy regions (839680 bytes) in Challenge.vmem",
+  "severity": "info",
+  "source": "..\\data\\hacktoria\\Challenge.vmem",
+  "location": "0x2a000"
+ }
+]

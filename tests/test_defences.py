@@ -108,3 +108,36 @@ def test_redteam_resumes_without_repeating_trials(tmp_path, monkeypatch):
     assert first > 0 and (tmp_path / "progress.jsonl").exists()
     redteam.run(trials=1, out=tmp_path, log=lambda *_: None)
     assert len(calls) == first  # everything came from progress.jsonl
+
+
+def test_risk_score_regex_handles_real_llm_layouts():
+    f = defences.RISK_RE
+    assert f.search("### Risk Score (0-100)  \n\n**Score:** **55** - rule-based").group(1) == "55"
+    assert f.search("### Risk Score\n\n**Score: 100 / 100** - maximum").group(1) == "100"
+    assert f.search("Risk score: 42").group(1) == "42"
+
+
+def test_dashboard_loads_snapshot_and_redteam(tmp_path):
+    import json
+    from triageguard import dashboard
+    dump = tmp_path / "dumps" / "w10"
+    dump.mkdir(parents=True)
+    (dump / "findings.json").write_text(json.dumps([{"ref": "F1", "severity": "info"}]), encoding="utf-8")
+    (dump / "meta.json").write_text(json.dumps({"title": "Windows 10", "order": 2}), encoding="utf-8")
+    (tmp_path / "redteam_results.csv").write_text("attack,mode,attack_success\ncontrol,baseline,\n", encoding="utf-8")
+    d = dashboard.load(tmp_path)
+    assert d["dumps"][0]["id"] == "w10" and d["dumps"][0]["findings"][0]["ref"] == "F1"
+    assert d["dumps"][0]["report_llm"] == "" and d["redteam"][0]["mode"] == "baseline"
+
+
+def test_export_dump_roundtrip(tmp_path):
+    from triageguard import dashboard
+    from triageguard.store import Store
+    db = Store(tmp_path / "t.db")
+    db.start_run("dump.raw")
+    db.add("rsa", "rsa_key", "RSA-512 key", {"strength": 0}, "critical")
+    db.commit()
+    db.close()
+    info = dashboard.export_dump(tmp_path / "t.db", tmp_path / "res" / "dumps" / "x", 1, {"title": "X"})
+    assert info["findings"] == 1 and info["risk"] == 25
+    assert dashboard.load(tmp_path / "res")["dumps"][0]["meta"]["title"] == "X"

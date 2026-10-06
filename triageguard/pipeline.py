@@ -67,8 +67,17 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
         db.add("memory", "suspicious_process", f"PID {flag['pid']} {flag['process']}: {flag['reason']}", flag, flag["severity"], dump, flag["pid"])
 
     log("[2/6] Static analysis of binaries")
+    blocked = set()
     for b in [*binaries, *dumped]:
-        s = static.analyse(b)
+        try:
+            s = static.analyse(b)
+        except OSError as e:
+            # an antivirus on the analysis machine refuses to open extracted malware; that
+            # is itself a strong signal, so record it and keep going
+            blocked.add(b)
+            db.add("static", "blocked", f"{Path(b).name}: could not be read ({str(e).strip()[:120]}); on Windows this usually means antivirus blocked it as malware",
+                   {"file": str(b), "error": str(e)}, "high", b)
+            continue
         pe = s["pe"] if "error" not in s["pe"] else {}
         sev = "high" if s["yara"] else "medium" if (pe.get("crypto_imports") or pe.get("packed_sections")) else "info"
         db.add("static", "binary", f"{Path(b).name}: entropy {s['entropy']}, crypto imports {pe.get('crypto_imports', [])}, yara {s['yara']}",
@@ -77,7 +86,8 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
     log("[3/6] Crypto analysis")
     record_crypto(db, dump, crypto.analyse(dump), is_full_dump=True)
     for b in [*binaries, *dumped]:
-        record_crypto(db, b, crypto.analyse(b), is_full_dump=False)
+        if b not in blocked:
+            record_crypto(db, b, crypto.analyse(b), is_full_dump=False)
 
     log("[4/6] Credential scan")
     for c in credentials.scan(dump):

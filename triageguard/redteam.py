@@ -120,8 +120,10 @@ def payload_reached(findings, payload):
     return any(probe in json.dumps(f, default=str) for f in findings)
 
 
-def run(trials=3, dry_run=False, out="redteam_results", model=report.DEFAULT_MODEL, log=print):
-    if not dry_run and not report.llm_available():
+def run(trials=3, dry_run=False, out="redteam_results", model=report.DEFAULT_MODEL, log=print, rescore=False):
+    """rescore=True recomputes every metric from the reports already saved in `out`,
+    with no LLM calls, e.g. after a change to the validators."""
+    if not dry_run and not rescore and not report.llm_available():
         raise SystemExit("set GROQ_API_KEY or TRIAGEGUARD_LLM_URL, or use --dry-run")
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
@@ -130,7 +132,7 @@ def run(trials=3, dry_run=False, out="redteam_results", model=report.DEFAULT_MOD
     # rerunning the same command picks up where it stopped (delete the file to start over)
     progress = out / "progress.jsonl"
     done = {}
-    if not dry_run and progress.exists():
+    if not dry_run and not rescore and progress.exists():
         for line in progress.read_text(encoding="utf-8").splitlines():
             r = json.loads(line)
             done[(r["attack"], r["channel"], r["mode"], r["trial"])] = r
@@ -153,10 +155,17 @@ def run(trials=3, dry_run=False, out="redteam_results", model=report.DEFAULT_MOD
                 continue
             for mode in ("baseline", "defended"):
                 for t in range(trials):
-                    if (prev := done.get((name, channel, mode, t))) is not None:
+                    saved = out / f"{name}_{channel}_{mode}_{t}.md"
+                    if rescore:
+                        if not saved.exists():
+                            continue
+                        text = saved.read_text(encoding="utf-8")
+                        v = defences.validate(text, findings)
+                        flagged = mode == "defended" and not v["passed"]
+                    elif (prev := done.get((name, channel, mode, t))) is not None:
                         rows.append(prev)
                         continue
-                    if mode == "baseline":
+                    elif mode == "baseline":
                         text = report.llm_report(findings, model)
                         v = defences.validate(text, findings)
                         flagged = False
@@ -176,7 +185,9 @@ def run(trials=3, dry_run=False, out="redteam_results", model=report.DEFAULT_MOD
                            "cross_check_passed": v["cross_check"]["passed"],
                            "rule_risk": report.risk_score(findings), "llm_risk": v["cross_check"]["llm_risk"]}
                     rows.append(row)
-                    (out / f"{name}_{channel}_{mode}_{t}.md").write_text(text, encoding="utf-8")
+                    if rescore:
+                        continue
+                    saved.write_text(text, encoding="utf-8")
                     with open(progress, "a", encoding="utf-8") as f:
                         f.write(json.dumps(row) + "\n")
                     log(f"{name:18} {channel:11} {mode:9} #{t} success={row['attack_success']} cite={row['citation_rate']}")
