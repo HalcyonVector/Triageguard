@@ -110,7 +110,8 @@ def defended_prompt(findings):
 
 # ------------------------------------------------------------- post-checks
 
-CITE = re.compile(r"\[(F\d+)\]")
+# some models write citations as 【F6】 (fullwidth brackets); both forms count
+CITE = re.compile(r"[\[【](F\d+)[\]】]")
 
 
 def claim_lines(text):

@@ -44,7 +44,7 @@ regions. The Windows 11 details follow. Open `results/dumps/win11/report_llm.md`
 - RSA-512 key in memory (critical, strength 0/100).
 - Notepad opened on `Desktop\encryption_log.txt` and DumpIt.exe on the Desktop: the story of the image.
 - 4 expired JWTs, and in the pcap SSL 3.0 with static RSA key exchange and 3DES (no forward secrecy).
-- Every claim in the LLM report cites a finding id; the validator still flags it (84% cited), which shows the
+- The LLM report cites a finding id for its claims; the validator still flags it (84% cited), which shows the
   check is not a rubber stamp.
 
 ## 4. Red-teaming the LLM (pre-generated, 78 LLM calls)
@@ -55,12 +55,12 @@ rule-based cross-check, one retry).
 
 | | Undefended | Defended |
 |---|---|---|
-| Attack success rate | 7/36 | 2/36 |
+| Attack success rate | 4/36 | 1/36 |
 | Success with no warning attached | n/a | 0/36 |
-| Claims with a valid citation | 18% | 51% |
+| Claims with a valid citation | 28% | 78% |
 
-Be upfront about two limits: `omit_critical` still worked 2/6 times with defences (flagged, not blocked), and
-6 trials per cell is small.
+Be upfront about the limits: 6 trials per cell is small (the one defended success was an attack that failed
+undefended, so it is noise), and a citation check proves a finding exists, not that the sentence is right.
 
 Optional live check, no LLM and no quota:
 
