@@ -6,223 +6,318 @@
 <title>TriageGuard</title>
 <style>
 :root {
-  --bg1: #070b1f; --bg2: #10143d; --bg3: #1b1848;
-  --text: #E6E9F8; --muted: #A9B0D8; --faint: #8E98C6;
-  --cyan: #5CCFC0; --violet: #9B8AE8; --pink: #E7A3C9; --amber: #E3B341;
-  --glass: rgba(255,255,255,0.05); --line: rgba(255,255,255,0.12);
-  --critical: #e0526a; --high: #e8894a; --medium: #E3B341; --low: #5f9fe0; --info: #8a98b0;
+  --bg: #070a12; --panel: rgba(255,255,255,0.035); --panel2: rgba(255,255,255,0.06); --line: rgba(255,255,255,0.09);
+  --text: #e4e8f2; --muted: #9aa4bf; --faint: #7c86a3;
+  --accent: #5ccfc0; --accent2: #8fa8f0; --warn: #d9b650; --bad: #e0526a;
+  --critical: #e0526a; --high: #e8894a; --medium: #d9b650; --low: #5f9fe0; --info: #7c8aa6;
+  --mono: "JetBrains Mono", "Cascadia Code", "SF Mono", Consolas, "Liberation Mono", monospace;
 }
 * { box-sizing: border-box; }
-html { background: #070b1f; }
+html { background: var(--bg); }
 body {
-  margin: 0; min-height: 100vh; color: var(--text);
-  font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
-  background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 55%, var(--bg3) 100%) fixed;
+  margin: 0; min-height: 100vh; color: var(--text); font-size: 15px;
+  font-family: Inter, "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+  background:
+    radial-gradient(900px 500px at 12% -8%, rgba(92,207,192,0.07), transparent 60%),
+    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px),
+    var(--bg);
+  background-size: auto, 44px 44px, 44px 44px, auto;
+  background-attachment: fixed;
 }
-body::before, body::after {
-  content: ""; position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(70px); opacity: .22;
+.app { display: grid; grid-template-columns: 250px minmax(0, 1fr); min-height: 100vh; }
+.side {
+  position: sticky; top: 0; height: 100vh; padding: 26px 18px; display: flex; flex-direction: column; gap: 22px;
+  border-right: 1px solid var(--line); background: rgba(7,10,18,0.7); backdrop-filter: blur(8px);
 }
-body::before { width: 520px; height: 520px; right: -140px; top: -120px; background: radial-gradient(circle, #4b3aa0, transparent 70%); }
-body::after { width: 460px; height: 460px; left: -140px; bottom: -140px; background: radial-gradient(circle, #1c6b88, transparent 70%); }
-.wrap { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 28px 24px 64px; }
-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
-.brand h1 {
-  margin: 0; font-size: 40px; letter-spacing: -0.5px; line-height: 1.1;
-  background: linear-gradient(90deg, var(--cyan), var(--violet) 55%, var(--pink));
-  -webkit-background-clip: text; background-clip: text; color: transparent;
+.logo { display: flex; gap: 12px; align-items: center; }
+.logo .mark { width: 34px; height: 34px; border-radius: 9px; border: 1px solid rgba(92,207,192,0.5); display: grid; place-items: center; color: var(--accent); font-family: var(--mono); font-weight: 700; box-shadow: 0 0 18px rgba(92,207,192,0.18); }
+.logo b { display: block; font-size: 17px; letter-spacing: .3px; }
+.logo small { color: var(--faint); font-size: 11.5px; letter-spacing: .4px; }
+.label { font-family: var(--mono); font-size: 10.5px; letter-spacing: 1.6px; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
+nav { display: flex; flex-direction: column; gap: 3px; }
+nav button, .dumpbtn {
+  display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; cursor: pointer; font: inherit;
+  color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 10px; padding: 9px 12px; transition: all .15s;
 }
-.brand p { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
-nav { display: flex; gap: 8px; flex-wrap: wrap; background: var(--glass); border: 1px solid var(--line); border-radius: 999px; padding: 6px; }
-nav button {
-  border: 0; cursor: pointer; color: var(--muted); background: transparent; font: inherit; font-weight: 600;
-  padding: 9px 18px; border-radius: 999px; transition: all .15s;
-}
-nav button:hover { color: var(--text); }
-nav button.on { color: #0a0f2c; background: linear-gradient(90deg, var(--cyan), var(--violet)); }
-.card {
-  background: var(--glass); border: 1px solid var(--line); border-radius: 20px; padding: 22px 24px;
-  backdrop-filter: blur(10px);
-}
-.grid { display: grid; gap: 18px; }
-.g4 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-.g2 { grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); }
-.stat .num { font-size: 38px; white-space: nowrap; font-weight: 800; line-height: 1.05; letter-spacing: -1px; }
-.stat .lab { color: var(--muted); margin-top: 6px; font-size: 15px; line-height: 1.35; }
-.g1 { background: linear-gradient(135deg, rgba(92,207,192,.22), rgba(92,207,192,.05)); border-color: rgba(92,207,192,.4); }
-.g2c { background: linear-gradient(135deg, rgba(155,138,232,.28), rgba(155,138,232,.06)); border-color: rgba(155,138,232,.45); }
-.g3 { background: linear-gradient(135deg, rgba(231,163,201,.26), rgba(231,163,201,.05)); border-color: rgba(231,163,201,.45); }
-.g4c { background: linear-gradient(135deg, rgba(227,179,65,.24), rgba(227,179,65,.05)); border-color: rgba(227,179,65,.45); }
-h2 { margin: 28px 0 14px; font-size: 24px; letter-spacing: -.2px; }
-h3 { margin: 0 0 12px; font-size: 18px; }
-.muted { color: var(--muted); }
-.chip { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #0a0f2c; }
-.sev-critical { background: var(--critical); color: #fff; } .sev-high { background: var(--high); }
-.sev-medium { background: var(--medium); } .sev-low { background: var(--low); } .sev-info { background: var(--info); }
-.bar { display: flex; height: 16px; border-radius: 8px; overflow: hidden; background: rgba(255,255,255,.08); }
+nav button:hover, .dumpbtn:hover { color: var(--text); background: var(--panel); }
+nav button.on { color: var(--text); background: var(--panel2); border-color: var(--line); box-shadow: inset 2px 0 0 var(--accent); }
+nav button i { font-style: normal; width: 18px; text-align: center; color: var(--accent); font-family: var(--mono); }
+.dumpbtn { flex-direction: column; align-items: stretch; gap: 3px; }
+.dumpbtn.on { color: var(--text); background: var(--panel2); border-color: rgba(92,207,192,0.45); }
+.dumpbtn .t { font-weight: 600; font-size: 13.5px; }
+.dumpbtn .s { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11.5px; color: var(--faint); }
+.side .foot { margin-top: auto; font-size: 11.5px; color: var(--faint); line-height: 1.5; }
+main { padding: 30px 38px 70px; max-width: 1240px; width: 100%; }
+.top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+.top h1 { margin: 0; font-size: 28px; letter-spacing: -.4px; font-weight: 650; }
+.pill { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11.5px; letter-spacing: .6px; color: var(--accent); border: 1px solid rgba(92,207,192,0.35); border-radius: 999px; padding: 5px 12px; background: rgba(92,207,192,0.06); }
+.pill.all { color: var(--accent2); border-color: rgba(143,168,240,0.35); background: rgba(143,168,240,0.06); }
+.card { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; }
+.card::before { content: ""; position: absolute; left: 14px; top: -1px; width: 38px; height: 2px; background: var(--accent); opacity: .8; border-radius: 2px; }
+.grid { display: grid; gap: 16px; }
+.g4 { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.g3 { grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
+.g2 { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); }
+h2 { margin: 30px 0 12px; font-size: 13px; font-family: var(--mono); letter-spacing: 1.6px; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+h3 { margin: 0 0 10px; font-size: 16px; font-weight: 600; }
+.muted { color: var(--muted); } .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.stat .num { font-family: var(--mono); font-size: 36px; font-weight: 700; line-height: 1.1; letter-spacing: -1px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.stat .lab { color: var(--muted); margin-top: 8px; font-size: 13.5px; line-height: 1.4; }
+.stat .sub { font-family: var(--mono); font-size: 11.5px; color: var(--faint); margin-top: 6px; letter-spacing: .3px; }
+.stat.row { display: flex; align-items: center; gap: 18px; }
+.ring { position: relative; flex: none; width: 86px; height: 86px; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(var(--c, var(--accent)) calc(var(--p) * 1%), rgba(255,255,255,0.08) 0); }
+.ring i { position: absolute; inset: 8px; border-radius: 50%; background: #0a0e1a; }
+.ring b { position: relative; font-family: var(--mono); font-size: 22px; }
+.tag { display: inline-block; font-family: var(--mono); font-size: 10.5px; letter-spacing: .8px; text-transform: uppercase; border-radius: 6px; padding: 2px 8px; border: 1px solid var(--line); color: var(--muted); }
+.tag.ok { color: var(--accent); border-color: rgba(92,207,192,0.4); } .tag.flag { color: var(--warn); border-color: rgba(217,182,80,0.45); }
+.chip { display: inline-block; font-family: var(--mono); font-size: 10.5px; letter-spacing: .7px; text-transform: uppercase; border-radius: 6px; padding: 2px 8px; border: 1px solid currentColor; }
+.sev-critical { color: var(--critical); } .sev-high { color: var(--high); } .sev-medium { color: var(--medium); } .sev-low { color: var(--low); } .sev-info { color: var(--info); }
+.bar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: rgba(255,255,255,0.06); gap: 2px; }
 .bar > span { display: block; height: 100%; }
-.legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; font-size: 14px; color: var(--muted); }
-.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; }
-.filters { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
-.filters button, .filters select, .filters input {
-  font: inherit; color: var(--text); background: var(--glass); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px;
-}
-.filters select option { color: #0a0f2c; }
-.filters input { min-width: 240px; }
-.filters button { cursor: pointer; font-weight: 600; }
-.filters button.on { background: linear-gradient(90deg, var(--cyan), var(--violet)); color: #0a0f2c; border-color: transparent; }
-table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
-th { text-align: left; color: var(--cyan); font-size: 12.5px; text-transform: uppercase; letter-spacing: .8px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
-td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,.07); vertical-align: top; }
-tr.hit td { background: linear-gradient(90deg, rgba(92,207,192,.25), rgba(155,138,232,.18)); }
-td.ref { font-weight: 700; color: var(--violet); white-space: nowrap; }
-td.title { word-break: break-word; }
-.report { line-height: 1.6; font-size: 15.5px; }
-.report h1, .report h2, .report h3, .report h4 { margin: 22px 0 8px; }
-.report table { margin: 10px 0; } .report hr { border: 0; border-top: 1px solid var(--line); margin: 18px 0; }
-.report code { background: rgba(255,255,255,.1); border-radius: 6px; padding: 1px 6px; font-size: 14px; }
-.report ul { padding-left: 22px; } .report li { margin: 4px 0; }
-a.cite { color: var(--cyan); font-weight: 700; text-decoration: none; border-bottom: 1px dotted var(--cyan); cursor: pointer; }
-.pairs { display: grid; gap: 14px; }
-.pair { display: grid; grid-template-columns: 190px 1fr 90px; gap: 14px; align-items: center; }
-.pair .track { position: relative; height: 12px; background: rgba(255,255,255,.08); border-radius: 6px; margin: 4px 0; }
-.pair .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; }
-.pair .vals { font-size: 13.5px; color: var(--muted); text-align: right; }
-.sq { display: inline-block; width: 22px; height: 22px; border-radius: 6px; margin-right: 4px; vertical-align: middle; border: 2px solid transparent; }
-.sq.win { background: var(--critical); } .sq.lose { background: #4fb98f; }
-.sq.flag { border-color: var(--amber); }
-.task { display: flex; gap: 12px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,.07); }
-.task:last-child { border-bottom: 0; }
-.tick { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; color: #0a0f2c; }
-.tick.done { background: var(--cyan); } .tick.todo { background: transparent; border: 2px solid var(--amber); color: var(--amber); }
-.task b { display: block; } .task span { color: var(--muted); font-size: 14px; }
-.dumpcard { cursor: pointer; transition: transform .15s, border-color .15s; }
+.legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 12px; font-size: 12.5px; color: var(--muted); font-family: var(--mono); }
+.legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; }
+.dumpcard { cursor: pointer; transition: border-color .15s, transform .15s; }
 .dumpcard:hover { transform: translateY(-2px); }
-.dumpcard.sel { border-color: var(--cyan); box-shadow: 0 0 0 1px var(--cyan) inset; }
-.dumpcard h3 { margin-bottom: 4px; }
-.two { display: flex; gap: 18px; margin-top: 14px; }
-.two b { display: block; font-size: 28px; line-height: 1.1; } .two span { color: var(--muted); font-size: 12.5px; }
-.filters button[disabled] { opacity: .22; cursor: not-allowed; }
+.dumpcard.sel { border-color: rgba(92,207,192,0.55); box-shadow: 0 0 0 1px rgba(92,207,192,0.25), 0 0 28px rgba(92,207,192,0.08); }
+.dumpcard h3 { margin-bottom: 3px; }
+.dumpcard .m { color: var(--faint); font-size: 12px; line-height: 1.5; margin-bottom: 14px; }
+.two { display: flex; gap: 22px; margin-top: 14px; }
+.two b { display: block; font-family: var(--mono); font-size: 24px; font-weight: 700; line-height: 1.1; } .two span { color: var(--faint); font-size: 11.5px; }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+.filters button, .filters select, .filters input {
+  font: inherit; font-size: 13px; color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 9px; padding: 7px 13px;
+}
+.filters select option { color: #0a0e1a; }
+.filters input { min-width: 230px; }
+.filters button { cursor: pointer; } .filters button:hover { background: var(--panel2); }
+.filters button.on { color: var(--accent); border-color: rgba(92,207,192,0.5); background: rgba(92,207,192,0.08); }
+.filters button[disabled] { opacity: .4; cursor: not-allowed; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { text-align: left; color: var(--faint); font-family: var(--mono); font-weight: 600; font-size: 10.5px; text-transform: uppercase; letter-spacing: 1.2px; padding: 8px 12px 10px; border-bottom: 1px solid var(--line); }
+td { padding: 11px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+tr.hit td { background: rgba(92,207,192,0.09); }
+td.ref { font-family: var(--mono); font-weight: 600; color: var(--accent2); white-space: nowrap; }
+td.title { word-break: break-word; } td.num, th.num { text-align: right; }
+.conf { display: flex; align-items: center; gap: 12px; }
+.conf .v { font-family: var(--mono); min-width: 56px; text-align: right; font-variant-numeric: tabular-nums; }
+.meter { flex: 1; min-width: 90px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.07); overflow: hidden; }
+.meter i { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, rgba(92,207,192,0.55), var(--accent)); }
+.meter.bad i { background: linear-gradient(90deg, rgba(224,82,106,0.55), var(--bad)); }
+.report { line-height: 1.65; font-size: 15px; }
+.report h2, .report h3, .report h4, .report h5 { margin: 24px 0 8px; font-family: inherit; text-transform: none; letter-spacing: 0; color: var(--text); font-size: 17px; }
+.report table { margin: 10px 0; } .report hr { border: 0; border-top: 1px solid var(--line); margin: 18px 0; }
+.report code { background: rgba(255,255,255,0.08); border-radius: 5px; padding: 1px 6px; font-size: 13px; font-family: var(--mono); }
+.report ul { padding-left: 22px; } .report li { margin: 4px 0; }
+a.cite { color: var(--accent); font-family: var(--mono); font-size: .9em; text-decoration: none; border-bottom: 1px dotted var(--accent); cursor: pointer; }
+.strip { display: flex; gap: 26px; flex-wrap: wrap; align-items: center; }
+.strip .k { font-family: var(--mono); font-size: 10.5px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--faint); }
+.strip .v { font-family: var(--mono); font-size: 20px; font-weight: 700; }
+.pairs { display: grid; gap: 14px; }
+.pair { display: grid; grid-template-columns: 190px 1fr 96px; gap: 14px; align-items: center; }
+.pair .track { position: relative; height: 8px; background: rgba(255,255,255,0.07); border-radius: 4px; margin: 5px 0; }
+.pair .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
+.pair .vals { font-family: var(--mono); font-size: 12px; color: var(--muted); text-align: right; line-height: 1.5; }
+.sq { display: inline-block; width: 18px; height: 18px; border-radius: 5px; margin-right: 4px; vertical-align: middle; border: 2px solid transparent; }
+.sq.win { background: var(--bad); } .sq.lose { background: #3f9f83; } .sq.flag { border-color: var(--warn); }
+.task { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.task:last-child { border-bottom: 0; }
+.tick { flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 12px; margin-top: 1px; }
+.tick.done { background: var(--accent); color: #07110f; } .tick.todo { border: 2px solid var(--warn); color: var(--warn); } .tick.next { border: 2px solid var(--accent2); color: var(--accent2); }
+.task b { display: block; font-weight: 600; } .task span { color: var(--muted); font-size: 13px; }
+.ws .head { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+.ws .ring { width: 64px; height: 64px; } .ws .ring i { inset: 6px; } .ws .ring b { font-size: 15px; }
+.ws li { list-style: none; display: flex; gap: 9px; align-items: center; padding: 4px 0; color: var(--muted); font-size: 13.5px; }
+.ws ul { padding: 0; margin: 0; } .ws li.done { color: var(--text); }
+.ws li em { font-style: normal; font-family: var(--mono); font-size: 12px; color: var(--accent); width: 14px; } .ws li.todo em { color: var(--warn); }
+.timeline { position: relative; padding-left: 26px; }
+.timeline::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: linear-gradient(var(--accent), rgba(92,207,192,0.15)); }
+.tl { position: relative; padding: 0 0 18px; } .tl:last-child { padding-bottom: 0; }
+.tl::before { content: ""; position: absolute; left: -26px; top: 4px; width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); }
+.tl.todo::before { border-color: var(--warn); border-style: dashed; } .tl.next::before { border-color: var(--accent2); }
+.tl b { display: block; } .tl span { color: var(--muted); font-size: 13px; }
 .hidden { display: none; }
-.note { font-size: 13px; color: var(--faint); margin-top: 10px; }
+.note { font-size: 12.5px; color: var(--faint); margin-top: 12px; line-height: 1.5; }
+@media (max-width: 900px) { .app { grid-template-columns: 1fr; } .side { position: static; height: auto; flex-direction: row; flex-wrap: wrap; } main { padding: 22px 16px 60px; } .pair { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div class="brand">
-      <h1>TriageGuard</h1>
-      <p>AI-assisted memory forensics and cryptographic malware triage &middot; ICT 3141 &middot; Sagnik Basu, Arjun Mittal</p>
-    </div>
-    <nav id="nav">
-      <button data-tab="overview" class="on">Overview</button>
-      <button data-tab="findings">Findings</button>
-      <button data-tab="report">Report</button>
-      <button data-tab="redteam">Red team</button>
-      <button data-tab="roadmap">Progress</button>
-    </nav>
-  </header>
-
-  <section id="overview"></section>
-  <section id="findings" class="hidden"></section>
-  <section id="report" class="hidden"></section>
-  <section id="redteam" class="hidden"></section>
-  <section id="roadmap" class="hidden"></section>
+<div class="app">
+  <aside class="side">
+    <div class="logo"><div class="mark">TG</div><div><b>TriageGuard</b><small>memory forensics + crypto triage</small></div></div>
+    <div><div class="label">Views</div>
+      <nav id="nav">
+        <button data-tab="overview" class="on"><i>01</i>Overview</button>
+        <button data-tab="crypto"><i>02</i>Cryptography</button>
+        <button data-tab="findings"><i>03</i>Findings</button>
+        <button data-tab="report"><i>04</i>Report</button>
+        <button data-tab="redteam"><i>05</i>Red team</button>
+        <button data-tab="roadmap"><i>06</i>Progress</button>
+      </nav></div>
+    <div><div class="label">Memory dump</div><div id="dumps" style="display:flex;flex-direction:column;gap:6px"></div></div>
+    <div class="foot">ICT 3141 Information Security Lab, CCE A<br>Sagnik Basu, Arjun Mittal<br>Public datasets and synthetic keys only.</div>
+  </aside>
+  <main>
+    <div class="top"><h1 id="title">Overview</h1><span class="pill" id="scope"></span></div>
+    <section id="overview"></section>
+    <section id="crypto" class="hidden"></section>
+    <section id="findings" class="hidden"></section>
+    <section id="report" class="hidden"></section>
+    <section id="redteam" class="hidden"></section>
+    <section id="roadmap" class="hidden"></section>
+  </main>
 </div>
 
 <script>
 const SEV = ["critical", "high", "medium", "low", "info"];
-const SEV_COL = {critical: "#e0526a", high: "#e8894a", medium: "#E3B341", low: "#5f9fe0", info: "#8a98b0"};
+const SEV_COL = {critical: "#e0526a", high: "#e8894a", medium: "#d9b650", low: "#5f9fe0", info: "#7c8aa6"};
 const POINTS = {critical: 25, high: 12, medium: 5, low: 2, info: 0};
 const CAP = {critical: 4, high: 4, medium: 4, low: 5};
+const TABS = {overview: ["Overview", "dump"], crypto: ["Cryptography", "dump"], findings: ["Findings", "dump"], report: ["Report", "dump"], redteam: ["Red team", "all"], roadmap: ["Progress", "all"]};
 let D = {dumps: [], redteam: []};
-let cur = null, filterSev = "all", filterMod = "all", query = "", highlight = null, reportKind = "llm";
-const dump = () => D.dumps.find((d) => d.id === cur) || D.dumps[0] || {id: "", meta: {}, findings: [], report_llm: "", report_rules: ""};
-function picker(tab) {
-  if (D.dumps.length < 2) return "";
-  return `<div class="filters"><span class="muted">Dump:</span>${D.dumps.map((d) =>
-    `<button data-dump="${d.id}" data-for="${tab}" class="${d.id === dump().id ? "on" : ""}">${esc(d.meta.title || d.id)}</button>`).join("")}</div>`;
-}
-function renderAll() { renderOverview(); renderFindings(); renderReport(); }
-function bindPicker(root) {
-  // one dump is selected for the whole page, so every tab that shows it re-renders
-  root.querySelectorAll("[data-dump]").forEach((b) => b.onclick = () => { cur = b.dataset.dump; highlight = null; renderAll(); });
-}
+let cur = null, tab = "overview", filterSev = "all", filterMod = "all", query = "", highlight = null, reportKind = "llm";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
 const refNum = (r) => parseInt(String(r).replace(/\D/g, ""), 10) || 0;
+const dump = () => D.dumps.find((d) => d.id === cur) || D.dumps[0] || {id: "", meta: {}, findings: [], report_llm: "", report_rules: "", llm_check: null};
+const pct = (x) => Math.round(x * 100);
 
 function riskScore(fs) {
   const n = {};
   fs.forEach((f) => { n[f.severity] = (n[f.severity] || 0) + 1; });
   return Math.min(100, Object.keys(n).reduce((s, k) => s + (POINTS[k] || 0) * Math.min(n[k], CAP[k] || 0), 0));
 }
-function countUp(el, target, suffix = "") {
-  const t0 = performance.now();
-  const tick = (t) => {
-    const p = Math.min(1, (t - t0) / 700);
-    el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))) + suffix;
-    if (p < 1) requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
-}
-function stats() {
-  const rt = D.redteam, atk = rt.filter((r) => r.attack !== "control");
-  const by = (mode) => atk.filter((r) => r.mode === mode);
-  const win = (rows) => rows.filter((r) => r.attack_success === "True").length;
-  const all = (mode) => rt.filter((r) => r.mode === mode);
-  const cite = (mode) => { const a = all(mode); return a.length ? a.reduce((s, r) => s + parseFloat(r.citation_rate || 0), 0) / a.length : 0; };
-  return {
-    n: by("baseline").length, asrB: win(by("baseline")), asrD: win(by("defended")),
-    unflagged: by("defended").filter((r) => r.unflagged_success === "True").length,
-    citeB: cite("baseline"), citeD: cite("defended"),
-  };
-}
-
-/* ---------- Overview ---------- */
+const riskColor = (r) => r >= 70 ? "var(--bad)" : r >= 40 ? "var(--warn)" : "var(--accent)";
+function ring(p, text, color) { return `<div class="ring" style="--p:${p};--c:${color || "var(--accent)"}"><i></i><b>${text}</b></div>`; }
 function sevBar(fs) {
   const total = fs.length || 1;
   return `<div class="bar">${SEV.map((k) => `<span style="width:${fs.filter((f) => f.severity === k).length / total * 100}%;background:${SEV_COL[k]}"></span>`).join("")}</div>`;
 }
+function stats() {
+  const rt = D.redteam, atk = rt.filter((r) => r.attack !== "control");
+  const by = (m) => atk.filter((r) => r.mode === m);
+  const win = (rows) => rows.filter((r) => r.attack_success === "True").length;
+  const all = (m) => rt.filter((r) => r.mode === m);
+  const cite = (m) => { const a = all(m); return a.length ? a.reduce((s, r) => s + parseFloat(r.citation_rate || 0), 0) / a.length : 0; };
+  return {n: by("baseline").length, asrB: win(by("baseline")), asrD: win(by("defended")),
+    unflagged: by("defended").filter((r) => r.unflagged_success === "True").length, citeB: cite("baseline"), citeD: cite("defended")};
+}
+
+/* ---------- sidebar ---------- */
+function renderSide() {
+  $("dumps").innerHTML = D.dumps.map((d) => `<button class="dumpbtn ${d.id === dump().id ? "on" : ""}" data-dump="${d.id}">
+    <span class="t">${esc(d.meta.title || d.id)}</span>
+    <span class="s"><span>${d.findings.length} findings</span><span>risk ${riskScore(d.findings)}</span></span></button>`).join("");
+  bindPicker($("dumps"));
+}
+function renderHeader() {
+  $("title").textContent = TABS[tab][0];
+  const scope = $("scope");
+  scope.className = "pill" + (TABS[tab][1] === "all" ? " all" : "");
+  scope.textContent = TABS[tab][1] === "all" ? "ALL DUMPS" : "VIEWING: " + (dump().meta.title || dump().id).toUpperCase();
+}
+function renderAll() { renderSide(); renderHeader(); renderOverview(); renderCrypto(); renderFindings(); renderReport(); }
+function bindPicker(root) {
+  root.querySelectorAll("[data-dump]").forEach((b) => b.onclick = () => { cur = b.dataset.dump; highlight = null; renderAll(); });
+}
+
+/* ---------- Overview ---------- */
 function renderOverview() {
-  const dd = dump(), fs = dd.findings, s = stats();
+  const dd = dump(), fs = dd.findings, chk = dd.llm_check, s = stats();
   const counts = {}; SEV.forEach((k) => counts[k] = fs.filter((f) => f.severity === k).length);
-  const hits = fs.filter((f) => ["critical", "high", "medium"].includes(f.severity));
-  const compare = D.dumps.length > 1 ? `
-    <h2>Public memory dumps analysed</h2>
-    <div class="grid g4">${D.dumps.map((d) => `
+  const risk = riskScore(fs), hits = fs.filter((f) => ["critical", "high", "medium"].includes(f.severity));
+  const ch = counts.critical + counts.high;
+  $("overview").innerHTML = `
+    <h2>All dumps</h2>
+    <div class="grid g3">${D.dumps.map((d) => `
       <div class="card dumpcard ${d.id === dd.id ? "sel" : ""}" data-dump="${d.id}">
         <h3>${esc(d.meta.title || d.id)}</h3>
-        <div class="muted" style="font-size:13.5px;margin-bottom:12px">${esc(d.meta.os || "")} &middot; ${esc(d.meta.size || "")}<br>${esc(d.meta.source || "")}${d.meta.pcap ? "<br>+ " + esc(d.meta.pcap) : ""}</div>
+        <div class="m">${esc(d.meta.os || "")} &middot; ${esc(d.meta.size || "")}<br>${esc(d.meta.source || "")}${d.meta.pcap ? "<br>+ " + esc(d.meta.pcap) : ""}</div>
         ${sevBar(d.findings)}
-        <div class="two"><div><b>${d.findings.length}</b><span>findings</span></div><div><b>${riskScore(d.findings)}</b><span>risk /100</span></div>
+        <div class="two"><div><b>${d.findings.length}</b><span>findings</span></div><div><b style="color:${riskColor(riskScore(d.findings))}">${riskScore(d.findings)}</b><span>risk /100</span></div>
         <div><b>${d.findings.filter((f) => ["critical", "high"].includes(f.severity)).length}</b><span>critical + high</span></div></div>
-      </div>`).join("")}</div>` : "";
-  $("overview").innerHTML = `${compare}
-    <h2>${esc(dd.meta.title || "Findings")}</h2>
+      </div>`).join("")}</div>
+
+    <h2>${esc(dd.meta.title || "Selected dump")}</h2>
     <div class="grid g4">
-      <div class="card stat g1"><div class="num" id="n1">0</div><div class="lab">Findings in ${esc(dd.meta.title || "this dump")}</div></div>
-      <div class="card stat g2c"><div class="num"><span id="n2">0</span><span style="font-size:24px">/100</span></div><div class="lab">Rule-based risk score</div></div>
-      <div class="card stat g3"><div class="num">${s.asrB}/${s.n} &rarr; ${s.asrD}/${s.n}</div><div class="lab">Attacks that fooled the LLM report, plain vs defended</div></div>
-      <div class="card stat g4c"><div class="num">${Math.round(s.citeB * 100)}% &rarr; ${Math.round(s.citeD * 100)}%</div><div class="lab">Claims backed by a valid citation</div></div>
+      <div class="card stat"><div class="label">Findings</div><div class="num">${fs.length}</div><div class="lab">in ${esc(dd.meta.title || "this dump")}</div><div class="sub">${esc(dd.meta.source || "")}</div></div>
+      <div class="card stat row">${ring(risk, risk, riskColor(risk))}<div><div class="label">Rule-based risk</div><div class="lab" style="margin:0">out of 100, capped per severity</div></div></div>
+      <div class="card stat"><div class="label">Critical + high</div><div class="num" style="color:${ch ? "var(--bad)" : "var(--text)"}">${ch}</div><div class="lab">${counts.medium} medium, ${counts.low} low, ${counts.info} info</div></div>
+      <div class="card stat"><div class="label">LLM report</div>${chk
+        ? `<div class="num">${pct(chk.citation_rate)}%</div><div class="lab">of claims cite a finding <span class="tag ${chk.flagged ? "flag" : "ok"}">${chk.flagged ? "flagged" : "passed"}</span></div><div class="sub">${chk.cited_refs} findings cited, risk stated ${chk.llm_risk ?? "n/a"} vs rule ${chk.rule_risk}</div>`
+        : `<div class="num" style="color:var(--faint)">n/a</div><div class="lab">no LLM report saved for this dump yet</div>`}</div>
     </div>
+
     <h2>Severity mix</h2>
-    <div class="card">
-      ${sevBar(fs)}
-      <div class="legend">${SEV.map((k) => `<span><i style="background:${SEV_COL[k]}"></i>${k} ${counts[k]}</span>`).join("")}</div>
-    </div>
+    <div class="card">${sevBar(fs)}
+      <div class="legend">${SEV.map((k) => `<span><i style="background:${SEV_COL[k]}"></i>${k} ${counts[k]}</span>`).join("")}</div></div>
+
     <h2>What stands out</h2>
     <div class="card"><table>
       <tr><th>Ref</th><th>Severity</th><th>Finding</th></tr>
       ${hits.sort((a, b) => SEV.indexOf(a.severity) - SEV.indexOf(b.severity) || refNum(a.ref) - refNum(b.ref)).map((f) => `
         <tr><td class="ref"><a class="cite" data-ref="${f.ref}">${f.ref}</a></td><td><span class="chip sev-${f.severity}">${f.severity}</span></td><td class="title">${esc(f.title)}</td></tr>`).join("")
-        || `<tr><td colspan="3" class="muted">No findings loaded.</td></tr>`}
+        || `<tr><td colspan="3" class="muted">Nothing above low severity.</td></tr>`}
     </table></div>
-    <p class="note">Public datasets and synthetic keys and tokens only, no malware executed.</p>`;
-  countUp($("n1"), fs.length);
-  countUp($("n2"), riskScore(fs));
-  bindCites($("overview"));
-  bindPicker($("overview"), renderOverview);
+
+    <h2>LLM red-team, same for every dump</h2>
+    <div class="grid g4">
+      <div class="card stat"><div class="label">Attack success, plain</div><div class="num">${s.asrB}/${s.n}</div><div class="sub">undefended report</div></div>
+      <div class="card stat"><div class="label">Attack success, defended</div><div class="num">${s.asrD}/${s.n}</div><div class="sub">${s.unflagged} reached a reader unwarned</div></div>
+      <div class="card stat"><div class="label">Cited claims, plain to defended</div><div class="num">${pct(s.citeB)}% &rarr; ${pct(s.citeD)}%</div><div class="sub">across the 78 reports</div></div>
+    </div>
+    <p class="note">The red-team ran on a separate synthetic image, so these three numbers do not change with the selected dump. Details in the Red team view.</p>`;
+  bindCites($("overview")); bindPicker($("overview"));
+}
+
+/* ---------- Cryptography (built from the findings, so values always sit in their own column) ---------- */
+function renderCrypto() {
+  const fs = dump().findings;
+  const algos = fs.filter((f) => f.kind === "algorithm").map((f) => {
+    const m = f.title.match(/^(.+?) identified \(([\d.]+)%, ([^)]+)\)/);
+    return m ? {ref: f.ref, name: m[1], conf: parseFloat(m[2]), basis: m[3]} : null;
+  }).filter(Boolean).sort((a, b) => b.conf - a.conf);
+  const groups = {};
+  fs.filter((f) => f.kind === "rsa_key").forEach((f) => {
+    const m = f.title.match(/^RSA-(\d+) key e=(\d+) \(([^)]+)\), strength (\d+)\/100: (.*)$/);
+    if (!m) return;
+    const k = `${m[1]}|${m[2]}|${m[4]}|${m[5]}`;
+    (groups[k] = groups[k] || {bits: +m[1], e: +m[2], strength: +m[4], issue: m[5], refs: [], sev: f.severity}).refs.push(f.ref);
+  });
+  const rsa = Object.values(groups).sort((a, b) => a.strength - b.strength || b.refs.length - a.refs.length);
+  const rsaSum = fs.find((f) => f.kind === "rsa_summary"), ent = fs.find((f) => f.kind === "entropy");
+  const creds = fs.filter((f) => f.module === "credentials");
+  const basisTag = (b) => `<span class="tag ${b.startsWith("implementation") ? "ok" : ""}">${esc(b)}</span>`;
+  $("crypto").innerHTML = `
+    <h2>Cipher identification</h2>
+    <div class="card">${algos.length ? `<table>
+      <tr><th>Algorithm</th><th style="width:38%">Confidence</th><th>Evidence basis</th><th>Finding</th></tr>
+      ${algos.map((a) => `<tr><td><b>${esc(a.name)}</b></td>
+        <td><div class="conf"><div class="meter"><i style="width:${a.conf}%"></i></div><span class="v">${a.conf.toFixed(1)}%</span></div></td>
+        <td>${basisTag(a.basis)}</td><td class="ref"><a class="cite" data-ref="${a.ref}">${a.ref}</a></td></tr>`).join("")}
+    </table>` : `<p class="muted">No cipher signatures found.</p>`}
+    <p class="note">Confidence is 1 minus the product of (1 - weight) over the signatures matched. "Implementation constants" means the cipher is actually implemented here; "API/string references only" means it is only named.</p></div>
+
+    <h2>RSA keys found in memory</h2>
+    <div class="card">${rsa.length ? `<table>
+      <tr><th>Key size</th><th>Exponent</th><th style="width:26%">Strength</th><th>Issue</th><th class="num">Keys</th><th>Findings</th></tr>
+      ${rsa.map((g) => `<tr><td class="mono"><b>${g.bits}</b> bit</td><td class="mono">${g.e}</td>
+        <td><div class="conf"><div class="meter ${g.strength < 40 ? "bad" : ""}"><i style="width:${g.strength}%"></i></div><span class="v">${g.strength}</span></div></td>
+        <td><span class="chip sev-${g.sev}">${esc(g.sev)}</span> ${esc(g.issue)}</td><td class="num mono">${g.refs.length}</td>
+        <td class="ref">${g.refs.slice(0, 3).map((r) => `<a class="cite" data-ref="${r}">${r}</a>`).join(" ")}${g.refs.length > 3 ? " ..." : ""}</td></tr>`).join("")}
+    </table>` : `<p class="muted">No RSA key structures found.</p>`}
+    ${rsaSum ? `<p class="note">${esc(rsaSum.title)}. <a class="cite" data-ref="${rsaSum.ref}">${rsaSum.ref}</a></p>` : ""}
+    <p class="note">Strength is 0 to 100. Moduli with tiny factors are treated as corrupt memory, not as broken keys, and in a full dump size and exponent issues are graded low because they come from the certificate store.</p></div>
+
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card"><h3>Encrypted or packed regions</h3>${ent ? `<p class="muted" style="margin:0">${esc(ent.title)} <a class="cite" data-ref="${ent.ref}">${ent.ref}</a></p>` : `<p class="muted" style="margin:0">None above the entropy threshold.</p>`}</div>
+      <div class="card"><h3>Credentials and tokens</h3>${creds.length
+        ? `<table>${creds.map((c) => `<tr><td class="ref"><a class="cite" data-ref="${c.ref}">${c.ref}</a></td><td><span class="chip sev-${c.severity}">${c.severity}</span></td><td class="title">${esc(c.title)}</td></tr>`).join("")}</table>`
+        : `<p class="muted" style="margin:0">No JWTs, OAuth tokens or OTP secrets found.</p>`}</div>
+    </div>`;
+  bindCites($("crypto"));
 }
 
 /* ---------- Findings ---------- */
@@ -234,20 +329,19 @@ function renderFindings() {
     .filter((f) => (filterSev === "all" || f.severity === filterSev) && (filterMod === "all" || f.module === filterMod)
       && (!q || (f.title + f.kind + f.ref + f.location).toLowerCase().includes(q)))
     .sort((a, b) => refNum(a.ref) - refNum(b.ref));
-  $("findings").innerHTML = `${picker("findings")}
+  $("findings").innerHTML = `
     <div class="filters">
       ${["all", ...SEV].map((k) => `<button data-sev="${k}" class="${filterSev === k ? "on" : ""}">${k}</button>`).join("")}
       <select id="mod"><option value="all">all modules</option>${mods.map((m) => `<option ${filterMod === m ? "selected" : ""}>${m}</option>`).join("")}</select>
       <input id="q" placeholder="Search findings" value="${esc(query)}">
-      <span class="muted">${rows.length} of ${all.length}</span>
+      <span class="muted mono" style="font-size:12px">${rows.length} of ${all.length}</span>
     </div>
     <div class="card"><table>
       <tr><th>Ref</th><th>Severity</th><th>Module</th><th>Finding</th><th>Location</th></tr>
       ${rows.map((f) => `<tr id="row-${f.ref}" class="${highlight === f.ref ? "hit" : ""}">
         <td class="ref">${f.ref}</td><td><span class="chip sev-${f.severity}">${f.severity}</span></td>
-        <td>${esc(f.module)}/${esc(f.kind)}</td><td class="title">${esc(f.title)}</td><td class="muted">${esc(f.location)}</td></tr>`).join("")}
+        <td class="mono" style="font-size:12.5px">${esc(f.module)}/${esc(f.kind)}</td><td class="title">${esc(f.title)}</td><td class="muted mono" style="font-size:12px">${esc(f.location)}</td></tr>`).join("")}
     </table></div>`;
-  bindPicker($("findings"), renderFindings);
   $("findings").querySelectorAll("[data-sev]").forEach((b) => b.onclick = () => { filterSev = b.dataset.sev; renderFindings(); });
   $("mod").onchange = (e) => { filterMod = e.target.value; renderFindings(); };
   $("q").oninput = (e) => { query = e.target.value; const pos = e.target.selectionStart; renderFindings(); const i = $("q"); i.focus(); i.setSelectionRange(pos, pos); };
@@ -265,7 +359,7 @@ function markdown(src) {
   src = (src || "").replace(/[​⁠]/g, "");
   const lines = src.split(/\r?\n/), out = [];
   for (let i = 0; i < lines.length; i++) {
-    const l = lines[i], t = l.trim();
+    const t = lines[i].trim();
     if (!t) continue;
     if (/^-{3,}$/.test(t)) { out.push("<hr>"); continue; }
     const h = t.match(/^(#{1,4})\s+(.*)$/);
@@ -291,16 +385,21 @@ function markdown(src) {
   return out.join("\n");
 }
 function renderReport() {
-  const dd = dump(), kind = reportKind === "llm" && !dd.report_llm ? "rules" : reportKind;
+  const dd = dump(), kind = reportKind === "llm" && !dd.report_llm ? "rules" : reportKind, chk = dd.llm_check;
   const text = kind === "llm" ? dd.report_llm : dd.report_rules;
-  $("report").innerHTML = `${picker("report")}
+  $("report").innerHTML = `
     <div class="filters">
       <button data-kind="llm" class="${kind === "llm" ? "on" : ""}" ${dd.report_llm ? "" : "disabled title='No LLM report saved for this dump yet'"}>LLM report (defended)</button>
       <button data-kind="rules" class="${kind === "rules" ? "on" : ""}">Rule-based report</button>
-      <span class="muted">Click a citation like [F65] to jump to its finding.</span>
+      <span class="muted" style="font-size:13px">Click a citation like [F65] to jump to its finding.</span>
     </div>
+    ${kind === "llm" && chk ? `<div class="card" style="margin-bottom:16px"><div class="strip">
+      <div><div class="k">Claims cited</div><div class="v">${pct(chk.citation_rate)}%</div></div>
+      <div><div class="k">Findings cited</div><div class="v">${chk.cited_refs}</div></div>
+      <div><div class="k">Risk stated / rule</div><div class="v">${chk.llm_risk ?? "n/a"} / ${chk.rule_risk}</div></div>
+      <div><div class="k">Invalid citations</div><div class="v">${chk.invalid_refs.length}</div></div>
+      <div><div class="k">Validation</div><div class="v"><span class="tag ${chk.flagged ? "flag" : "ok"}">${chk.flagged ? "flagged" : "passed"}</span></div></div></div></div>` : ""}
     <div class="card report">${text ? markdown(text) : "<p class='muted'>No report found in the results folder.</p>"}</div>`;
-  bindPicker($("report"), renderReport);
   $("report").querySelectorAll("[data-kind]").forEach((b) => b.onclick = () => { reportKind = b.dataset.kind; renderReport(); });
   bindCites($("report"));
 }
@@ -321,22 +420,22 @@ const ATTACK_LABEL = {
 function renderRedteam() {
   const s = stats(), rt = D.redteam;
   const attacks = [...new Set(rt.filter((r) => r.attack !== "control").map((r) => r.attack))];
-  const rate = (a, mode) => { const r = rt.filter((x) => x.attack === a && x.mode === mode); return [r.filter((x) => x.attack_success === "True").length, r.length]; };
+  const rate = (a, m) => { const r = rt.filter((x) => x.attack === a && x.mode === m); return [r.filter((x) => x.attack_success === "True").length, r.length]; };
   $("redteam").innerHTML = `
     <div class="grid g4">
-      <div class="card stat g3"><div class="num">${s.asrB}/${s.n}</div><div class="lab">Attack success, plain LLM report</div></div>
-      <div class="card stat g1"><div class="num">${s.asrD}/${s.n}</div><div class="lab">Attack success, with defences</div></div>
-      <div class="card stat g2c"><div class="num">${s.unflagged}/${s.n}</div><div class="lab">Successful attacks reaching a reader with no warning</div></div>
-      <div class="card stat g4c"><div class="num">${rt.length}</div><div class="lab">LLM reports generated (6 attacks, 2 fields, control, 3 trials)</div></div>
+      <div class="card stat"><div class="label">Attack success, plain</div><div class="num">${s.asrB}/${s.n}</div><div class="lab">undefended LLM report</div></div>
+      <div class="card stat"><div class="label">Attack success, defended</div><div class="num">${s.asrD}/${s.n}</div><div class="lab">with the four defences</div></div>
+      <div class="card stat"><div class="label">Reached a reader unwarned</div><div class="num">${s.unflagged}/${s.n}</div><div class="lab">successful and not flagged</div></div>
+      <div class="card stat"><div class="label">Reports generated</div><div class="num">${rt.length}</div><div class="lab">6 attacks, 2 fields, control, 3 trials</div></div>
     </div>
     <h2>Attack success rate by attack</h2>
     <div class="card pairs">
       ${attacks.map((a) => { const [b, nb] = rate(a, "baseline"), [d, nd] = rate(a, "defended"); return `
         <div class="pair"><b>${ATTACK_LABEL[a] || a}</b>
-          <div><div class="track"><div class="fill" style="width:${nb ? b / nb * 100 : 0}%;background:linear-gradient(90deg,#e8894a,#e0526a)"></div></div>
-               <div class="track"><div class="fill" style="width:${nd ? d / nd * 100 : 0}%;background:linear-gradient(90deg,#5CCFC0,#9B8AE8)"></div></div></div>
+          <div><div class="track"><div class="fill" style="width:${nb ? b / nb * 100 : 0}%;background:linear-gradient(90deg,#b86a3d,#e0526a)"></div></div>
+               <div class="track"><div class="fill" style="width:${nd ? d / nd * 100 : 0}%;background:linear-gradient(90deg,#3f9f83,#5ccfc0)"></div></div></div>
           <div class="vals">plain ${b}/${nb}<br>defended ${d}/${nd}</div></div>`; }).join("")}
-      <div class="legend"><span><i style="background:#e0526a"></i>plain report</span><span><i style="background:#9B8AE8"></i>with defences</span></div>
+      <div class="legend"><span><i style="background:#e0526a"></i>plain report</span><span><i style="background:#5ccfc0"></i>with defences</span></div>
     </div>
     <h2>Every trial</h2>
     <div class="card"><table>
@@ -345,47 +444,62 @@ function renderRedteam() {
         rt.filter((x) => x.attack === a && x.mode === m && x.channel === ch).sort((p, q) => p.trial - q.trial)
           .map((x) => `<span class="sq ${x.attack_success === "True" ? "win" : "lose"} ${x.flagged === "True" ? "flag" : ""}" title="trial ${x.trial}: attack ${x.attack_success === "True" ? "succeeded" : "failed"}${x.flagged === "True" ? ", report flagged" : ""}"></span>`).join("")).join(" &nbsp;|&nbsp; ")}</td>`).join("")}</tr>`).join("")}
     </table>
-    <div class="legend"><span><i style="background:#e0526a"></i>attack succeeded</span><span><i style="background:#4fb98f"></i>attack failed</span><span><i style="border:2px solid #E3B341;background:transparent"></i>report flagged by validation</span></div></div>
-    <p class="note">The defences are an input sanitiser, mandatory citations, a rule-based cross-check and one retry. Limits: 6 trials per attack, one model (openai/gpt-oss-120b), synthetic payloads. A citation check proves the cited finding exists, not that the sentence is right.</p>`;
+    <div class="legend"><span><i style="background:#e0526a"></i>attack succeeded</span><span><i style="background:#3f9f83"></i>attack failed</span><span><i style="border:2px solid #d9b650;background:transparent"></i>report flagged by validation</span></div></div>
+    <p class="note">Defences: an input sanitiser, mandatory citations, a rule-based cross-check and one retry. Limits: 6 trials per attack, one model (openai/gpt-oss-120b), synthetic payloads. A citation check proves the cited finding exists, not that the sentence is right.</p>`;
 }
 
 /* ---------- Progress ---------- */
-const DONE = [
-  ["End-to-end pipeline", "Volatility3, static, crypto, credentials, pcap and report, with a SQLite store and citation ids"],
-  ["Cipher identification", "AES, DES/3DES, RSA, ChaCha20/Salsa20, AES-GCM, ECC with confidence percentages"],
-  ["Weak RSA key tests", "Size, small exponent, shared modulus, shared prime, close primes, strength score"],
-  ["Credential module", "JWT, OAuth tokens and OTP secrets, stored redacted"],
-  ["Three public memory dumps", "Windows 11, Windows 10 (with a real pcap) and Windows 7, tuned from 689 to 80 findings on the first"],
-  ["LLM report", "Groq model sees findings only and cites a finding id for every claim"],
-  ["Red team and defences", "6 attacks, 78 reports, sanitiser, citation check and rule-based cross-check"],
-  ["Literature survey", "Done in Overleaf, in the table format our teacher set"],
-  ["Dashboard and tests", "This page, plus 23 automated tests"],
+const WORKSTREAMS = [
+  ["Pipeline", [["Memory (Volatility3)", 1], ["Static analysis", 1], ["Crypto module", 1], ["Credentials", 1], ["Network (pcap)", 1], ["Report and store", 1]]],
+  ["Cipher and key analysis", [["AES, DES and 3DES", 1], ["ChaCha20, Salsa20, AES-GCM", 1], ["ECC: P-256, secp256k1, Curve25519", 1], ["RSA weak-key tests", 1], ["Post-quantum paragraph", 0]]],
+  ["Evaluation", [["Windows 11 dump", 1], ["Windows 10 dump and real pcap", 1], ["Windows 7 dump", 1], ["Red team, 78 LLM reports", 1], ["Harder attacks", 0], ["More trials and a second LLM", 0]]],
+  ["Write-up", [["Literature survey", 1], ["README and demo script", 1], ["Dashboard and slide deck", 1], ["Final report", 0]]],
 ];
-const TODO = [
-  ["Final report", "Method, results and limits written up"],
-  ["Post-quantum paragraph", "ML-KEM and ML-DSA, discussion only"],
-  ["Harder attacks", "Several fields at once, and persuasion without trigger words"],
-  ["Stronger numbers", "More trials per attack and a second LLM"],
+const TIMELINE = [
+  ["Pipeline and crypto core built", "Six stages, SQLite store with citation ids, cipher ID and RSA weak-key tests", "done"],
+  ["First real dump", "Windows 11 image: 689 findings at risk 100 tuned down to 80 findings at risk 55", "done"],
+  ["LLM report with citations", "Groq model sees findings only; every claim must cite a finding", "done"],
+  ["Red team and defences", "6 attacks hidden in JWT and OTP fields; sanitiser, citation check, cross-check", "done"],
+  ["78-report evaluation", "Attack success cut from 4/36 to 1/36; checker bug found and fixed on the way", "done"],
+  ["Three public dumps", "Windows 11, Windows 10 with a real pcap, and Windows 7", "done"],
+  ["Dashboard and deck", "This page and the progress-evaluation slides", "done"],
+  ["Final report and post-quantum paragraph", "Method, results and limits written up", "next"],
+  ["Stronger evaluation", "Harder attacks, more trials per attack, a second LLM", "todo"],
 ];
 function renderRoadmap() {
-  const task = (kind, t) => `<div class="task"><div class="tick ${kind}">${kind === "done" ? "&#10003;" : "&#8226;"}</div><div><b>${t[0]}</b><span>${t[1]}</span></div></div>`;
-  $("roadmap").innerHTML = `<div class="grid g2">
-    <div class="card g1"><h3>Done</h3>${DONE.map((t) => task("done", t)).join("")}</div>
-    <div class="card g4c"><h3>Yet to do</h3>${TODO.map((t) => task("todo", t)).join("")}</div></div>
+  const all = WORKSTREAMS.flatMap((w) => w[1]), done = all.filter((x) => x[1]).length, p = Math.round(done / all.length * 100);
+  const s = stats();
+  $("roadmap").innerHTML = `
+    <div class="grid g4">
+      <div class="card stat row">${ring(p, p + "%")}<div><div class="label">Overall</div><div class="lab" style="margin:0">${done} of ${all.length} tasks done</div></div></div>
+      <div class="card stat"><div class="label">Public dumps analysed</div><div class="num">${D.dumps.length}</div><div class="lab">Windows 11, 10 and 7</div></div>
+      <div class="card stat"><div class="label">LLM reports measured</div><div class="num">${D.redteam.length}</div><div class="lab">attack success ${s.asrB}/${s.n} to ${s.asrD}/${s.n}</div></div>
+      <div class="card stat"><div class="label">Automated tests</div><div class="num">25</div><div class="lab">all passing</div></div>
+    </div>
+    <h2>Workstreams</h2>
+    <div class="grid g2">${WORKSTREAMS.map(([name, items]) => {
+      const d = items.filter((x) => x[1]).length, q = Math.round(d / items.length * 100);
+      return `<div class="card ws"><div class="head">${ring(q, q + "%", q === 100 ? "var(--accent)" : "var(--accent2)")}<div><h3 style="margin:0">${name}</h3><span class="muted" style="font-size:13px">${d} of ${items.length} done</span></div></div>
+        <ul>${items.map((x) => `<li class="${x[1] ? "done" : "todo"}"><em>${x[1] ? "&#10003;" : "&#9675;"}</em>${x[0]}</li>`).join("")}</ul></div>`; }).join("")}</div>
+    <h2>Timeline</h2>
+    <div class="card"><div class="timeline">${TIMELINE.map((t) => `<div class="tl ${t[2]}"><b>${t[0]} ${t[2] === "next" ? '<span class="tag" style="color:var(--accent2);border-color:rgba(143,168,240,.4)">next</span>' : t[2] === "todo" ? '<span class="tag flag">to do</span>' : ""}</b><span>${t[1]}</span></div>`).join("")}</div></div>
     <p class="note">Constraints: public datasets and synthetic keys and tokens only, no live malware execution, no real credentials.</p>`;
 }
 
 /* ---------- Tabs ---------- */
-function show(tab) {
-  document.querySelectorAll("section").forEach((s) => s.classList.toggle("hidden", s.id !== tab));
-  document.querySelectorAll("#nav button").forEach((b) => b.classList.toggle("on", b.dataset.tab === tab));
-  if (tab === "findings") renderFindings();
+function show(t) {
+  tab = t;
+  document.querySelectorAll("main section").forEach((s) => s.classList.toggle("hidden", s.id !== t));
+  document.querySelectorAll("#nav button").forEach((b) => b.classList.toggle("on", b.dataset.tab === t));
+  renderHeader();
+  if (t === "findings") renderFindings();
+  window.scrollTo(0, 0);
 }
 document.querySelectorAll("#nav button").forEach((b) => b.onclick = () => show(b.dataset.tab));
 
 fetch("/api/data").then((r) => r.json()).then((d) => {
   D = d;
-  renderOverview(); renderFindings(); renderReport(); renderRedteam(); renderRoadmap();
+  renderAll(); renderRedteam(); renderRoadmap();
 }).catch((e) => { $("overview").innerHTML = `<div class="card">Could not load data: ${esc(e)}</div>`; });
 </script>
 </body>

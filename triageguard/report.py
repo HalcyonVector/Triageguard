@@ -25,7 +25,11 @@ SYSTEM_PROMPT = """You are a malware triage analyst. You receive structured find
 forensics and crypto analysis pipeline. Write a concise incident report in Markdown with sections:
 Summary, Cryptography (algorithms with confidence, key strength), Credentials, Processes and Network,
 Risk score (0-100) with justification, Recommendations.
-Cite the finding id in square brackets, e.g. [F3], after every factual claim."""
+Cite the finding id in square brackets, e.g. [F3], after every factual claim.
+In Cryptography use two Markdown tables. First: Algorithm | Confidence | Basis | Finding, one row per
+identified algorithm, with only the percentage in the Confidence column (for example 99.2%) and either
+"implementation constants" or "API/string references only" in Basis. Second, if RSA keys are present:
+Key size | Exponent | Strength | Issue | Finding, with only the 0-100 number in the Strength column."""
 
 
 # max findings counted per severity, so a pile of low-severity context (e.g. the

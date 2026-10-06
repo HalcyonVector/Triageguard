@@ -132,9 +132,11 @@ control raises no false alarm.
 
 ## Results
 
-Everything below is saved in `results/`. To browse it all in one page (findings, both reports with clickable
-citations, the red-team charts, done and yet-to-do), run `python -m triageguard dashboard`. It uses only the
-standard library, binds to localhost, and works offline.
+Everything below is saved in `results/`. To browse it all in one page, run `python -m triageguard dashboard`.
+It uses only the standard library, binds to localhost, and works offline. Pick a dump in the sidebar and the
+Overview, Cryptography (cipher confidence and RSA strength in their own columns), Findings and Report views
+follow it; Red team and Progress cover everything. Reports have clickable citations, and each LLM report shows
+its citation coverage and whether the validator flagged it.
 
 **Three public memory dumps** (`results/dumps/<name>/`: `findings.json`, `report_rules.md`, `meta.json`, and
 `report_llm.md` where an LLM key was available):
@@ -175,6 +177,10 @@ LLM calls: `python -m triageguard redteam --rescore --out redteam_results`.
 Correction note: an earlier run of the checker only recognised `[F6]`, but the model often writes `【F6】`
 (fullwidth brackets). That undercounted citations and made `omit_critical` look successful (3/6 undefended,
 2/6 defended, 7/36 and 2/36 overall). The checker accepts both forms now and the table above is re-scored.
+
+The report prompt later gained a table-format instruction (confidence and strength each in their own column).
+The red-team numbers and the three saved LLM reports were generated before that, so regenerate the reports to
+get the new layout: `python -m triageguard report <db> --out results\dumps\<name>\report_llm.md`.
 
 ## Constraints
 

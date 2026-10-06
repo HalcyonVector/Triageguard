@@ -48,6 +48,24 @@ def export_dump(db_path, out_dir, run_id=1, meta=None):
     return info
 
 
+NOTES = "\n\n## Validation notes (automatic)"
+
+
+def llm_check(text, findings):
+    """Citation coverage and risk score of a saved LLM report, for the dashboard.
+
+    Uses only the slim findings (ref, severity), so it covers the citation and risk
+    checks, not the algorithm check that needs each finding's full detail."""
+    from . import defences
+    body = text.split(NOTES)[0]
+    cites = defences.check_citations(body, findings)
+    m = defences.RISK_RE.search(body)
+    return {"citation_rate": cites["citation_rate"], "claim_lines": cites["claim_lines"],
+            "invalid_refs": cites["invalid_refs"], "cited_refs": len(cites["cited_refs"]),
+            "llm_risk": int(m.group(1)) if m else None, "rule_risk": report.risk_score(findings),
+            "flagged": NOTES in text}
+
+
 def load(results_dir):
     results = Path(results_dir)
     dumps = []
@@ -55,11 +73,14 @@ def load(results_dir):
         if not (d / "findings.json").exists():
             continue
         meta = json.loads(_read(d / "meta.json") or "{}")
+        findings = json.loads(_read(d / "findings.json"))
+        llm = _read(d / "report_llm.md")
         dumps.append({
             "id": d.name,
             "meta": meta,
-            "findings": json.loads(_read(d / "findings.json")),
-            "report_llm": _read(d / "report_llm.md"),
+            "findings": findings,
+            "report_llm": llm,
+            "llm_check": llm_check(llm, findings) if llm else None,
             "report_rules": _read(d / "report_rules.md"),
         })
     dumps.sort(key=lambda x: x["meta"].get("order", 99))

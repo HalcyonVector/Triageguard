@@ -146,3 +146,14 @@ def test_export_dump_roundtrip(tmp_path):
 def test_citations_accept_fullwidth_brackets():
     # gpt-oss writes 【F6】; the checker used to count those reports as having no citations
     assert defences.CITE.findall("Injected code 【F6】【F7】 and a key [F28].") == ["F6", "F7", "F28"]
+
+
+def test_dashboard_llm_check_reads_fullwidth_citations_and_notes():
+    from triageguard import dashboard
+    findings = [{"ref": "F1", "severity": "critical"}, {"ref": "F2", "severity": "info"}]
+    text = ("### Summary\n- A critical RSA-512 key was found in the dump 【F1】.\n"
+            "- Nothing else of note was reported in this image at all.\n\n"
+            "### Risk Score (0-100)\n**Score:** **25**\n\n## Validation notes (automatic)\n- only 50% of claims carry a citation")
+    c = dashboard.llm_check(text, findings)
+    assert c["flagged"] and c["llm_risk"] == 25 and c["rule_risk"] == 25
+    assert c["cited_refs"] == 1 and 0 < c["citation_rate"] < 1
