@@ -1,88 +1,92 @@
-**Incident Report** – *Memory image: DESKTOP‑SDN1RPT.mem*  
+# Incident Report  
+
+**Date:** 2026‑10‑06  
+**Analyst:** Malware Triage Team  
 
 ---  
 
 ## Summary  
-The analysis identified two **critical** malicious processes injecting executable code into privileged system binaries: `spoolsv.exe` (PID 2188) and `powershell.exe` (PID 3316) [F6][F8]. A **critical** RSA‑512 key (modulus 512‑bit) was also found, which is trivially factorable [F37]. Numerous low‑strength RSA keys (1024‑bit and 2048‑bit with small exponents) are present, indicating weak cryptographic practices [F25][F28][F40]. Network traffic shows TLS connections to several CDN hosts but no weak TLS ciphers were flagged [F48].  
+The memory image of *DESKTOP‑SDN1RPT* shows two critical injected processes—`spoolsv.exe` (PID 2188) and `powershell.exe` (PID 3316)—both containing RWX regions with PE headers, indicating malicious DLL/EXE injection [F6][F8]. A 512‑bit RSA key with exponent 65537 is present and is publicly factorable, representing a critical cryptographic weakness [F37]. Numerous additional low‑strength RSA keys (1024‑bit, 1536‑bit, and 2048‑bit with small exponent) are also found, suggesting the host was used for weak or illicit cryptographic operations [F25][F28][F33]. Cryptographic primitives such as ECC P‑256, AES, AES‑GCM, RSA, secp256k1, 3DES, DES, and Curve25519 are detected throughout the memory image [F16][F17][F18][F19][F20][F22][F23][F24]. Network captures reveal TLS connections to several media‑hosting domains, but no strong TLS configuration is reported [F48].  
 
 ---  
 
 ## Cryptography  
 
-| Algorithm | Confidence | Finding(s) | Strength / Issues |
-|-----------|------------|------------|-------------------|
-| ECC P‑256 | 99.3 % | [F16] | No known weakness |
-| AES (CBC) | 98.8 % | [F17] | No issue reported |
-| AES‑GCM | 95.5 % | [F18] | No issue reported |
-| RSA (generic) | 94.0 % | [F19] | Includes weak keys (see RSA inventory) |
-| ECC secp256k1 | 92.8 % | [F20] | No issue reported |
-| 3DES | 75.0 % | [F22] | Deprecated algorithm |
-| DES | 60.0 % | [F23] | Deprecated algorithm |
-| Curve25519 | 40.0 % | [F24] | Low detection confidence |
+### Identified Algorithms  
 
-### RSA key inventory  
+| Algorithm | Confidence | Basis | Finding |
+|-----------|------------|-------|---------|
+| ECC P‑256 | 99.3% | implementation constants | [F16] |
+| AES | 98.8% | implementation constants | [F17] |
+| AES‑GCM | 95.5% | API/string references only | [F18] |
+| RSA | 94.0% | implementation constants | [F19] |
+| ECC secp256k1 | 92.8% | implementation constants | [F20] |
+| generic crypto | 83.2% | API/string references only | [F21] |
+| 3DES | 75.0% | API/string references only | [F22] |
+| DES | 60.0% | implementation constants | [F23] |
+| Curve25519 | 40.0% | API/string references only | [F24] |
 
-- **RSA‑512** (e = 65537) – strength 0 / 100; modulus is publicly factorable [F37].  
-- **RSA‑1024** (e = 65537) – 12 keys each scoring 35 / 100 due to insufficient modulus size [F25][F26][F27][F29][F30][F31][F32][F34][F35][F36][F38][F39].  
-- **RSA‑2048** (e = 3) – 2 keys scoring 40 / 100 because of a small exponent [F28][F40].  
-- Overall RSA summary reports 151 keys without detected weaknesses and 6 corrupt key‑like structures [F41].
+### RSA Keys  
 
-### Entropy observations  
-
-High‑entropy regions (potential cryptographic material) total 200 across the image (≈864 KB) [F42]; additional localized high‑entropy blocks are present in the dumped binaries [F43][F45][F46][F47].  
+| Key size | Exponent | Strength | Issue | Finding |
+|----------|----------|----------|-------|---------|
+| 512 bits | 65537 | 0 | modulus size (publicly factorable) | [F37] |
+| 1024 bits | 65537 | 35 | modulus size (weak) | [F25] |
+| 1024 bits | 65537 | 35 | modulus size (weak) | [F26] |
+| 1024 bits | 65537 | 35 | modulus size (weak) | [F27] |
+| 2048 bits | 3 | 40 | small exponent | [F28] |
+| 1024 bits | 65537 | 35 | modulus size (weak) | [F29] |
+| 1024 bits | 65537 | 35 | modulus size (weak) | [F30] |
+| 1024 bits | 65537 | 35 | modulus size (weak) | [F31] |
+| 1024 bits | 65537 | 35 | modulus size (weak) | [F32] |
+| 1536 bits | 65537 | 35 | modulus size (weak) | [F33] |
+| 1024 bits | 65537 | 35 | modulus size (weak) | [F34] |
+| 1024 bits | 65537 | 35 | modulus size (weak) | [F35] |
+| 1024 bits | 65537 | 35 | modulus size (weak) | [F36] |
+| 1024 bits | 65537 | 35 | modulus size (weak) | [F38] |
+| 1024 bits | 65537 | 35 | modulus size (weak) | [F39] |
+| 2048 bits | 3 | 40 | small exponent | [F40] |
 
 ---  
 
 ## Credentials  
-
-No credential artifacts (passwords, hashes, tokens) were identified in the supplied findings [F1][F2].  
-
----  
-
-## Processes and Network  
-
-- The system hosts **95 processes** and **95 command‑line strings** [F1][F2].  
-- **Critical injected processes**:  
-  - `spoolsv.exe` (PID 2188) contains a RWX memory region with a PE header, indicating a likely injected DLL/EXE [F6].  
-  - `powershell.exe` (PID 3316) shows five RWX regions, two with unique executable code and one with a PE header, strongly suggesting malicious injection [F8].  
-- A low‑severity RWX region in `MsMpEng.exe` (PID 2404) is attributed to expected JIT activity [F7].  
-- The memory image records **7 injected regions** in total [F4].  
-- Static dumps of the suspicious regions exhibit varying entropy (e.g., 5.368 for the spoolsv region) but no known crypto imports or YARA matches [F9][F11][F13][F14][F15].  
-- Network summary: **115 connections** captured, with **50 distinct conversations**; TLS Server Name Indication (SNI) values include several media CDN hosts (e.g., `64.media.tumblr.com`) and no weak TLS ciphers were flagged [F3][F48].  
+No credential artifacts (passwords, hashes, tokens) were extracted from the memory image [F1][F2].  
 
 ---  
 
-## Risk Score (0‑100)  
+## Processes  
 
-The rule‑based risk score is **85**; this value already reflects the presence of the critical findings (process injection and broken RSA‑512 key) [F6][F8][F37]. No cited evidence justifies a deviation, so the final risk score remains **85**.  
+- `spoolsv.exe` (PID 2188) contains a RWX injected region with a PE header, indicating a likely malicious DLL/EXE injection [F6].  
+- `powershell.exe` (PID 3316) has five RWX injected regions, two of which contain PE headers and two with unique executable code, strongly suggesting malicious code injection [F8].  
+- `MsMpEng.exe` (PID 2404) shows an RWX region identified as a known JIT process; this behavior is expected and not flagged as malicious [F7].  
+- The full process list comprises 95 entries [F1].  
+
+---  
+
+## Network  
+
+- The memory image records 115 network rows, representing 50 distinct conversations [F3].  
+- TLS Server Name Indication (SNI) values include `64.media.tumblr.com`, `66.media.tumblr.com`, `78.media.tumblr.com`, `a.thumbs.redditmedia.com`, and `a125375509.cdn.optimizely.com`, indicating outbound HTTPS traffic to content‑delivery networks [F48].  
+- The analysis notes “weak TLS []”, suggesting that strong TLS configurations were not observed [F48].  
+
+---  
+
+## Risk Score  
+
+The provided rule‑based risk score is **85**. This baseline already accounts for the critical injected processes and the broken RSA‑512 key, and no cited finding justifies a different value, so the score is retained.  
 
 ---  
 
 ## Recommendations  
 
-- **Containment** – Immediately isolate the host from the network to stop further exfiltration or lateral movement [F6][F8].  
-- **Process remediation** –  
-  - Terminate the injected `spoolsv.exe` and `powershell.exe` instances [F6][F8];  
-  - Replace the binaries with trusted copies from a clean source [F6][F8];  
-  - Perform a full memory dump of the injected RWX regions for deeper malware analysis [F9][F11][F13][F14][F15].  
-- **Key management** –  
-  - Revoke the RSA‑512 key and all RSA‑1024 keys; generate new RSA‑3072 or RSA‑4096 keys with strong exponents (e ≥ 65537) [F37][F25][F28][F40];  
-  - Update all services to use modern algorithms (AES‑GCM, ECC P‑256) and disable deprecated ciphers (3DES, DES) [F22][F23].  
-- **Credential hygiene** – Deploy credential‑dump detection tools and enforce strict credential protection policies, even though no credentials were observed in this dump [F1][F2].  
-- **Network monitoring** –  
-  - Inspect the recorded TLS connections for anomalous data exfiltration to the listed CDNs [F48];  
-  - Enforce TLS 1.3 with strong cipher suites across the environment.  
-- **System hardening** –  
-  - Enable Windows Defender Exploit Guard and configure Controlled Folder Access to block unauthorized code injection [F7];  
-  - Regularly audit for RWX memory regions in privileged processes [F4].  
-- **Forensic follow‑up** –  
-  - Correlate the high‑entropy regions with potential cryptographic keys or payloads [F42][F45][F46][F47];  
-  - Conduct static and dynamic analysis of the injected PE files to identify command‑and‑control infrastructure [F9][F11][F13][F14][F15].  
+- **Isolate the host** from the network to stop further lateral movement or data exfiltration [F6][F8].  
+- **Terminate and remove** the injected `spoolsv.exe` and `powershell.exe` instances; capture a full memory dump for deeper analysis [F6][F8].  
+- **Re‑image the system** after confirming removal of all malicious artifacts, as the presence of numerous weak RSA keys indicates possible illicit cryptographic activity [F25][F28][F33].  
+- **Update and harden TLS configurations** on all outbound connections; enforce TLS 1.2/1.3 with strong cipher suites to mitigate potential downgrade attacks [F48].  
+- **Conduct a full forensic investigation** of the filesystem and registry to locate persistence mechanisms (e.g., scheduled tasks, startup entries) that may have loaded the malicious modules [F4][F5].  
+- **Monitor network traffic** for additional connections to the listed SNI domains and any unknown external IPs; consider blocking unnecessary outbound traffic [F48].  
+- **Review and rotate any credentials** that may have been used on the compromised host, even though none were found in memory, to eliminate the risk of credential reuse [F1][F2].  
 
 ---  
 
-*Prepared by: Malware Triage Analyst*  
-
-## Validation notes (automatic)
-Rule-based risk score: 85/100. This report failed these checks, treat the points below as unverified:
-- only 88% of claims carry a citation
+*End of Report*  

@@ -3,6 +3,8 @@
 AI-assisted memory forensics and cryptographic malware triage pipeline.
 ICT 3141 Information Security Lab, CCE A. Sagnik Basu (240953528), Arjun Mittal (240953440).
 
+New here? `docs/HOW_IT_WORKS.md` explains what the project does and how, stage by stage, in plain language.
+
 Takes a memory dump (plus an optional pcap), extracts processes, connections, injected code and USB history
 with Volatility3, identifies ciphers and weak RSA keys, finds credentials, stores everything in SQLite and
 turns the findings (never the raw dump) into an evidence-cited report.
