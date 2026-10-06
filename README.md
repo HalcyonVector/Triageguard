@@ -150,9 +150,10 @@ its citation coverage and whether the validator flagged it.
 | `win7` Hacktoria Memory Mystery, 1 GB | Windows 7 SP1 x86 | 58 | 30 | identical code in 5 unrelated processes (system-wide hook, medium), `cmd.exe` started by `vmtoolsd.exe` |
 
 All three have an LLM report (gpt-oss-120b, defended prompt) that cites findings. The validator passes Win10
-(91% of claims cited), flags Win11 (72% cited) and flags Win7, whose answer was cut off before the risk score
-(reasoning models can spend their output budget thinking; set `TRIAGEGUARD_REASONING_EFFORT=low` and rerun).
-Flagged reports carry a "Validation notes" section at the bottom. Regenerate one with your own key:
+(91% of claims cited) and Win7 (93%) and flags Win11 (72% cited). The first Win7 attempt was cut off before
+its risk score, because a reasoning model can spend its output budget thinking; rerunning with
+`TRIAGEGUARD_REASONING_EFFORT=low` gave a complete report. Flagged reports carry a "Validation notes" section
+at the bottom. Regenerate one with your own key:
 `python -m triageguard report ..\data\w10.db --out results\dumps\win10\report_llm.md`.
 New dump: `analyze` it, then `python -m triageguard export <db> <name> --title ... --os ...`.
 

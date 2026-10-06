@@ -257,10 +257,12 @@ If a report fails, the model gets the list of problems and one chance to rewrite
 shipped with a "Validation notes" section at the bottom, so a reader is never handed an unflagged misleading
 report.
 
-A real example of this working: the Windows 7 report came back cut off in the middle of a table, because the
-model used up its output budget before writing the risk score. The validator noticed ("no risk score stated")
-and the report carries that note. The Windows 11 report is also flagged (72% of claims cited), and the model
-raised the risk to 75 against our 55, which is inside the 20-point tolerance but explained in the report.
+A real example of this working: the first Windows 7 report came back cut off in the middle of a table, because
+the model used up its output budget thinking before it wrote the risk score. The validator noticed ("no risk
+score stated") and flagged it. Rerunning with `TRIAGEGUARD_REASONING_EFFORT=low` gave a complete report that
+passes (93% of claims cited, stated risk 30 equals ours). The Windows 11 report is flagged (72% of claims
+cited), and the model raised the risk to 75 against our 55, which is inside the 20-point tolerance but
+explained in the report.
 
 ### 5.4 Results (78 LLM reports)
 
