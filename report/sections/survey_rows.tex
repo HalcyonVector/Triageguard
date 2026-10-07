@@ -1,0 +1,323 @@
+% Rows of the literature survey table in the teacher's 15-column format.
+% Shared by literature_survey.tex (standalone A2 landscape) and the report appendix.
+% \svcite{key} prints a citation in the report and nothing in the standalone survey.
+
+1 &
+Baig, Ul Haq, Habib, ``A Comparative Analysis of AES, RSA, and 3DES Encryption Standards based on Speed and Performance'' (Management Science Advances)\svcite{baig2024comparative} &
+2024 &
+Symmetric vs.\ asymmetric cipher overview; literature-based comparative review of AES, DES, 3DES, RSA covering computation time and memory usage &
+Symmetric ciphers process faster than RSA; RSA offers stronger key-exchange properties. A review rather than a fresh experimental benchmark; no primary data of its own &
+AES 128/192/256-bit; DES 56-bit; 3DES 112-bit &
+Not experimentally varied &
+N/A &
+AES, DES, 3DES, RSA &
+Cites prior benchmarks showing AES/DES faster than RSA &
+Qualitative time/memory comparison only &
+Relies entirely on cited studies; no primary experimental data &
+None directly &
+Confirms the baseline speed hierarchy (AES $>$ DES $>$ RSA) that TriageGuard's algorithm-classification module assumes &
+None directly \\
+
+2 &
+Banu, Rath, Gountia, ``Analyzing cryptographic algorithm efficiency within graph-based encryption models'' (Frontiers in Computer Science)\svcite{banu2025analyzing} &
+2025 &
+Asymmetric cipher performance on real files; implements RSA/ElGamal in C\#, benchmarks on text/image/audio files of 22\,KB to 5{,}120\,KB against AES-256/ECC baselines &
+RSA is faster but memory-heavier; ElGamal is slower but more memory-efficient; both far slower than AES-256. Real measured trade-off; single-machine benchmark &
+RSA/ElGamal/ECC 2048-bit; AES-256; 64/128-bit in early trials &
+22\,KB to 5{,}120\,KB (text/image/audio) &
+RSA $\sim$169.82\,KB memory for 22\,KB input; ElGamal $\sim$0.17\,KB &
+RSA, ElGamal vs.\ AES-256, ECC &
+RSA 0.108\,s vs.\ ElGamal 1.55\,s for 22\,KB text; AES-256 $\sim$0.001\,s &
+RSA throughput $\sim$203\,KB/s vs.\ ElGamal $\sim$14\,KB/s &
+Single-machine benchmark; no malware-context evaluation &
+File-level, not memory-resident, but technique is reusable &
+Very high; supplies real operating ranges for TriageGuard's crypto-detection thresholds &
+None directly \\
+
+3 &
+Ruzai, Ying, Muhammad, Asbullah, Ariffin, ``Concurrent factorization of RSA moduli via weak key equations'' (AIMS Mathematics)\svcite{ruzai2024concurrent} &
+2024 &
+RSA cryptanalysis; applies Diophantine approximation and Coppersmith's lattice technique to sets of RSA public keys &
+Polynomial-time factorization achievable when small-integer relationships hold among RSA parameters. Purely theoretical; no implementation &
+RSA moduli, structurally related, unspecified bit-lengths &
+N/A &
+N/A &
+RSA &
+Polynomial-time (theoretical) &
+Demonstrates concurrent factorization of multiple weak moduli &
+No automated tooling to detect these conditions in real malware samples &
+None directly &
+Very high; underlies TriageGuard's RSA weak-key checks (small exponent, shared modulus) &
+None directly \\
+
+4 &
+Raghu, ``A Context-Aware Framework for Secure Fintech APIs: Leveraging Java Spring Boot and OAuth 2.0 with Dynamic Token Adaptation'' (J.\ Info.\ Systems Eng.\ \& Mgmt.)\svcite{raghu2025context} &
+2025 &
+OAuth 2.0/JWT adaptive security for fintech APIs; Spring Boot + Redis-based dynamic risk scoring adjusting JWT scope/TTL in real time, load-tested with JMeter &
+Adaptive tokens cut unauthorized access by 84\% at a small latency cost. Security gains carry an explicit, quantified performance cost &
+RSA 2048-bit (JWT via RS256) &
+N/A (tokens, not files) &
+N/A; JWT byte-size not reported &
+OAuth 2.0/JWT (RS256) with dynamic scope/TTL &
++3\,ms median latency (10\,ms vs.\ 7\,ms baseline) &
+$\geq$230 TPS vs.\ 250 baseline; 84\% fewer unauthorized attempts &
+Tested on one GKE deployment; not evaluated against forged tokens embedded in malware &
+None directly &
+High; benchmark for acceptable JWT/OAuth hardening overhead &
+None directly \\
+
+5 &
+Rujichaikul, Rassameeroj, ``Token-Based Authentication Monitoring System'' (J.\ Cyber Security and Mobility)\svcite{rujichaikul2025token} &
+2025 &
+JWT/OAuth attack detection; 25 rule-based detection signatures tested via 70 test cases on a token-based web app &
+81.4\% detection accuracy, 92\% recall, low operational overhead. Prioritises recall over false-positive rate &
+N/A; monitors usage patterns, not the signing key &
+N/A &
+N/A &
+JWT access tokens + OAuth 2.0 refresh tokens (monitored) &
+9.7\,ms avg.\ detection latency &
+81.4\% accuracy; 2.3\% CPU overhead; +18\,MB memory &
+Struggles with VPN/IP-spoofing edge cases; no ML component &
+None directly &
+High; precedent for detection-accuracy/overhead trade-offs &
+None directly \\
+
+6 &
+Oh, Kim, Kim, Kim, ``volGPT: Evaluation on triaging ransomware process in memory forensics with large language model'' (Forensic Sci.\ Int.: Digital Investigation)\svcite{oh2024volgpt} &
+2024 &
+AI-assisted memory forensics for ransomware; extracts process artefacts from memory images, feeds them to an LLM to triage ransomware-related processes &
+LLM-assisted triage improves identification of ransomware-relevant processes over raw plugin output. Prompt design and hallucination remain open issues &
+N/A &
+N/A &
+N/A &
+N/A (detects ransomware presence, not cipher parameters) &
+Not reported &
+Improved triage accuracy vs.\ plugin baseline &
+Never tests whether a crafted sample can bias the LLM's own verdict &
+Very high; near-identical Stage~1 approach TriageGuard builds on &
+Low; detects ransomware but not encryption strength &
+Gap TriageGuard's red-teaming track directly addresses \\
+
+7 &
+Sharma, Ghawaly, McCleary, Webb, Baggili, ``ForensicLLM: A local large language model for digital forensics'' (Forensic Sci.\ Int.: Digital Investigation)\svcite{sharma2025forensicllm} &
+2025 &
+Locally-hosted LLM for forensic reports; fine-tunes a local LLM on forensic artefact data for investigator queries without cloud exposure &
+Local deployment matches cloud LLM Q\&A performance with less data-exposure risk. Focuses on deployment/privacy, not adversarial evidence &
+N/A &
+N/A &
+N/A &
+N/A &
+Not reported &
+Comparable to cloud LLM performance &
+No test of manipulated input &
+High; validates TriageGuard's own LLM-report design choice &
+None directly &
+Adds the missing layer TriageGuard tests: resistance to manipulated input \\
+
+8 &
+Casino, Hurley-Smith, Hernandez-Castro, Patsakis, ``Not on my watch: ransomware detection through classification of high-entropy file segments'' (Journal of Cybersecurity)\svcite{casino2025not} &
+2025 &
+Entropy-based ransomware/encryption detection; trains a classifier to distinguish genuinely encrypted segments from other high-entropy data (e.g.\ compressed files) &
+Outperforms naive entropy-threshold detectors, reduces false positives. Detects that data is encrypted, not which algorithm or how strong &
+N/A (detection, not a specific cipher benchmark) &
+File segments of varying entropy (size unspecified) &
+N/A &
+Detects encrypted vs.\ compressed high-entropy data (algorithm-agnostic) &
+Not reported &
+Improved false-positive rate over threshold baseline &
+No algorithm identification or key-strength evaluation &
+Moderate; file-level, technique reusable &
+Very high; direct basis for TriageGuard's entropy module &
+None; no AI reporting layer \\
+
+9 &
+Gokcimen, ``A novel system for strengthening security in large language models'' (Alexandria Engineering Journal)\svcite{gokcimen2025novel} &
+2025 &
+LLM security hardening against manipulation; proposes an architectural defence layer for LLM deployments, evaluated against injection-style attacks &
+Measurable improvement in resistance to malicious input manipulation. General-purpose framework, not forensics-specific &
+N/A &
+N/A &
+N/A &
+N/A &
+Not reported &
+Reduced attack success rate (framework-level) &
+Not evaluated in a forensics/malware-triage context or against evidence-embedded attacks &
+None directly &
+None directly &
+Very high; parallels TriageGuard's own attack-then-harden methodology \\
+
+10 &
+Barnes, Ghafarian, ``Machine Learning-Based Static Ransomware Detection Using PE Header Features and SHAP Interpretation'' (J.\ Cybersecurity and Privacy)\svcite{barnes2026machine} &
+2026 &
+Static PE-header-based ransomware classification; trains Random Forest, SVM, XGBoost on PE header features across three datasets; uses SHAP to interpret decisions &
+Strong classification accuracy; SHAP identifies the most indicative header fields. Static features are brittle against packing/obfuscation &
+N/A &
+N/A &
+N/A &
+N/A (static feature classification, not cipher benchmark) &
+Not reported &
+High classification accuracy (exact figures not in abstract) &
+Doesn't test evasion or combine with entropy/behavioural signals &
+High; reinforces TriageGuard's static-analysis stage &
+Moderate; complements entropy/key-level analysis &
+None; no adversarial-robustness component \\
+
+11 &
+Carrier, Victor, Tekeoglu, Lashkari, ``Detecting Obfuscated Malware using Memory Feature Engineering'' (ICISSP)\svcite{carrier2022detecting} &
+2022 &
+ML malware detection from memory; extends the VolMemLyzer feature extractor (built on Volatility) and trains a stacked ensemble on the new MalMemAnalysis-2022 dataset &
+Memory features detect obfuscated malware with 99.00\% accuracy and 99.02\% F1-score &
+N/A &
+N/A &
+N/A &
+N/A &
+Not reported here &
+99.00\% accuracy, 99.02\% F1 &
+Binary malicious/benign verdict; no explanation, no cryptographic analysis &
+Very high; confirms Volatility features carry the evidence TriageGuard's Stage~1 extracts &
+None directly &
+None; no LLM layer. TriageGuard explains findings in a cited report instead of a label \\
+
+12 &
+Scanlon, Breitinger, Hargreaves, Hilgert, Sheppard, ``ChatGPT for digital forensic investigation: The good, the bad, and the unknown'' (Forensic Sci.\ Int.: Digital Investigation)\svcite{scanlon2023chatgpt} &
+2023 &
+LLMs in forensics; tests GPT-4 on artefact analysis, evidence search, script writing, anomaly detection, incident response and training scenarios &
+Some low-risk uses work, but many are unsuitable today: uploading evidence raises privacy issues and the user must catch the model's mistakes &
+N/A &
+N/A &
+N/A &
+N/A &
+Not reported &
+Qualitative, per scenario &
+No systematic defence against wrong or manipulated output &
+High; motivates feeding the LLM findings, not raw evidence &
+None directly &
+Very high; TriageGuard adds mandatory citations and a rule cross-check so mistakes are caught automatically \\
+
+13 &
+Fernandez de Loaysa Babiano, Macfarlane, Davies, ``Evaluation of live forensic techniques, towards Salsa20-based cryptographic ransomware mitigation'' (Forensic Sci.\ Int.: Digital Investigation)\svcite{babiano2023evaluation} &
+2023 &
+Live memory forensics against ransomware; extracts Salsa20 keys and nonces from volatile memory while ransomware runs &
+Over 90\% of Salsa20 key and nonce pairs recovered from memory, enough to decrypt files without paying, even with a unique key per file &
+Salsa20 256-bit key + 64-bit nonce &
+Victim files &
+Encrypted files (stream cipher, same length) &
+Salsa20 inside hybrid encryption &
+Not reported here &
+$>$90\% key/nonce pairs recovered &
+Targets Salsa20 specifically; needs capture while the ransomware is running &
+Very high; shows modern ransomware keys live in RAM &
+Very high; supports TriageGuard's ChaCha/Salsa20 detection &
+None \\
+
+14 &
+Baier, Basse, Hilgert, Lambertz, ``TLS key material identification and extraction in memory: Current state and future challenges'' (DFRWS USA)\svcite{baier2024tls} &
+2024 &
+Systematisation of knowledge; reviews academic and in-the-wild methods for finding and extracting TLS key material from memory &
+Memory extraction of TLS keys is essential for decrypting malware traffic; lists open research challenges &
+TLS session keys and secrets &
+N/A &
+N/A &
+TLS (symmetric session keys) &
+Not reported &
+Qualitative survey &
+Survey; does not cover RSA weak-key testing or reporting &
+Very high; memory as a source of key material &
+High; links TriageGuard's memory and pcap stages &
+None \\
+
+15 &
+Meijer, Moonsamy, Wetzels, ``Where's Crypto?: Automated Identification and Classification of Proprietary Cryptographic Primitives in Binary Code'' (USENIX Security)\svcite{meijer2021wheres} &
+2021 &
+Crypto identification in binaries; data-flow-graph isomorphism plus symbolic execution, released as an IDA plugin &
+Identifies and classifies both known and proprietary primitives, tested on public and proprietary binaries &
+Varies per primitive &
+N/A &
+N/A &
+Known and proprietary primitives &
+Not reported here &
+Not reported here &
+Per-binary analysis in a disassembler; not on whole memory images &
+Low &
+Very high; covers custom ciphers that TriageGuard's constant signatures would miss &
+None \\
+
+16 &
+Oz, Aris, Levi, Uluagac, ``A Survey on Ransomware: Evolution, Taxonomy, and Defense Solutions'' (ACM Computing Surveys)\svcite{oz2022survey} &
+2022 &
+Survey of ransomware evolution, taxonomy, and detection and defence techniques across platforms &
+Organises ransomware by target, infection and encryption behaviour, and reviews defences &
+Varies (symmetric + asymmetric hybrids) &
+Victim files &
+Encrypted files &
+Hybrid encryption, varies by family &
+Not reported &
+Survey &
+Survey; no tool &
+Moderate &
+High; motivates identifying which cipher a sample really uses &
+None \\
+
+17 &
+Pelofske, ``An Efficient All-to-All GCD Algorithm for Low Entropy RSA Key Factorization'' (IACR ePrint 2024/699)\svcite{pelofske2024efficient} &
+2024 &
+RSA weak-key cryptanalysis; binary-tree batch GCD to find RSA moduli that share a prime because of low-entropy key generation &
+About 6x faster than the standard remainder-tree batch GCD, same asymptotic scaling &
+RSA moduli &
+N/A &
+Shared prime factors &
+RSA &
+About 6x speedup over remainder-tree batch GCD &
+Speedup grows with the number of shared factors &
+Algorithmic; applied to key collections, not memory &
+None directly &
+Very high; same shared-prime test TriageGuard runs on carved keys &
+None \\
+
+18 &
+Greshake, Abdelnabi, Mishra, Endres, Holz, Fritz, ``Not What You've Signed Up For: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection'' (ACM AISec)\svcite{greshake2023not} &
+2023 &
+Indirect prompt injection; instructions planted in data an LLM application retrieves, shown on real systems &
+Retrieved data can take over an LLM-integrated application &
+N/A &
+N/A &
+N/A &
+N/A &
+Not reported &
+Demonstrated on deployed applications &
+General applications; no forensic setting; no measured defences &
+Low &
+None directly &
+Very high; memory artefacts are exactly such retrieved data \\
+
+19 &
+Hines, Lopez, Hall, Zarfati, Zunger, Kiciman, ``Defending Against Indirect Prompt Injection Attacks With Spotlighting'' (arXiv:2403.14720)\svcite{hines2024spotlighting} &
+2024 &
+Defence; marks untrusted input by delimiting, datamarking or encoding so the model can tell data from instructions &
+Reduces attack success from over 50\% to under 2\% in their experiments &
+N/A &
+N/A &
+N/A &
+N/A &
+Not reported &
+ASR from $>$50\% to $<$2\% &
+Single input-side defence; no output validation &
+None directly &
+None directly &
+Very high; TriageGuard's defence D2, combined with output checks \\
+
+20 &
+Liu, Jia, Geng, Jia, Gong, ``Formalizing and Benchmarking Prompt Injection Attacks and Defenses'' (USENIX Security)\svcite{liu2024formalizing} &
+2024 &
+Framework formalising prompt injection; benchmark of 5 attacks and 10 defences on 10 LLMs and 7 tasks &
+Combined attacks are most effective; existing defences are not sufficient on their own &
+N/A &
+N/A &
+N/A &
+N/A &
+Not reported &
+Benchmark across 10 LLMs &
+General tasks; no evidence-citation check &
+None directly &
+None directly &
+Very high; supports layering several defences as TriageGuard does \\

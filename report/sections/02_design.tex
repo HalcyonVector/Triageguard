@@ -1,0 +1,218 @@
+\section{Design and Methodology}
+
+\subsection{Design principles}
+Two rules shape the design. (1) \emph{The LLM never sees the raw dump}, only structured findings. This
+shrinks the attack surface and keeps every statement traceable to a finding id. (2) \emph{Facts come from
+code, not from the LLM.} Cipher confidence, key strength and the risk score are computed
+deterministically; the LLM only writes them up and a validator checks that it did so honestly.
+
+\subsection{Block diagram}
+Fig.~\ref{fig:block} shows the six-stage pipeline. Stages 1 to 5 write findings to SQLite; stage 6 reads
+them back and produces either a rule-based report (always available) or a defended LLM report.
+
+\begin{figure*}[t]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[stage/.style={blk, text width=62mm, minimum height=9mm}]
+  % stages
+  \node[stage] (s1) at (6.0,0)     {\textbf{1 Memory}: Volatility3 processes, command lines, connections, malfind, USB history};
+  \node[stage] (s2) at (6.0,-1.3)  {\textbf{2 Static}: strings, PE headers, imports, section entropy, YARA};
+  \node[stage, fill=green!12] (s3) at (6.0,-2.6) {\textbf{3 Crypto (core)}: entropy, cipher ID with confidence, RSA extraction + weak keys};
+  \node[stage] (s4) at (6.0,-3.9)  {\textbf{4 Credentials}: JWT, OAuth/API tokens, OTP secrets (redacted)};
+  \node[stage] (s5) at (6.0,-5.2)  {\textbf{5 Network}: pyshark, TLS version and suite, DNS, SNI};
+  % inputs
+  \node[io, text width=17mm] (bin)  at (0,-1.3) {Binary\\(optional)};
+  \node[io, text width=20mm] (dump) at (0,-2.6) {Memory dump\\(.raw/.dmp)};
+  \node[io, text width=17mm] (pcap) at (0,-5.2) {pcap\\(optional)};
+  % dump bus with a hop where the binary line crosses it
+  \draw (dump.east) -- (1.8,-2.6);
+  \draw (1.8,0) -- (1.8,-3.9);
+  \draw[->] (1.8,0) -- (s1.west);
+  \draw[->] (1.8,-2.6) -- (s3.west);
+  \draw[->] (1.8,-3.9) -- (s4.west);
+  \draw[->] (bin.east) -- (1.65,-1.3) arc(180:0:0.15) -- (s2.west);
+  \draw[->] (pcap.east) -- (s5.west);
+  \draw[->] (s1.south) -- node[right, font=\scriptsize]{extracted RWX regions} (s2.north);
+  % collector bus into SQLite
+  \foreach \s in {s1,s2,s3,s4,s5} \draw (\s.east) -- (\s.east -| 9.6,0);
+  \draw (9.6,0) -- (9.6,-5.2);
+  \node[db] (db) at (10.9,-2.6) {SQLite\\findings\\F1, F2, ...};
+  \draw[->] (9.6,-2.6) -- (db.west);
+  % reporting
+  \node[blk, text width=17mm] (risk) at (13.1,-1.6) {Rule-based\\risk 0 to 100};
+  \node[blk, text width=17mm] (rule) at (13.1,-3.6) {6a Rule-based\\report};
+  \node[llm, text width=30mm] (llm)  at (16.6,-1.6) {\textbf{6b LLM report}\\sanitise, spotlight, LLM,\\validate, retry once};
+  \node[io, text width=22mm] (out)   at (16.6,-3.6) {results/ +\\dashboard};
+  \draw[->] (db) -- (risk);
+  \draw[->] (db) -- (rule);
+  \draw[->] (risk) -- (llm);
+  \draw[->] (db.north) -- (10.9,-0.35) -- node[above, font=\scriptsize]{findings only, never the raw dump} (16.6,-0.35) -- (llm.north);
+  \draw[->] (llm) -- (out);
+  \draw[->] (rule) -- (out);
+\end{tikzpicture}}
+\caption{TriageGuard block diagram. Every stage records numbered findings; the LLM sees findings only.}
+\label{fig:block}
+\end{figure*}
+
+\subsection{Architecture}
+The code is a Python package (\texttt{triageguard/}) with one module per stage, a SQLite store, a report
+layer and a command-line front end (Fig.~\ref{fig:arch}). \texttt{pipeline.py} orchestrates the stages;
+each stage is independent, so a missing input (no Windows kernel, no pcap, no API key) skips that stage
+instead of failing the run. A local dashboard (standard library HTTP server, localhost only, offline)
+reads the exported \texttt{results/} folder.
+
+\begin{figure}[t]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tikzpicture}[every node/.style={font=\scriptsize}]
+  \node[blk, text width=80mm, fill=gray!10] (ui) at (0,0) {\textbf{Interface}: \texttt{cli.py} (analyze, crypto, report, redteam, export, dashboard), \texttt{dashboard.py}};
+  \node[blk, text width=80mm, fill=yellow!10] (orch) at (0,-1.0) {\textbf{Orchestration}: \texttt{pipeline.py} (stage order, severities, skipping)};
+  \node[blk, text width=13mm] (m)  at (-3.3,-2.25) {\texttt{memory}\\\texttt{static}};
+  \node[blk, text width=28mm, fill=green!12] (c) at (-0.65,-2.25) {\texttt{crypto/}: entropy, identify,\\signatures, rsa\_weak};
+  \node[blk, text width=16mm] (cr) at (2.05,-2.25) {\texttt{credentials}\\\texttt{network}};
+  \node[blk, text width=11mm, fill=red!8] (rt) at (3.75,-2.25) {\texttt{redteam}};
+  \node[draw, dashed, fit=(m)(c)(cr)(rt), inner sep=1mm] (an) {};
+  \node[blk, text width=80mm, fill=red!8] (rep) at (0,-3.5) {\textbf{Reporting}: \texttt{report.py} (risk, rule report, LLM client), \texttt{defences.py} (D1 to D4)};
+  \node[db] (st) at (-2.0,-4.8) {\texttt{store.py}\\SQLite};
+  \node[ext] (ext) at (2.0,-4.8) {External: Volatility3, pefile,\\YARA, tshark, Groq API};
+  \draw[->] (ui) -- (orch);
+  \draw[->] (orch) -- (an);
+  \draw[->] (an) -- (rep);
+  \draw[->] (rep.south -| st) -- (st);
+  \draw[->, dashed] (rep.south -| ext) -- (ext);
+\end{tikzpicture}}
+\caption{Layered architecture of the Python package (analysis modules in the dashed box).}
+\label{fig:arch}
+\end{figure}
+
+\subsection{Data flow (DFD level 0)}
+Fig.~\ref{fig:dfd0} shows the context diagram. The level-1 DFD and UML diagrams are in the Appendix.
+
+\begin{figure}[t]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tikzpicture}
+  \node[proc, minimum size=19mm] (p) at (0,0) {0\\TriageGuard};
+  \node[ext, text width=17mm] (an)   at (-3.6,1.7)  {Analyst};
+  \node[ext, text width=17mm] (ds)   at (-3.6,-1.7) {Public dump\\+ pcap};
+  \node[ext, text width=19mm] (vol)  at (3.6,1.7)   {Volatility3 +\\MS symbols};
+  \node[ext, text width=19mm] (groq) at (3.6,-1.7)  {LLM API\\(Groq)};
+  \draw[flow] (an) to[bend left=12] node[above, sloped]{command} (p);
+  \draw[flow] (p) to[bend left=12] node[below, sloped]{report, dashboard} (an);
+  \draw[flow] (ds) -- node[below, sloped]{image, capture} (p);
+  \draw[flow] (p) to[bend left=12] node[above, sloped, pos=0.6]{dump path} (vol);
+  \draw[flow] (vol) to[bend left=12] node[below, sloped, pos=0.35]{JSON rows} (p);
+  \draw[flow] (p) to[bend left=12] node[above, sloped, pos=0.6]{sanitised findings} (groq);
+  \draw[flow] (groq) to[bend left=12] node[below, sloped, pos=0.4]{report text} (p);
+\end{tikzpicture}}
+\caption{DFD level 0 (context diagram).}
+\label{fig:dfd0}
+\end{figure}
+
+\subsection{Database design (ER diagram)}
+All evidence lives in two tables (Fig.~\ref{fig:er}). A \texttt{run} is one analysis of one dump; it owns
+many \texttt{findings}. Each finding has a citation id (\texttt{ref}, e.g.\ F12) that the LLM must cite and the
+validator and dashboard resolve. Stage-specific detail is a JSON column, so new checks need no schema change.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  ent/.style={draw, rectangle split, rectangle split parts=2, align=left, font=\scriptsize,
+              rectangle split part fill={blue!15,white}, inner sep=2pt, text width=33mm}]
+  \node[ent] (runs) {\textbf{runs}\nodepart{second}
+    \underline{id} INTEGER PK\\ started TEXT (UTC ISO)\\ dump TEXT\\ pcap TEXT};
+  \node[ent, right=9mm of runs] (f) {\textbf{findings}\nodepart{second}
+    \underline{id} INTEGER PK\\ run\_id INTEGER FK\\ ref TEXT (F1, F2, ...)\\ module TEXT\\ kind TEXT\\
+    title TEXT\\ severity TEXT\\ source TEXT\\ location TEXT\\ data TEXT (JSON)};
+  \draw (runs.east |- runs.north) ++(0,-6mm) coordinate (a) -- node[pos=0.12,above,font=\scriptsize]{1} node[pos=0.88,above,font=\scriptsize]{N} node[midway,below,font=\scriptsize]{has} (a -| f.west);
+  \node[font=\scriptsize, below=1mm of runs, text width=33mm, align=left]
+    {module $\in$ \{memory, static, crypto, rsa, credentials, network\}\\[1mm]
+     severity $\in$ \{info, low, medium, high, critical\}\\[1mm]
+     one run \textit{has} many findings};
+\end{tikzpicture}
+\caption{ER diagram of the SQLite schema (\texttt{store.py}).}
+\label{fig:er}
+\end{figure}
+
+\subsection{Modules, algorithms and justification}
+
+\textit{Memory (Volatility3).} The standard open-source framework; it auto-detects the Windows build and
+fetches symbols. Raw \texttt{malfind} hits are graded: an \texttt{MZ} header in a region is critical, known
+JIT processes and zero-filled regions are low, identical code in three or more processes is a system-wide
+component (medium), and unique code in one process is high. Suspicious command lines (encrypt, ransom,
+vssadmin, bcdedit) and shells with unusual parents are flagged.
+
+\textit{Static (pefile, YARA).} Applied to extracted regions and supplied binaries: SHA-256, entropy,
+ASCII and UTF-16 strings, PE imports and section entropy, and YARA rules.
+
+\textit{Entropy.} Shannon entropy $H=-\sum_b p_b\log_2 p_b$ over a 4\,KB sliding window; windows with
+$H\ge7.2$ bits/byte are merged into encrypted or packed regions.
+
+\textit{Cipher identification.} 56 signatures (S-boxes, T-tables, round constants, DES tables, the ChaCha
+``expand 32-byte k'' constant, GHASH tables, curve parameters, key-blob headers and API names, in ASCII
+and UTF-16), each with a weight $w_i\in(0,1)$. For algorithm $A$ with matched signatures $S_A$:
+\begin{equation}
+  \mathrm{conf}(A) = 1 - \prod_{i\in S_A}(1-w_i).
+\end{equation}
+One strong hit counts a lot, weak hits accumulate, and confidence never reaches 100\%. Each result also
+states its \emph{basis}: implementation constants (the cipher is implemented here) or API/string references
+only (merely named), because almost every Windows process names AES.
+
+\textit{RSA weak keys.} Keys are carved from CAPI blobs, CNG blobs, DER SubjectPublicKeyInfo and PEM, then
+tested for modulus size ($\le$512 critical, $<$1024 high, $<$2048 medium), small exponent, shared modulus,
+shared prime by pairwise $\gcd(n_i,n_j)$, close primes by Fermat factorisation, and small factors (trial
+division, Pollard rho). The strength score is a base of 100 ($\ge$3072 bits), 90 ($\ge$2048) or 60, minus a
+penalty for the worst issue (critical 100, high 50, medium 25, low 10), clamped to $[0,100]$. A modulus with a
+tiny factor is treated as corrupt memory, not a key.
+
+\textit{Credentials.} JWTs are decoded and checked (\texttt{alg=none} high, HS256 noted, expiry);
+OTP secrets under 128 bits (the RFC~4226 minimum) are flagged; all secrets are stored redacted with a short hash.
+
+\textit{Network (pyshark).} Uses Wireshark's dissectors. Only the server's chosen suite and version are
+read; RC4, DES/3DES, NULL/export, static RSA key exchange, CBC, SSL~3.0 and TLS~1.0/1.1 are flagged.
+
+\textit{Risk score.} Points per severity $p=\{25,12,5,2,0\}$ for critical to info, with each count capped
+$c=\{4,4,4,5\}$ so low-severity noise cannot add up to critical:
+\begin{equation}
+  \mathrm{risk} = \min\Big(100,\ \sum_{s} p_s\cdot\min(n_s, c_s)\Big).
+\end{equation}
+
+\textit{LLM report and defences.} Groq's free tier (\texttt{openai/gpt-oss-120b}) through an
+OpenAI-compatible API, so any endpoint (e.g.\ local Ollama) can be swapped in. Four defences:
+(D1) \emph{sanitise} instruction-like text and forged citations, each hit becoming a high
+\texttt{prompt\_injection} finding; (D2) \emph{spotlighting}~\cite{hines2024spotlighting}: findings are marked as
+untrusted data between delimiters; (D3) \emph{citation check}: $\ge$90\% of claim lines cited and every id
+must exist; (D4) \emph{rule cross-check}: stated risk within 20 points of ours, every critical/high finding
+mentioned, every named algorithm present, dismissive or dangerous advice flagged. A failing report gets
+one retry with the list of problems; if it still fails it ships with a ``Validation notes'' section.
+The sequence is shown in Fig.~\ref{fig:seq} (Appendix).
+
+\textit{Why SQLite and Python.} A single-file database needs no server, is easy to export, and gives each
+finding a stable id. Python has mature bindings for every tool used (Volatility3 is itself Python).
+
+\subsection{Work plan}
+Table~\ref{tab:plan} lists the plan with its status at this evaluation.
+
+\begin{table}[t]
+\centering
+\caption{Work plan and status}
+\label{tab:plan}
+\footnotesize
+\begin{tabularx}{\columnwidth}{@{}lXc@{}}
+\toprule
+Phase & Work item & Status\\
+\midrule
+P1 & Pipeline skeleton, SQLite store, CLI & \done\\
+P2 & Crypto module: entropy, cipher ID (widened scope), RSA weak keys & \done\\
+P3 & Credentials, network, rule report, Groq LLM report & \done\\
+P4 & Real dumps (Win11, Win10 + pcap, Win7), severity tuning & \done\\
+P5 & Red-team (6 attacks $\times$ 2 fields) and four defences, before/after run & \done\\
+P6 & Dashboard and automated tests (28) & \done\\
+\midrule
+P7 & Ground-truth test in our own VM (AES, ChaCha20, RSA, EC keys we generate) & \todo\\
+P8 & More public dumps (ransomware-style Win10/11, Windows Server) & \todo\\
+P9 & Stronger red-team: multi-field and trigger-free attacks, more trials, second LLM & \todo\\
+P10 & Final report, literature survey (Overleaf), PQC discussion & \todo\\
+\bottomrule
+\end{tabularx}
+\end{table}

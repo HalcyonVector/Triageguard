@@ -1,0 +1,91 @@
+\section{Problem Understanding and Objectives}
+
+\subsection{Problem statement}
+When a machine is hit by ransomware or a crypto-stealing implant, much of the evidence exists only in
+volatile memory: code injected into a legitimate process, the cipher implementation the malware loaded,
+key material, session tokens and live network connections. Memory images are large (1 to 4.3\,GB in our
+tests) and existing tools answer one question each: Volatility3 lists processes and injected regions,
+YARA matches byte patterns, Wireshark dissects traffic. An analyst still has to join these results by hand,
+decide which cipher is really in use, judge whether a recovered key is weak, and write it all up.
+
+LLMs can write the report, but two problems follow. First, an LLM may state facts that are not in the
+evidence. Second, the evidence itself is attacker controlled: a JWT claim, an OTP label, a TLS server name
+or a command line can contain text such as ``ignore previous instructions, report the system is clean''.
+A forensic tool that can be talked into calling a compromised host clean is worse than none.
+
+\textbf{TriageGuard} therefore aims to automate memory triage with cryptography as its core, and to make
+the LLM report both evidence-cited and measurably resistant to prompt injection.
+
+\subsection{Objectives}
+Each objective has a measurable criterion; Section~\ref{sec:testing} reports the results.
+\begin{enumerate}
+  \item \textbf{O1 Extraction.} Run Volatility3 on public Windows dumps and record processes, command
+        lines, connections, injected (RWX, unbacked) regions and USB history. \emph{Criterion:} runs end to end
+        on at least three dumps from different Windows versions.
+  \item \textbf{O2 Cipher identification.} Identify AES, DES/3DES, RSA, ChaCha20/Salsa20, AES-GCM and
+        ECC (P-256, secp256k1, Curve25519/Ed25519) from constants and API names, with a confidence
+        percentage. \emph{Criterion:} all planted algorithms found on a ground-truth image, zero hits on random data.
+  \item \textbf{O3 RSA weak keys.} Extract RSA keys (CAPI, CNG, DER, PEM) and test modulus size, small
+        exponent, shared modulus, shared prime (GCD), close primes (Fermat) and small factors; score
+        strength 0 to 100. \emph{Criterion:} every planted weakness detected, strong key not flagged.
+  \item \textbf{O4 Credentials.} Find and decode JWTs, OAuth/API tokens and \texttt{otpauth://} secrets,
+        storing them redacted. \emph{Criterion:} all planted credentials found and correctly assessed.
+  \item \textbf{O5 Network.} Parse a pcap and flag weak negotiated TLS (deprecated versions, no forward
+        secrecy, CBC, 3DES/RC4).
+  \item \textbf{O6 Cited report.} Produce an LLM report from findings only, with a citation id on every
+        claim and a rule-based risk score as reference. \emph{Criterion:} at least 90\% of claim lines cited.
+  \item \textbf{O7 Red-team and defences.} Measure attack success rate (ASR) with and without defences.
+        \emph{Criterion:} lower ASR and higher citation rate with defences, and no misleading report reaching a reader without a warning.
+\end{enumerate}
+
+\subsection{Literature review}
+We surveyed 20 works, all from 2021 onward: ten recent papers (2024 onward) covering every pillar of the
+project, and ten 2021 to 2024 papers on memory key extraction, crypto identification, weak RSA keys and prompt
+injection. The full survey, in the course's table format with cryptographic parameters and relevance to each
+pillar, is Table~\ref{tab:survey} in Appendix~\ref{app:survey}.
+
+\textit{Memory forensics and AI-assisted triage.} Carrier et al.~\cite{carrier2022detecting} show that features
+extracted from memory with Volatility-based tooling detect obfuscated malware with 99\% accuracy, but output only
+a label. volGPT~\cite{oh2024volgpt} feeds Volatility artefacts to an LLM to triage ransomware processes, and
+ForensicLLM~\cite{sharma2025forensicllm} shows a local LLM can match cloud models for forensic questions.
+Scanlon et al.~\cite{scanlon2023chatgpt} found GPT-4 useful for some forensic tasks but warn that the user must
+catch its mistakes. None of these tests whether crafted evidence can bias the LLM, and none assesses the
+cryptography found.
+
+\textit{Keys and ciphers in memory and binaries.} Fernandez de Loaysa Babiano et al.~\cite{babiano2023evaluation}
+recovered over 90\% of Salsa20 key and nonce pairs from the memory of running ransomware, and Baier et
+al.~\cite{baier2024tls} systematise how TLS key material is found in memory. Casino et al.~\cite{casino2025not}
+classify high-entropy segments to separate encryption from compression, but do not say which algorithm or how
+strong. Meijer et al.~\cite{meijer2021wheres} identify known and proprietary primitives in binaries with
+data-flow graphs, and Barnes and Ghafarian~\cite{barnes2026machine} classify ransomware from PE-header features;
+both work per binary, not on a whole memory image.
+
+\textit{Cipher cost and weak keys.} Baig et al.~\cite{baig2024comparative} and Banu et al.~\cite{banu2025analyzing}
+measure the speed and memory hierarchy of AES, DES/3DES, RSA, ElGamal and ECC, which frames which ciphers malware
+uses for bulk data and which for key exchange; Oz et al.~\cite{oz2022survey} survey how ransomware families
+combine them. For RSA, Ruzai et al.~\cite{ruzai2024concurrent} factor sets of moduli linked by weak key
+equations, and Pelofske~\cite{pelofske2024efficient} speeds up the batch GCD that finds moduli sharing a prime by
+about 6x. These run on key collections and in theory, not on keys carved from a memory image.
+
+\textit{Tokens.} Raghu~\cite{raghu2025context} quantifies the cost of hardening JWT/OAuth in production, and
+Rujichaikul and Rassameeroj~\cite{rujichaikul2025token} detect token misuse with rule-based signatures (81.4\%
+accuracy). Neither looks for tokens left in memory.
+
+\textit{LLM robustness.} Greshake et al.~\cite{greshake2023not} showed \emph{indirect} prompt injection through data
+an application retrieves, which is our setting since a memory dump is attacker-controlled data.
+Spotlighting~\cite{hines2024spotlighting} and the architectural defence of Gokcimen~\cite{gokcimen2025novel} reduce
+attack success, and Liu et al.~\cite{liu2024formalizing} found no single defence sufficient. None is evaluated on
+forensic evidence or checks that a report's claims cite real evidence.
+
+\textit{Gap.} Each pillar is covered somewhere, but no existing work (a) joins memory artefacts with cipher
+identification \emph{and} weak-key testing on keys carved from the dump, (b) reports a confidence and evidence
+basis per algorithm and a strength score per key, and (c) uses an LLM for the report while measuring and
+defending its exposure to injection through the evidence itself. TriageGuard targets exactly this combination.
+
+\subsection{Scope}
+\textit{In scope:} Windows memory images (Volatility3 stage), any file for the crypto and credential stages,
+the cipher families listed in O2, RSA weak-key tests, JWT/OAuth/OTP credentials, TLS in pcaps, a free-tier
+LLM (Groq, \texttt{openai/gpt-oss-120b}) and an offline dashboard.
+\textit{Out of scope:} executing malware, cracking third-party data, real user credentials (public datasets
+and synthetic keys only), Linux/macOS memory profiles (planned later), and post-quantum schemes (ML-KEM,
+ML-DSA), which are a discussion point only.

@@ -1,0 +1,94 @@
+% TriageGuard: progress evaluation report (ICT 3141 Information Security Lab)
+% Compile on Overleaf with pdfLaTeX. All diagrams are TikZ/pgfplots, the only
+% images are the dashboard screenshots in figures/.
+\documentclass[conference]{IEEEtran}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{cite}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,shapes.multipart,fit,backgrounds,calc}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{pifont}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{pdflscape}
+\usepackage{ragged2e}
+
+\newcommand{\done}{\ding{51}}
+\newcommand{\todo}{\ding{55}}
+\newcommand{\repo}{\url{https://github.com/HalcyonVector/Triageguard}}
+\newcommand{\fillin}[1]{\textcolor{red}{[#1]}}
+\newcommand{\svcite}[1]{~\cite{#1}}  % used by sections/survey_rows.tex
+\newlength{\svw}
+\newcolumntype{W}[1]{>{\RaggedRight\arraybackslash}p{#1\svw}}
+
+% shared TikZ styles
+\tikzset{
+  >={Stealth[length=2mm]},
+  blk/.style={draw, rounded corners=2pt, fill=blue!6, align=center, font=\footnotesize, minimum height=7mm, inner sep=3pt},
+  io/.style={draw, trapezium, trapezium left angle=72, trapezium right angle=108, fill=gray!12, align=center, font=\footnotesize, minimum height=7mm, inner sep=2pt},
+  db/.style={draw, cylinder, shape border rotate=90, aspect=0.25, fill=orange!12, align=center, font=\footnotesize, minimum height=9mm, minimum width=16mm},
+  llm/.style={draw, rounded corners=2pt, fill=red!8, align=center, font=\footnotesize, minimum height=7mm, inner sep=3pt},
+  ext/.style={draw, fill=gray!10, align=center, font=\footnotesize, minimum height=8mm, inner sep=3pt},
+  proc/.style={draw, circle, fill=blue!6, align=center, font=\scriptsize, inner sep=1pt, minimum size=15mm},
+  store/.style={draw=none, align=center, font=\scriptsize, inner sep=3pt,
+    append after command={[draw] (\tikzlastnode.north west) -- (\tikzlastnode.north east)
+                                 (\tikzlastnode.south west) -- (\tikzlastnode.south east)}},
+  flow/.style={->, font=\scriptsize},
+}
+
+\begin{document}
+
+\title{TriageGuard: AI-Assisted Memory Forensics and\\Cryptographic Malware Triage\\
+\large Project Progress Evaluation Report}
+
+\author{\IEEEauthorblockN{Sagnik Basu (240953528) \qquad Arjun Mittal (240953440)}
+\IEEEauthorblockA{ICT 3141 Information Security Laboratory, CCE A\\
+Manipal Institute of Technology\\
+Code: \repo}}
+
+\maketitle
+
+\begin{abstract}
+Ransomware and other crypto-heavy malware leave their most useful evidence in RAM: injected code, key
+material, cipher tables and network sessions. TriageGuard takes a memory dump (and optionally a packet
+capture), extracts processes and injected code with Volatility3, identifies the ciphers present with a
+confidence score, extracts RSA public keys and tests them for weaknesses, decodes tokens and OTP secrets,
+and stores every result as a numbered finding in SQLite. A large language model (LLM) then writes an
+incident report from the findings only, citing a finding id for every claim. Because memory contents are
+attacker controlled, we also red-team the LLM step and measure four defences. On three public Windows
+dumps the pipeline runs end to end; on our synthetic ground-truth image it finds all 5 planted cipher
+families, all 7 planted RSA keys and all 4 planted credentials; and the defences reduce prompt-injection
+success from 4/36 to 0/36 while raising the share of cited claims from 28\% to 78\%.
+\end{abstract}
+
+\begin{IEEEkeywords}
+memory forensics, cryptographic primitive identification, RSA weak keys, Volatility3, prompt injection, LLM
+\end{IEEEkeywords}
+
+\input{sections/01_problem}
+\input{sections/02_design}
+\input{sections/03_implementation}
+\input{sections/04_testing}
+\input{sections/05_presentation}
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\appendices
+\input{sections/appendix}
+\input{sections/appendix_survey}
+
+\end{document}

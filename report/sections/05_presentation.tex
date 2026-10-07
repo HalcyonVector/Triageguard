@@ -1,0 +1,51 @@
+\section{Progress Presentation and Demo Plan}
+
+\subsection{Live demo}
+The demo is scripted in \texttt{DEMO.md}; long runs are pre-generated in \texttt{results/} so nothing has to
+finish live.
+\begin{enumerate}
+  \item \textbf{Crypto module (live, 30\,s).} Build the synthetic image and run \texttt{crypto} on it: cipher
+        identification with confidence and the RSA weak-key tests (Table~\ref{tab:gt}).
+  \item \textbf{Full pipeline (live, 1\,min).} \texttt{analyze -{}-no-llm} on the synthetic image; the
+        Volatility3 stage is skipped (not a Windows image) and the rest still runs.
+  \item \textbf{Dashboard (live, offline).} Walk through the three real dumps, the Win10 injection into
+        \texttt{spoolsv.exe}, the Win11 RSA-512 key and \texttt{encryption\_log.txt} lead, and click a
+        citation in the LLM report to jump to its finding.
+  \item \textbf{Red-team (pre-generated).} Show Table~\ref{tab:redteam} and Fig.~\ref{fig:dashrt}, then run
+        \texttt{redteam -{}-dry-run} live (no LLM, no quota).
+\end{enumerate}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/dash_redteam.jpg}
+\caption{Red-team view of the dashboard: per-attack success, plain vs.\ defended, and every trial.}
+\label{fig:dashrt}
+\end{figure}
+
+\subsection{Anticipated viva questions}
+\begin{itemize}
+  \item \emph{Why not trust the LLM?} It never sees the raw dump, every claim must cite a finding, and its
+        risk score is cross-checked against a deterministic one.
+  \item \emph{How is confidence computed?} $1-\prod(1-w_i)$ over distinct matched signatures, plus the
+        evidence basis (implementation constants vs.\ names only).
+  \item \emph{Why are most RSA findings low on real dumps?} They come from the Windows certificate store; only
+        factored keys or keys outside the store stay high or critical.
+  \item \emph{Why ChaCha20 and Curve25519?} Modern ransomware commonly pairs them; post-quantum schemes are a
+        discussion point only.
+  \item \emph{Safety?} Public datasets and synthetic keys only; no malware executed; no real credentials.
+\end{itemize}
+
+\subsection{Contribution}
+\textit{Sagnik Basu:} overall architecture and pipeline wiring, the SQLite store, the memory stage and the
+real-dump testing and tuning, the crypto module (entropy, cipher identification, RSA weak-key tests), the LLM
+report with its four defences, the red-team evaluation, and the dashboard.
+
+\textit{Arjun Mittal:} the credential module (JWT, OAuth/API tokens, OTP), the network/TLS module, the static
+analysis stage and YARA rules, and the literature survey.
+
+Both members contributed to testing and this report, and both can explain every module.
+
+\subsection{Next steps}
+Ground-truth test in our own VM with keys we generate (P7), more public dumps (P8), a harder red-team with
+multi-field and trigger-free attacks, more trials and a second LLM (P9), and the final report with the
+literature survey in the prescribed format and a post-quantum discussion (P10).

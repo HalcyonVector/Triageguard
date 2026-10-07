@@ -1,0 +1,102 @@
+\documentclass[10pt]{article}
+
+\usepackage[a2paper, landscape, margin=0.3in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{ragged2e}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, urlcolor=blue, citecolor=black}
+
+% Column type for wrapped, left-justified text of fixed width
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+% the shared rows cite bib keys in the report; here the reference list below is numbered the same way
+\newcommand{\svcite}[1]{}
+
+\title{\textbf{Literature Survey}\\[10pt] \large TriageGuard: An Adversarially Robust AI Assistant for Memory Forensics and Cryptographic Malware Triage}
+\author{Sagnik Basu (240953528) \and Arjun Mittal (240953440)}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Introduction}
+
+This literature survey examines twenty works, all published from 2021 onward, spanning every pillar
+TriageGuard integrates. Papers 1 to 10 (2024 onward, journal-first with one review paper) cover AI-assisted
+memory forensics, entropy- and header-based ransomware detection, measured cryptographic benchmarks for symmetric
+and asymmetric ciphers (AES, DES, 3DES, RSA, ElGamal, ECC), RSA weak-key cryptanalysis, JWT/OAuth 2.0 token
+security, and LLM robustness against adversarial input. Papers 11 to 20 (2021 to 2024) add memory-based malware
+detection, LLMs in digital forensics, recovering ransomware and TLS keys from memory, identifying cryptographic
+primitives in binaries, ransomware's use of hybrid encryption, fast shared-prime detection for RSA, and the
+prompt-injection attacks and defences our red-team track tests. Table~\ref{tab:litsurvey} illustrates each
+paper's domain, methodology, and key findings alongside its reported cryptographic parameters (key size,
+plaintext/ciphertext size, encryption type, timing, and performance) where applicable, its limitations, and how
+it relates to three specific pillars of TriageGuard: memory forensics, cryptographic stress analysis, and AI
+robustness.
+
+\small
+\sloppy
+\begin{longtable}{P{0.4cm} P{5.0cm} P{0.6cm} P{5.1cm} P{5.1cm} P{3.2cm} P{2.9cm} P{3.2cm} P{3.2cm} P{3.2cm} P{3.2cm} P{3.7cm} P{3.4cm} P{3.4cm} P{3.7cm}}
+\caption{Literature survey combining qualitative relevance analysis with reported cryptographic benchmark parameters, comparing twenty works against TriageGuard.}
+\label{tab:litsurvey} \\
+\toprule
+\textbf{\#} & \textbf{Author, Paper \& Venue} & \textbf{Yr.} & \textbf{Domain Focus \& Methodology} & \textbf{Key Findings \& Observation} & \textbf{Key Size} & \textbf{PL Size} & \textbf{CT Size / Output} & \textbf{Encryption} & \textbf{Time Consuming} & \textbf{Performance} & \textbf{Limitation / Gap in Paper} & \textbf{Relevance: Memory Forensics} & \textbf{Relevance: Cryptographic Stress} & \textbf{Relevance: AI Robustness \& Gap Addressed by TriageGuard} \\
+\midrule
+\endfirsthead
+
+\toprule
+\textbf{\#} & \textbf{Author, Paper \& Venue} & \textbf{Yr.} & \textbf{Domain Focus \& Methodology} & \textbf{Key Findings \& Observation} & \textbf{Key Size} & \textbf{PL Size} & \textbf{CT Size / Output} & \textbf{Encryption} & \textbf{Time Consuming} & \textbf{Performance} & \textbf{Limitation / Gap in Paper} & \textbf{Relevance: Memory Forensics} & \textbf{Relevance: Cryptographic Stress} & \textbf{Relevance: AI Robustness \& Gap Addressed by TriageGuard} \\
+\midrule
+\endhead
+
+\bottomrule
+\endfoot
+
+\bottomrule
+\endlastfoot
+
+\input{sections/survey_rows}
+
+\end{longtable}
+
+\vspace{0.5cm}
+\noindent This table illustrates that real, measured cryptographic parameters exist for symmetric ciphers (Paper~1),
+asymmetric ciphers under realistic file loads (Paper~2), weak RSA configurations (Papers~3 and 17), and JWT/OAuth
+token security under production-like conditions (Papers~4 and 5), and that keys and cipher implementations can be
+recovered from memory and binaries (Papers~13 to 15). AI-assisted memory forensics (Papers~6, 7, 11, 12),
+entropy/header-based ransomware detection (Papers~8, 10, 16), and LLM robustness against adversarial input
+(Papers~9, 18 to 20) are each addressed independently elsewhere. No single existing work reports all of these side
+by side or feeds them into one automated, evidence-cited triage report, and the LLM-based forensic tools
+(Papers~6, 7, 12) never test what happens when the evidence itself carries injected instructions, which Paper~18
+shows is realistic. TriageGuard's contribution is to operationalise these benchmarked thresholds, key sizes and
+detection techniques into a single pipeline that flags a sample's actual cryptographic and authentication risk,
+rather than just its presence, while also red-teaming and hardening its own AI reporting layer.
+
+\section*{References}
+\begin{enumerate}
+\item M. H. M. Baig, H. B. Ul Haq, and W. Habib, ``A Comparative Analysis of AES, RSA, and 3DES Encryption Standards based on Speed and Performance,'' \emph{Management Science Advances}, vol. 1, no. 1, pp. 20--30, 2024.
+\item Y. Banu, B. K. Rath, and D. Gountia, ``Analyzing cryptographic algorithm efficiency within graph-based encryption models,'' \emph{Frontiers in Computer Science}, vol. 7, art. 1630222, 2025.
+\item W. N. A. Ruzai, Y. Ying, K. N. Muhammad, M. A. Asbullah, and M. R. K. Ariffin, ``Concurrent factorization of RSA moduli via weak key equations,'' \emph{AIMS Mathematics}, vol. 9, no. 10, pp. 28211--28231, 2024.
+\item A. Raghu, ``A Context-Aware Framework for Secure Fintech APIs: Leveraging Java Spring Boot and OAuth 2.0 with Dynamic Token Adaptation,'' \emph{Journal of Information Systems Engineering and Management}, vol. 10, no. 49s, pp. 367--377, 2025.
+\item P. Rujichaikul and I. Rassameeroj, ``Token-Based Authentication Monitoring System,'' \emph{Journal of Cyber Security and Mobility}, vol. 14, no. 4, pp. 777--798, 2025.
+\item D. B. Oh, D. Kim, D. Kim, and H. K. Kim, ``volGPT: Evaluation on triaging ransomware process in memory forensics with large language model,'' \emph{Forensic Science International: Digital Investigation}, vol. 49, p. 301756, Jul. 2024.
+\item B. Sharma, J. Ghawaly, K. McCleary, A. M. Webb, and I. Baggili, ``ForensicLLM: A local large language model for digital forensics,'' \emph{Forensic Science International: Digital Investigation}, vol. 52, p. 301872, Mar. 2025.
+\item F. Casino, D. Hurley-Smith, J. Hernandez-Castro, and C. Patsakis, ``Not on my watch: ransomware detection through classification of high-entropy file segments,'' \emph{Journal of Cybersecurity}, vol. 11, no. 1, p. tyaf009, 2025.
+\item T. Gokcimen, ``A novel system for strengthening security in large language models,'' \emph{Alexandria Engineering Journal}, vol. 75, pp. 100--112, Jan. 2025.
+\item G. Barnes and A. Ghafarian, ``Machine Learning-Based Static Ransomware Detection Using PE Header Features and SHAP Interpretation,'' \emph{Journal of Cybersecurity and Privacy}, vol. 6, no. 2, p. 58, 2026.
+\item T. Carrier, P. Victor, A. Tekeoglu, and A. H. Lashkari, ``Detecting Obfuscated Malware using Memory Feature Engineering,'' in \emph{Proc. 8th ICISSP}, 2022, pp. 177--188.
+\item M. Scanlon, F. Breitinger, C. Hargreaves, J.-N. Hilgert, and J. Sheppard, ``ChatGPT for digital forensic investigation: The good, the bad, and the unknown,'' \emph{Forensic Science International: Digital Investigation}, vol. 46, p. 301609, 2023.
+\item L. Fernandez de Loaysa Babiano, R. Macfarlane, and S. R. Davies, ``Evaluation of live forensic techniques, towards Salsa20-based cryptographic ransomware mitigation,'' \emph{Forensic Science International: Digital Investigation}, vol. 46, p. 301572, 2023.
+\item D. Baier, A. Basse, J.-N. Hilgert, and M. Lambertz, ``TLS key material identification and extraction in memory: Current state and future challenges,'' in \emph{Proc. DFRWS USA}, 2024.
+\item C. Meijer, V. Moonsamy, and J. Wetzels, ``Where's Crypto?: Automated Identification and Classification of Proprietary Cryptographic Primitives in Binary Code,'' in \emph{Proc. 30th USENIX Security Symposium}, 2021.
+\item H. Oz, A. Aris, A. Levi, and A. S. Uluagac, ``A Survey on Ransomware: Evolution, Taxonomy, and Defense Solutions,'' \emph{ACM Computing Surveys}, vol. 54, no. 11s, 2022.
+\item E. Pelofske, ``An Efficient All-to-All GCD Algorithm for Low Entropy RSA Key Factorization,'' Cryptology ePrint Archive, Paper 2024/699, 2024.
+\item K. Greshake, S. Abdelnabi, S. Mishra, C. Endres, T. Holz, and M. Fritz, ``Not What You've Signed Up For: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection,'' in \emph{Proc. 16th ACM AISec}, 2023.
+\item K. Hines, G. Lopez, M. Hall, F. Zarfati, Y. Zunger, and E. Kiciman, ``Defending Against Indirect Prompt Injection Attacks With Spotlighting,'' arXiv:2403.14720, 2024.
+\item Y. Liu, Y. Jia, R. Geng, J. Jia, and N. Z. Gong, ``Formalizing and Benchmarking Prompt Injection Attacks and Defenses,'' in \emph{Proc. 33rd USENIX Security Symposium}, 2024.
+\end{enumerate}
+
+\end{document}
