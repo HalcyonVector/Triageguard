@@ -20,7 +20,6 @@ figures/              dashboard screenshots (all diagrams are TikZ inside the .t
 
 ## Still to fill in
 
-- Section V-C: who did what (shown in red in the PDF).
 
 Every number comes from `results/`, `docs/HOW_IT_WORKS.md` and the README. The synthetic ground-truth
 numbers (Table VI) come from `python samples/make_synthetic.py` followed by
