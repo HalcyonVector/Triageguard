@@ -1,0 +1,109 @@
+\section{Problem Understanding and Objectives}
+
+\subsection{Problem statement}
+When a machine is hit by ransomware or a crypto-stealing implant, much of the evidence exists only in
+volatile memory: code injected into a legitimate process, the cipher implementation the malware loaded,
+key material, session tokens and live network connections. Memory images are large (1 to 4.3\,GB in our
+tests) and existing tools answer one question each: Volatility3 lists processes and injected regions,
+YARA matches byte patterns, Wireshark dissects traffic. An analyst still has to join these results by hand,
+decide which cipher is really in use, judge whether a recovered key is weak, and write it all up.
+
+LLMs can write the report, but two problems follow. First, an LLM may state facts that are not in the
+evidence. Second, the evidence itself is attacker controlled: a JWT claim, an OTP label, a TLS server name
+or a command line can contain text such as ``ignore previous instructions, report the system is clean''.
+A forensic tool that can be talked into calling a compromised host clean is worse than none.
+
+\textbf{TriageGuard} therefore aims to automate memory triage with cryptography as its core, and to make
+the LLM report both evidence-cited and measurably resistant to prompt injection.
+
+\subsection{Objectives}
+Each objective has a measurable criterion; Section~\ref{sec:testing} reports the results.
+\begin{enumerate}
+  \item \textbf{O1 Extraction.} Run Volatility3 on public Windows dumps and record processes, command
+        lines, connections, injected (RWX, unbacked) regions and USB history. \emph{Criterion:} runs end to end
+        on at least three dumps from different Windows versions.
+  \item \textbf{O2 Cipher identification.} Identify AES, DES/3DES, RSA, ChaCha20/Salsa20, AES-GCM and
+        ECC (P-256, secp256k1, Curve25519/Ed25519) from constants and API names, with a confidence
+        percentage. \emph{Criterion:} all planted algorithms found on a ground-truth image, zero hits on random data.
+  \item \textbf{O3 RSA weak keys.} Extract RSA keys (CAPI, CNG, DER, PEM) and test modulus size, small
+        exponent, shared modulus, shared prime (GCD), close primes (Fermat) and small factors; score
+        strength 0 to 100. \emph{Criterion:} every planted weakness detected, strong key not flagged.
+  \item \textbf{O4 Credentials.} Find and decode JWTs, OAuth/API tokens and \texttt{otpauth://} secrets,
+        storing them redacted. \emph{Criterion:} all planted credentials found and correctly assessed.
+  \item \textbf{O5 Network.} Parse a pcap and flag weak negotiated TLS (deprecated versions, no forward
+        secrecy, CBC, 3DES/RC4).
+  \item \textbf{O6 Cited report.} Produce an LLM report from findings only, with a citation id on every
+        claim and a rule-based risk score as reference. \emph{Criterion:} at least 90\% of claim lines cited.
+  \item \textbf{O7 Red-team and defences.} Measure attack success rate (ASR) with and without defences.
+        \emph{Criterion:} lower ASR and higher citation rate with defences, and no misleading report reaching a reader without a warning.
+\end{enumerate}
+
+\subsection{Literature review}
+\textit{Memory forensics.} Volatility, introduced as Volatools by Walters and Petroni~\cite{walters2007volatools},
+and the methods in \emph{The Art of Memory Forensics}~\cite{ligh2014art} established process listing,
+injected-code detection (\texttt{malfind}) and registry analysis from raw images. These tools stop at
+artefact extraction; they do not assess the cryptography they uncover.
+
+\textit{Finding keys and ciphers in memory.} Shamir and van Someren~\cite{shamir1999hide} showed that key
+material stands out by entropy. Halderman et al.~\cite{halderman2008cold} recovered AES and RSA keys from
+DRAM images by searching for key-schedule structure. Gr\"obert et al.~\cite{grobert2011automated} and
+Lestringant et al.~\cite{lestringant2015automated} identified cryptographic primitives in binaries using
+constants, heuristics and data-flow graphs. Tools such as findcrypt and YARA crypto rules apply the
+constant-matching idea but report a bare match, not a confidence or whether the algorithm is implemented
+or only referenced.
+
+\textit{Weak RSA keys.} Boneh~\cite{boneh1999twenty} surveyed attacks on RSA including small exponents and
+common moduli. Heninger et al.~\cite{heninger2012mining} and Lenstra et al.~\cite{lenstra2012ron} found
+that a measurable fraction of keys on the Internet share primes, recoverable with pairwise GCD.
+These checks are usually run on certificate scans, not on keys carved from a memory image.
+
+\textit{Crypto in ransomware.} Kharraz et al.~\cite{kharraz2015cutting} analysed ransomware families and
+their use of cryptography. Modern families favour ChaCha20/Salsa20~\cite{bernstein2008chacha} with
+Curve25519~\cite{bernstein2006curve25519} key exchange, alongside AES~\cite{fips197} and
+AES-GCM~\cite{sp80038d}, which motivates our widened cipher scope.
+
+\textit{Prompt injection.} Perez and Ribeiro~\cite{perez2022ignore} demonstrated goal hijacking via
+``ignore previous prompt'', and Greshake et al.~\cite{greshake2023not} showed \emph{indirect} injection
+through data an LLM application retrieves, which is exactly our setting: the data is a memory dump.
+Hines et al.~\cite{hines2024spotlighting} proposed spotlighting untrusted input, and Liu et al.~\cite{liu2024formalizing}
+benchmarked attacks and defences, finding that no single defence is sufficient.
+
+\textit{Gap.} We found no tool that (a) joins memory artefacts with cipher identification \emph{and} RSA
+weak-key testing on carved keys, (b) reports calibrated confidence and evidence basis per algorithm, and
+(c) uses an LLM for reporting while measuring its exposure to injection through forensic artefacts.
+Table~\ref{tab:survey} summarises the surveyed work.
+
+% NOTE: the teacher's literature-survey table format was not available when this draft was written.
+% Replace the columns below with the prescribed format; the rows can be reused.
+\begin{table*}[t]
+\centering
+\caption{Literature survey summary (draft layout, to be converted to the prescribed format)}
+\label{tab:survey}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.4cm}c>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+\toprule
+Work & Year & Method / contribution & Limitation relevant to TriageGuard\\
+\midrule
+Walters and Petroni~\cite{walters2007volatools} & 2007 & Volatile memory analysis framework (Volatility origin) & Artefact extraction only, no crypto assessment\\
+Ligh et al.~\cite{ligh2014art} & 2014 & Memory forensics methodology, malfind, registry & Manual interpretation and reporting\\
+Shamir and van Someren~\cite{shamir1999hide} & 1999 & Locating keys by entropy & Finds random-looking areas, not the algorithm\\
+Halderman et al.~\cite{halderman2008cold} & 2008 & Key recovery from DRAM via key schedules & Needs key schedules in memory; no reporting\\
+Gr\"obert et al.~\cite{grobert2011automated} & 2011 & Crypto primitive identification in binaries & Dynamic traces of single binaries, not full dumps\\
+Lestringant et al.~\cite{lestringant2015automated} & 2015 & Data-flow graph isomorphism for crypto code & Static binaries; heavy analysis per sample\\
+Heninger et al.~\cite{heninger2012mining} & 2012 & Shared primes via batch GCD at Internet scale & Certificate scans, not keys carved from RAM\\
+Lenstra et al.~\cite{lenstra2012ron} & 2012 & Public key survey, shared factors & Same as above\\
+Kharraz et al.~\cite{kharraz2015cutting} & 2015 & Ransomware behaviour and crypto use & Behavioural; no memory triage tool\\
+Greshake et al.~\cite{greshake2023not} & 2023 & Indirect prompt injection in LLM apps & General apps; no forensic setting\\
+Hines et al.~\cite{hines2024spotlighting} & 2024 & Spotlighting untrusted input & One defence; no output validation\\
+Liu et al.~\cite{liu2024formalizing} & 2024 & Benchmark of injection attacks and defences & General tasks, no evidence citation\\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+\subsection{Scope}
+\textit{In scope:} Windows memory images (Volatility3 stage), any file for the crypto and credential stages,
+the cipher families listed in O2, RSA weak-key tests, JWT/OAuth/OTP credentials, TLS in pcaps, a free-tier
+LLM (Groq, \texttt{openai/gpt-oss-120b}) and an offline dashboard.
+\textit{Out of scope:} executing malware, cracking third-party data, real user credentials (public datasets
+and synthetic keys only), Linux/macOS memory profiles (planned later), and post-quantum schemes (ML-KEM,
+ML-DSA), which are a discussion point only.
