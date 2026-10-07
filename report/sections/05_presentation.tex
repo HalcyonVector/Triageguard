@@ -22,19 +22,6 @@ finish live.
 \label{fig:dashrt}
 \end{figure}
 
-\subsection{Anticipated viva questions}
-\begin{itemize}
-  \item \emph{Why not trust the LLM?} It never sees the raw dump, every claim must cite a finding, and its
-        risk score is cross-checked against a deterministic one.
-  \item \emph{How is confidence computed?} $1-\prod(1-w_i)$ over distinct matched signatures, plus the
-        evidence basis (implementation constants vs.\ names only).
-  \item \emph{Why are most RSA findings low on real dumps?} They come from the Windows certificate store; only
-        factored keys or keys outside the store stay high or critical.
-  \item \emph{Why ChaCha20 and Curve25519?} Modern ransomware commonly pairs them; post-quantum schemes are a
-        discussion point only.
-  \item \emph{Safety?} Public datasets and synthetic keys only; no malware executed; no real credentials.
-\end{itemize}
-
 \subsection{Contribution}
 \textit{Sagnik Basu:} overall architecture and pipeline wiring, the SQLite store, the memory stage and the
 real-dump testing and tuning, the crypto module (entropy, cipher identification, RSA weak-key tests), the LLM
