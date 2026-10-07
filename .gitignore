@@ -9,3 +9,6 @@ samples/*.mem
 *.pcap
 .env
 redteam_results/
+
+# Office lock files
+~$*
