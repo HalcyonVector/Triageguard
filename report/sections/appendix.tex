@@ -1,6 +1,11 @@
+% one-column pages so each diagram sits in order under its heading
+\onecolumn
+\raggedbottom
 \section{Additional design diagrams}
+This appendix collects the remaining design diagrams: the level-1 data flow, the activity flow for grading injected
+code, the UML sequence of a defended run, and the main classes and modules.
 
-\begin{figure*}[!ht]
+\begin{figure}[H]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}
@@ -42,9 +47,36 @@
 \end{tikzpicture}}
 \caption{DFD level 1. Processes are circles, data stores are open rectangles, external entities are boxes.}
 \label{fig:dfd1}
-\end{figure*}
+\end{figure}
 
-\begin{figure*}[!ht]
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=4mm,
+  act/.style={draw, rounded corners=6pt, fill=blue!6, font=\scriptsize, align=center, minimum height=5mm, inner sep=2pt},
+  dec/.style={draw, diamond, aspect=2.4, fill=yellow!12, font=\scriptsize, align=center, inner sep=0.5pt}]
+  \node[circle, fill=black, minimum size=2.5mm, inner sep=0] (st) {};
+  \node[act, below=of st] (a) {malfind region (RWX, unbacked)};
+  \node[dec, below=of a] (d1) {starts with MZ?};
+  \node[act, right=6mm of d1, fill=red!15] (c) {critical};
+  \node[dec, below=of d1] (d2) {known JIT process\\or zeroed start?};
+  \node[act, right=6mm of d2, fill=blue!12] (l) {low};
+  \node[dec, below=of d2] (d3) {same code in\\$\ge$3 processes?};
+  \node[act, right=6mm of d3, fill=yellow!25] (m) {medium};
+  \node[act, below=of d3, fill=orange!25] (h) {high (unique injection)};
+  \draw[->] (st) -- (a); \draw[->] (a) -- (d1);
+  \draw[->] (d1) -- node[above, font=\scriptsize]{yes} (c);
+  \draw[->] (d1) -- node[left, font=\scriptsize]{no} (d2);
+  \draw[->] (d2) -- node[above, font=\scriptsize]{yes} (l);
+  \draw[->] (d2) -- node[left, font=\scriptsize]{no} (d3);
+  \draw[->] (d3) -- node[above, font=\scriptsize]{yes} (m);
+  \draw[->] (d3) -- node[left, font=\scriptsize]{no} (h);
+\end{tikzpicture}
+\caption{UML activity diagram: grading an injected-code region.}
+\label{fig:activity}
+\end{figure}
+
+
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
   actor/.style={draw, fill=blue!8, font=\scriptsize, minimum width=20mm, minimum height=6mm, align=center},
@@ -77,9 +109,9 @@
 \end{tikzpicture}
 \caption{UML sequence diagram of an analysis run with the defended LLM report.}
 \label{fig:seq}
-\end{figure*}
+\end{figure}
 
-\begin{figure*}[!ht]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
   cls/.style={draw, rectangle split, rectangle split parts=3, align=left, font=\scriptsize,
@@ -103,30 +135,4 @@
 \end{tikzpicture}
 \caption{UML class and module diagram (main classes and public functions).}
 \label{fig:class}
-\end{figure*}
-
-\begin{figure}[!ht]
-\centering
-\begin{tikzpicture}[node distance=4mm,
-  act/.style={draw, rounded corners=6pt, fill=blue!6, font=\scriptsize, align=center, minimum height=5mm, inner sep=2pt},
-  dec/.style={draw, diamond, aspect=2.4, fill=yellow!12, font=\scriptsize, align=center, inner sep=0.5pt}]
-  \node[circle, fill=black, minimum size=2.5mm, inner sep=0] (st) {};
-  \node[act, below=of st] (a) {malfind region (RWX, unbacked)};
-  \node[dec, below=of a] (d1) {starts with MZ?};
-  \node[act, right=6mm of d1, fill=red!15] (c) {critical};
-  \node[dec, below=of d1] (d2) {known JIT process\\or zeroed start?};
-  \node[act, right=6mm of d2, fill=blue!12] (l) {low};
-  \node[dec, below=of d2] (d3) {same code in\\$\ge$3 processes?};
-  \node[act, right=6mm of d3, fill=yellow!25] (m) {medium};
-  \node[act, below=of d3, fill=orange!25] (h) {high (unique injection)};
-  \draw[->] (st) -- (a); \draw[->] (a) -- (d1);
-  \draw[->] (d1) -- node[above, font=\scriptsize]{yes} (c);
-  \draw[->] (d1) -- node[left, font=\scriptsize]{no} (d2);
-  \draw[->] (d2) -- node[above, font=\scriptsize]{yes} (l);
-  \draw[->] (d2) -- node[left, font=\scriptsize]{no} (d3);
-  \draw[->] (d3) -- node[above, font=\scriptsize]{yes} (m);
-  \draw[->] (d3) -- node[left, font=\scriptsize]{no} (h);
-\end{tikzpicture}
-\caption{UML activity diagram: grading an injected-code region.}
-\label{fig:activity}
 \end{figure}

@@ -5,7 +5,7 @@ LaTeX source for the progress evaluation report, structured around the evaluatio
 
 ```
 main.tex              IEEE conference layout, loads the sections below
-literature_survey.tex standalone literature survey (A2 landscape, teacher's table format, 29 works)
+literature_survey.tex standalone literature survey (A2 landscape, teacher's table format, 20 works)
 sections/             01_problem, 02_design, 03_implementation, 04_testing, 05_presentation, appendix,
                       appendix_survey, survey_rows (the survey rows, shared by both documents)
 refs.bib              references

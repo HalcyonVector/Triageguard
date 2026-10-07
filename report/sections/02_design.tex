@@ -166,7 +166,7 @@ penalty for the worst issue (critical 100, high 50, medium 25, low 10), clamped 
 tiny factor is treated as corrupt memory, not a key.
 
 \textit{Credentials.} JWTs are decoded and checked (\texttt{alg=none} high, HS256 noted, expiry);
-OTP secrets under 128 bits (RFC~4226~\cite{rfc4226}) are flagged; all secrets are stored redacted with a short hash.
+OTP secrets under 128 bits (the RFC~4226 minimum) are flagged; all secrets are stored redacted with a short hash.
 
 \textit{Network (pyshark).} Uses Wireshark's dissectors. Only the server's chosen suite and version are
 read; RC4, DES/3DES, NULL/export, static RSA key exchange, CBC, SSL~3.0 and TLS~1.0/1.1 are flagged.

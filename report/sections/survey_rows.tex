@@ -163,263 +163,119 @@ Moderate; complements entropy/key-level analysis &
 None; no adversarial-robustness component \\
 
 11 &
-Walters, Petroni, ``Volatools: Integrating Volatile Memory Forensics into the Digital Investigation Process'' (Black Hat DC)\svcite{walters2007volatools} &
-2007 &
-Memory forensics tooling; Python framework extracting processes, connections and other artefacts from Windows memory images (origin of Volatility) &
-Volatile memory can be analysed systematically and fitted into the standard investigation process &
+Carrier, Victor, Tekeoglu, Lashkari, ``Detecting Obfuscated Malware using Memory Feature Engineering'' (ICISSP)\svcite{carrier2022detecting} &
+2022 &
+ML malware detection from memory; extends the VolMemLyzer feature extractor (built on Volatility) and trains a stacked ensemble on the new MalMemAnalysis-2022 dataset &
+Memory features detect obfuscated malware with 99.00\% accuracy and 99.02\% F1-score &
 N/A &
 N/A &
 N/A &
 N/A &
-Not reported &
-Not reported &
-Artefact extraction only; no cryptographic assessment or reporting &
-Very high; Volatility3 is TriageGuard's Stage~1 &
+Not reported here &
+99.00\% accuracy, 99.02\% F1 &
+Binary malicious/benign verdict; no explanation, no cryptographic analysis &
+Very high; confirms Volatility features carry the evidence TriageGuard's Stage~1 extracts &
 None directly &
-None; TriageGuard adds automated, evidence-cited reporting \\
+None; no LLM layer. TriageGuard explains findings in a cited report instead of a label \\
 
 12 &
-Ligh, Case, Levy, Walters, ``The Art of Memory Forensics'' (Wiley, book)\svcite{ligh2014art} &
-2014 &
-Memory forensics methodology for Windows, Linux and Mac; process, registry, network and injected-code (malfind) analysis &
-Injected code shows up as executable private memory without a backing file; documents common false positives &
+Scanlon, Breitinger, Hargreaves, Hilgert, Sheppard, ``ChatGPT for digital forensic investigation: The good, the bad, and the unknown'' (Forensic Sci.\ Int.: Digital Investigation)\svcite{scanlon2023chatgpt} &
+2023 &
+LLMs in forensics; tests GPT-4 on artefact analysis, evidence search, script writing, anomaly detection, incident response and training scenarios &
+Some low-risk uses work, but many are unsuitable today: uploading evidence raises privacy issues and the user must catch the model's mistakes &
 N/A &
 N/A &
 N/A &
 N/A &
 Not reported &
-Not reported &
-Manual interpretation and write-up by the analyst &
-Very high; basis for TriageGuard's malfind grading &
+Qualitative, per scenario &
+No systematic defence against wrong or manipulated output &
+High; motivates feeding the LLM findings, not raw evidence &
 None directly &
-None; no automated reporting layer \\
+Very high; TriageGuard adds mandatory citations and a rule cross-check so mistakes are caught automatically \\
 
 13 &
-Shamir, van Someren, ``Playing `Hide and Seek' with Stored Keys'' (Financial Cryptography, LNCS 1648)\svcite{shamir1999hide} &
-1999 &
-Key finding in large data; locates cryptographic keys by their entropy and structure &
-Key material stands out as high-entropy regions, so keys can be found efficiently in large images &
-RSA private keys (general) &
-N/A &
-N/A &
-RSA &
-Not reported &
-Efficient scan of large data &
-Finds random-looking areas, not the algorithm; compressed data also has high entropy &
-High; applies directly to memory images &
-Very high; basis for TriageGuard's entropy windows &
+Fernandez de Loaysa Babiano, Macfarlane, Davies, ``Evaluation of live forensic techniques, towards Salsa20-based cryptographic ransomware mitigation'' (Forensic Sci.\ Int.: Digital Investigation)\svcite{babiano2023evaluation} &
+2023 &
+Live memory forensics against ransomware; extracts Salsa20 keys and nonces from volatile memory while ransomware runs &
+Over 90\% of Salsa20 key and nonce pairs recovered from memory, enough to decrypt files without paying, even with a unique key per file &
+Salsa20 256-bit key + 64-bit nonce &
+Victim files &
+Encrypted files (stream cipher, same length) &
+Salsa20 inside hybrid encryption &
+Not reported here &
+$>$90\% key/nonce pairs recovered &
+Targets Salsa20 specifically; needs capture while the ransomware is running &
+Very high; shows modern ransomware keys live in RAM &
+Very high; supports TriageGuard's ChaCha/Salsa20 detection &
 None \\
 
 14 &
-Halderman et al., ``Lest We Remember: Cold Boot Attacks on Encryption Keys'' (USENIX Security)\svcite{halderman2008cold} &
-2008 &
-DRAM remanence; images RAM after power loss and searches for AES and RSA key structures, correcting decay errors via key schedules &
-DRAM keeps its contents for seconds to minutes; disk-encryption keys (BitLocker, FileVault, TrueCrypt, dm-crypt) recovered from images &
-AES-128/256 key schedules; RSA private keys &
+Baier, Basse, Hilgert, Lambertz, ``TLS key material identification and extraction in memory: Current state and future challenges'' (DFRWS USA)\svcite{baier2024tls} &
+2024 &
+Systematisation of knowledge; reviews academic and in-the-wild methods for finding and extracting TLS key material from memory &
+Memory extraction of TLS keys is essential for decrypting malware traffic; lists open research challenges &
+TLS session keys and secrets &
 N/A &
 N/A &
-AES, RSA (disk encryption) &
-Not reported here &
-Keys reconstructed despite bit decay &
-Needs physical access and key schedules in memory; no triage or reporting &
-Very high; shows keys are recoverable from memory images &
-High; structural search for key material, as in TriageGuard's RSA blob carving &
+TLS (symmetric session keys) &
+Not reported &
+Qualitative survey &
+Survey; does not cover RSA weak-key testing or reporting &
+Very high; memory as a source of key material &
+High; links TriageGuard's memory and pcap stages &
 None \\
 
 15 &
-Gr\"obert, Willems, Holz, ``Automated Identification of Cryptographic Primitives in Binary Programs'' (RAID, LNCS 6961)\svcite{grobert2011automated} &
-2011 &
-Crypto primitive identification; dynamic binary instrumentation traces with heuristics on arithmetic, loops and data chaining &
-Identifies primitives and extracts keys and plaintexts from executions, including malware samples &
+Meijer, Moonsamy, Wetzels, ``Where's Crypto?: Automated Identification and Classification of Proprietary Cryptographic Primitives in Binary Code'' (USENIX Security)\svcite{meijer2021wheres} &
+2021 &
+Crypto identification in binaries; data-flow-graph isomorphism plus symbolic execution, released as an IDA plugin &
+Identifies and classifies both known and proprietary primitives, tested on public and proprietary binaries &
 Varies per primitive &
 N/A &
 N/A &
-Symmetric primitives (e.g.\ AES, DES, RC4) &
+Known and proprietary primitives &
 Not reported here &
 Not reported here &
-Requires executing each binary under tracing; not applicable to a static memory dump &
-Moderate &
-Very high; constant and heuristic matching parallels TriageGuard's signatures &
+Per-binary analysis in a disassembler; not on whole memory images &
+Low &
+Very high; covers custom ciphers that TriageGuard's constant signatures would miss &
 None \\
 
 16 &
-Lestringant, Guih\'ery, Fouque, ``Automated Identification of Cryptographic Primitives in Binary Code with Data Flow Graph Isomorphism'' (ASIA CCS)\svcite{lestringant2015automated} &
-2015 &
-Static crypto identification; builds data flow graphs and matches them against reference primitives by subgraph isomorphism &
-Finds symmetric primitives in compiled code without executing it &
-Varies per primitive &
-N/A &
-N/A &
-Symmetric primitives (e.g.\ AES) &
-Not reported here &
-Not reported here &
-Heavy per-binary analysis; not designed for whole memory images &
-Low &
-High; alternative to constant matching for obfuscated code &
+Oz, Aris, Levi, Uluagac, ``A Survey on Ransomware: Evolution, Taxonomy, and Defense Solutions'' (ACM Computing Surveys)\svcite{oz2022survey} &
+2022 &
+Survey of ransomware evolution, taxonomy, and detection and defence techniques across platforms &
+Organises ransomware by target, infection and encryption behaviour, and reviews defences &
+Varies (symmetric + asymmetric hybrids) &
+Victim files &
+Encrypted files &
+Hybrid encryption, varies by family &
+Not reported &
+Survey &
+Survey; no tool &
+Moderate &
+High; motivates identifying which cipher a sample really uses &
 None \\
 
 17 &
-Boneh, ``Twenty Years of Attacks on the RSA Cryptosystem'' (Notices of the AMS)\svcite{boneh1999twenty} &
-1999 &
-Survey of RSA attacks: common modulus, low private exponent, low public exponent (H{\aa}stad broadcast, Coppersmith), implementation attacks &
-RSA is rarely broken by factoring; misuse and weak parameters are the main danger &
-RSA, small $e$ (e.g.\ 3), small $d$ &
+Pelofske, ``An Efficient All-to-All GCD Algorithm for Low Entropy RSA Key Factorization'' (IACR ePrint 2024/699)\svcite{pelofske2024efficient} &
+2024 &
+RSA weak-key cryptanalysis; binary-tree batch GCD to find RSA moduli that share a prime because of low-entropy key generation &
+About 6x faster than the standard remainder-tree batch GCD, same asymptotic scaling &
+RSA moduli &
 N/A &
-N/A &
+Shared prime factors &
 RSA &
-N/A (theory) &
-N/A &
-Survey; no detection tooling &
+About 6x speedup over remainder-tree batch GCD &
+Speedup grows with the number of shared factors &
+Algorithmic; applied to key collections, not memory &
 None directly &
-Very high; basis for TriageGuard's small-exponent and shared-modulus tests &
+Very high; same shared-prime test TriageGuard runs on carved keys &
 None \\
 
 18 &
-Heninger, Durumeric, Wustrow, Halderman, ``Mining Your Ps and Qs: Detection of Widespread Weak Keys in Network Devices'' (USENIX Security)\svcite{heninger2012mining} &
-2012 &
-Internet-wide scan of TLS and SSH keys; batch GCD across RSA moduli and checks for repeated DSA nonces &
-Private keys of 0.50\% of TLS hosts and 0.03\% of SSH hosts factored, traced to poor entropy at key generation in embedded devices &
-RSA moduli from TLS/SSH hosts &
-N/A &
-N/A &
-RSA, DSA &
-Batch GCD feasible at Internet scale &
-0.50\% TLS / 0.03\% SSH keys broken &
-Network scans only; not keys carved from memory &
-None directly &
-Very high; basis for TriageGuard's shared-prime GCD test &
-None \\
-
-19 &
-Lenstra, Hughes, Augier, Bos, Kleinjung, Wachter, ``Public Keys'' (CRYPTO, LNCS 7417)\svcite{lenstra2012ron} &
-2012 &
-Survey of millions of collected public keys (X.509, PGP) for shared factors and duplicates &
-Two out of every thousand collected RSA moduli offer no security because they share a prime &
-RSA moduli (various sizes) &
-N/A &
-N/A &
-RSA &
-Not reported here &
-About 0.2\% of moduli broken &
-Collected certificates and keys, not memory &
-None directly &
-Very high; confirms shared-prime test is worth running &
-None \\
-
-20 &
-Kharraz, Robertson, Balzarotti, Bilge, Kirda, ``Cutting the Gordian Knot: A Look Under the Hood of Ransomware Attacks'' (DIMVA, LNCS 9148)\svcite{kharraz2015cutting} &
-2015 &
-Long-term study of 1{,}359 ransomware samples from 15 families; analyses file-system activity and encryption behaviour &
-Many families use simple, detectable techniques; file-system access patterns can reveal ransomware &
-Varies by family &
-User files &
-Encrypted files &
-Symmetric and asymmetric, varies by family &
-Not reported here &
-Not reported here &
-Behavioural; no memory triage or key assessment &
-Moderate; behaviour also leaves memory traces &
-High; motivates checking which crypto a sample really uses &
-None \\
-
-21 &
-Bernstein, ``ChaCha, a Variant of Salsa20'' (SASC workshop)\svcite{bernstein2008chacha} &
-2008 &
-Stream cipher design; modifies Salsa20's quarter-round for better diffusion per round &
-Same structure and speed class as Salsa20 with improved diffusion &
-256-bit (128-bit variant) &
-Arbitrary length &
-Same length as plaintext (stream cipher) &
-Symmetric stream cipher &
-Not reported here &
-Designed for fast software implementation &
-Primitive specification; no forensic context &
-Low &
-Very high; its ``expand 32-byte k'' constant is TriageGuard's ChaCha signature &
-None \\
-
-22 &
-Bernstein, ``Curve25519: New Diffie-Hellman Speed Records'' (PKC, LNCS 3958)\svcite{bernstein2006curve25519} &
-2006 &
-Elliptic-curve Diffie-Hellman over the prime $2^{255}-19$ with constant-time arithmetic &
-High-speed key exchange with 32-byte public and secret keys &
-255-bit curve, 32-byte keys &
-N/A &
-32-byte shared secret &
-ECDH key exchange &
-Not reported here &
-Designed for high speed &
-Primitive specification; no forensic context &
-Low &
-Very high; the prime is TriageGuard's Curve25519 signature &
-None \\
-
-23 &
-NIST, ``Advanced Encryption Standard (AES)'' (FIPS PUB 197)\svcite{fips197} &
-2001 &
-Standard specifying the Rijndael block cipher, its S-box and key schedule &
-Defines AES with fixed tables that any implementation carries &
-128/192/256-bit &
-128-bit blocks &
-128-bit blocks &
-Symmetric block cipher &
-N/A &
-N/A &
-Standard; no detection guidance &
-Low &
-Very high; S-box and round constants are TriageGuard's AES signatures &
-None \\
-
-24 &
-Dworkin, ``Recommendation for Block Cipher Modes of Operation: GCM and GMAC'' (NIST SP 800-38D)\svcite{sp80038d} &
-2007 &
-Standard for Galois/Counter Mode authenticated encryption &
-Combines counter-mode encryption with GHASH authentication &
-AES 128/192/256-bit; 96-bit IV recommended &
-Variable &
-Ciphertext + tag (up to 128 bits) &
-AEAD (authenticated encryption) &
-N/A &
-N/A &
-Standard; GHASH tables are an implementation detail &
-Low &
-Very high; GHASH reduction tables and API flags are TriageGuard's GCM signatures &
-None \\
-
-25 &
-M'Raihi et al., ``HOTP: An HMAC-Based One-Time Password Algorithm'' (IETF RFC 4226)\svcite{rfc4226} &
-2005 &
-Standard for counter-based one-time passwords using HMAC-SHA-1 &
-Requires a shared secret of at least 128 bits, 160 recommended &
-$\geq$128-bit secret (160 recommended) &
-8-byte counter &
-6 to 8 digit code &
-HMAC-SHA-1 &
-N/A &
-N/A &
-No guidance on secrets exposed in memory &
-Moderate; OTP secrets sit in process memory &
-High; TriageGuard flags OTP secrets under 128 bits &
-None \\
-
-26 &
-Perez, Ribeiro, ``Ignore Previous Prompt: Attack Techniques for Language Models'' (NeurIPS ML Safety Workshop)\svcite{perez2022ignore} &
-2022 &
-Prompt injection; PromptInject framework for goal hijacking and prompt leaking against GPT-3 &
-Simple handcrafted inputs such as ``ignore previous instructions'' redirect the model &
-N/A &
-N/A &
-N/A &
-N/A &
-Not reported &
-Not reported here &
-Direct injection by the user; not data retrieved by an application &
-None directly &
-None directly &
-Very high; TriageGuard's \emph{risk\_downplay} payload follows this pattern \\
-
-27 &
-Greshake et al., ``Not What You've Signed Up For: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection'' (ACM AISec)\svcite{greshake2023not} &
+Greshake, Abdelnabi, Mishra, Endres, Holz, Fritz, ``Not What You've Signed Up For: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection'' (ACM AISec)\svcite{greshake2023not} &
 2023 &
 Indirect prompt injection; instructions planted in data an LLM application retrieves, shown on real systems &
 Retrieved data can take over an LLM-integrated application &
@@ -434,8 +290,8 @@ Low &
 None directly &
 Very high; memory artefacts are exactly such retrieved data \\
 
-28 &
-Hines et al., ``Defending Against Indirect Prompt Injection Attacks With Spotlighting'' (arXiv:2403.14720)\svcite{hines2024spotlighting} &
+19 &
+Hines, Lopez, Hall, Zarfati, Zunger, Kiciman, ``Defending Against Indirect Prompt Injection Attacks With Spotlighting'' (arXiv:2403.14720)\svcite{hines2024spotlighting} &
 2024 &
 Defence; marks untrusted input by delimiting, datamarking or encoding so the model can tell data from instructions &
 Reduces attack success from over 50\% to under 2\% in their experiments &
@@ -450,7 +306,7 @@ None directly &
 None directly &
 Very high; TriageGuard's defence D2, combined with output checks \\
 
-29 &
+20 &
 Liu, Jia, Geng, Jia, Gong, ``Formalizing and Benchmarking Prompt Injection Attacks and Defenses'' (USENIX Security)\svcite{liu2024formalizing} &
 2024 &
 Framework formalising prompt injection; benchmark of 5 attacks and 10 defences on 10 LLMs and 7 tasks &

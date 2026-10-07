@@ -39,46 +39,43 @@ Each objective has a measurable criterion; Section~\ref{sec:testing} reports the
 \end{enumerate}
 
 \subsection{Literature review}
-We surveyed 29 works: ten recent papers (2024 onward) that cover every pillar of the project, plus the
-foundational work and specifications they build on. The full survey, in the course's table format with
-cryptographic parameters and relevance to each pillar, is Table~\ref{tab:survey} in Appendix~\ref{app:survey}.
+We surveyed 20 works, all from 2021 onward: ten recent papers (2024 onward) covering every pillar of the
+project, and ten 2021 to 2024 papers on memory key extraction, crypto identification, weak RSA keys and prompt
+injection. The full survey, in the course's table format with cryptographic parameters and relevance to each
+pillar, is Table~\ref{tab:survey} in Appendix~\ref{app:survey}.
 
-\textit{Memory forensics and AI-assisted triage.} Volatility began as Volatools~\cite{walters2007volatools}, and
-\emph{The Art of Memory Forensics}~\cite{ligh2014art} set out the standard methods for processes, registry and
-injected code (\texttt{malfind}). volGPT~\cite{oh2024volgpt} feeds Volatility artefacts to an LLM to triage
-ransomware processes and improves on raw plugin output, and ForensicLLM~\cite{sharma2025forensicllm} shows a
-local LLM can match cloud models for forensic questions. Neither tests whether crafted evidence can bias the
-LLM's verdict, and neither assesses the cryptography found.
+\textit{Memory forensics and AI-assisted triage.} Carrier et al.~\cite{carrier2022detecting} show that features
+extracted from memory with Volatility-based tooling detect obfuscated malware with 99\% accuracy, but output only
+a label. volGPT~\cite{oh2024volgpt} feeds Volatility artefacts to an LLM to triage ransomware processes, and
+ForensicLLM~\cite{sharma2025forensicllm} shows a local LLM can match cloud models for forensic questions.
+Scanlon et al.~\cite{scanlon2023chatgpt} found GPT-4 useful for some forensic tasks but warn that the user must
+catch its mistakes. None of these tests whether crafted evidence can bias the LLM, and none assesses the
+cryptography found.
 
-\textit{Detecting encryption, keys and ciphers.} Key material stands out by entropy~\cite{shamir1999hide},
-and Halderman et al.~\cite{halderman2008cold} recovered AES and RSA keys from RAM images via key-schedule
-structure. Casino et al.~\cite{casino2025not} classify high-entropy segments to separate encryption from
-compression, but do not say which algorithm or how strong. Gr\"obert et al.~\cite{grobert2011automated} and
-Lestringant et al.~\cite{lestringant2015automated} identify primitives in binaries by execution traces and
-data-flow graphs, and Barnes and Ghafarian~\cite{barnes2026machine} classify ransomware from PE-header
-features; all work per binary, not on a whole memory image. The constants we match come from the
-specifications of AES~\cite{fips197}, GCM~\cite{sp80038d}, ChaCha20~\cite{bernstein2008chacha} and
-Curve25519~\cite{bernstein2006curve25519}.
+\textit{Keys and ciphers in memory and binaries.} Fernandez de Loaysa Babiano et al.~\cite{babiano2023evaluation}
+recovered over 90\% of Salsa20 key and nonce pairs from the memory of running ransomware, and Baier et
+al.~\cite{baier2024tls} systematise how TLS key material is found in memory. Casino et al.~\cite{casino2025not}
+classify high-entropy segments to separate encryption from compression, but do not say which algorithm or how
+strong. Meijer et al.~\cite{meijer2021wheres} identify known and proprietary primitives in binaries with
+data-flow graphs, and Barnes and Ghafarian~\cite{barnes2026machine} classify ransomware from PE-header features;
+both work per binary, not on a whole memory image.
 
 \textit{Cipher cost and weak keys.} Baig et al.~\cite{baig2024comparative} and Banu et al.~\cite{banu2025analyzing}
 measure the speed and memory hierarchy of AES, DES/3DES, RSA, ElGamal and ECC, which frames which ciphers malware
-uses for bulk data and which for key exchange; Kharraz et al.~\cite{kharraz2015cutting} show how ransomware
-families use them in practice. For RSA, Boneh~\cite{boneh1999twenty} surveys small-exponent and common-modulus
-attacks, Ruzai et al.~\cite{ruzai2024concurrent} factor sets of moduli linked by weak key equations, and
-Heninger et al.~\cite{heninger2012mining} and Lenstra et al.~\cite{lenstra2012ron} broke 0.50\% of TLS host keys
-and about 0.2\% of collected moduli through shared primes. These checks have been run on certificate scans and in
-theory, not on keys carved from a memory image.
+uses for bulk data and which for key exchange; Oz et al.~\cite{oz2022survey} survey how ransomware families
+combine them. For RSA, Ruzai et al.~\cite{ruzai2024concurrent} factor sets of moduli linked by weak key
+equations, and Pelofske~\cite{pelofske2024efficient} speeds up the batch GCD that finds moduli sharing a prime by
+about 6x. These run on key collections and in theory, not on keys carved from a memory image.
 
-\textit{Tokens and one-time passwords.} Raghu~\cite{raghu2025context} quantifies the cost of hardening JWT/OAuth
-in production, and Rujichaikul and Rassameeroj~\cite{rujichaikul2025token} detect token misuse with rule-based
-signatures (81.4\% accuracy). RFC~4226~\cite{rfc4226} sets the minimum OTP secret length we check. None of these
-look for tokens left in memory.
+\textit{Tokens.} Raghu~\cite{raghu2025context} quantifies the cost of hardening JWT/OAuth in production, and
+Rujichaikul and Rassameeroj~\cite{rujichaikul2025token} detect token misuse with rule-based signatures (81.4\%
+accuracy). Neither looks for tokens left in memory.
 
-\textit{LLM robustness.} Perez and Ribeiro~\cite{perez2022ignore} showed goal hijacking via ``ignore previous
-instructions'', and Greshake et al.~\cite{greshake2023not} showed \emph{indirect} injection through data an
-application retrieves, which is our setting since a memory dump is attacker-controlled data. Spotlighting~\cite{hines2024spotlighting}
-and the architectural defence of Gokcimen~\cite{gokcimen2025novel} reduce attack success, and Liu et al.~\cite{liu2024formalizing}
-found no single defence sufficient. None is evaluated on forensic evidence or checks that a report's claims cite real evidence.
+\textit{LLM robustness.} Greshake et al.~\cite{greshake2023not} showed \emph{indirect} prompt injection through data
+an application retrieves, which is our setting since a memory dump is attacker-controlled data.
+Spotlighting~\cite{hines2024spotlighting} and the architectural defence of Gokcimen~\cite{gokcimen2025novel} reduce
+attack success, and Liu et al.~\cite{liu2024formalizing} found no single defence sufficient. None is evaluated on
+forensic evidence or checks that a report's claims cite real evidence.
 
 \textit{Gap.} Each pillar is covered somewhere, but no existing work (a) joins memory artefacts with cipher
 identification \emph{and} weak-key testing on keys carved from the dump, (b) reports a confidence and evidence
