@@ -1,0 +1,29 @@
+% Full literature survey in the course's table format. The same rows build the standalone
+% A2 version in literature_survey.tex.
+\onecolumn
+\begin{landscape}
+\section{Literature survey table}
+\label{app:survey}
+{\tiny
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.15}
+\setlength{\svw}{\dimexpr\linewidth-60pt\relax}
+\begin{longtable}{W{.02}W{.11}W{.025}W{.09}W{.09}W{.06}W{.05}W{.055}W{.06}W{.055}W{.06}W{.08}W{.075}W{.08}W{.09}}
+\caption{Literature survey: qualitative relevance and reported cryptographic parameters of 29 works compared against TriageGuard}
+\label{tab:survey} \\
+\toprule
+\textbf{\#} & \textbf{Author, Paper \& Venue} & \textbf{Yr.} & \textbf{Domain Focus \& Methodology} & \textbf{Key Findings \& Observation} & \textbf{Key Size} & \textbf{PL Size} & \textbf{CT Size / Output} & \textbf{Encryption} & \textbf{Time Consuming} & \textbf{Performance} & \textbf{Limitation / Gap in Paper} & \textbf{Relevance: Memory Forensics} & \textbf{Relevance: Cryptographic Stress} & \textbf{Relevance: AI Robustness \& Gap Addressed by TriageGuard} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{\#} & \textbf{Author, Paper \& Venue} & \textbf{Yr.} & \textbf{Domain Focus \& Methodology} & \textbf{Key Findings \& Observation} & \textbf{Key Size} & \textbf{PL Size} & \textbf{CT Size / Output} & \textbf{Encryption} & \textbf{Time Consuming} & \textbf{Performance} & \textbf{Limitation / Gap in Paper} & \textbf{Relevance: Memory Forensics} & \textbf{Relevance: Cryptographic Stress} & \textbf{Relevance: AI Robustness \& Gap Addressed by TriageGuard} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\bottomrule
+\endlastfoot
+\input{sections/survey_rows}
+\end{longtable}
+}
+\end{landscape}

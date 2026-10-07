@@ -21,11 +21,17 @@
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.17}
 \usepackage{pifont}
+\usepackage{longtable}
+\usepackage{pdflscape}
+\usepackage{ragged2e}
 
 \newcommand{\done}{\ding{51}}
 \newcommand{\todo}{\ding{55}}
 \newcommand{\repo}{\url{https://github.com/HalcyonVector/Triageguard}}
 \newcommand{\fillin}[1]{\textcolor{red}{[#1]}}
+\newcommand{\svcite}[1]{~\cite{#1}}  % used by sections/survey_rows.tex
+\newlength{\svw}
+\newcolumntype{W}[1]{>{\RaggedRight\arraybackslash}p{#1\svw}}
 
 % shared TikZ styles
 \tikzset{
@@ -82,5 +88,6 @@ memory forensics, cryptographic primitive identification, RSA weak keys, Volatil
 
 \appendices
 \input{sections/appendix}
+\input{sections/appendix_survey}
 
 \end{document}

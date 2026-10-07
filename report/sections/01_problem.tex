@@ -39,66 +39,51 @@ Each objective has a measurable criterion; Section~\ref{sec:testing} reports the
 \end{enumerate}
 
 \subsection{Literature review}
-\textit{Memory forensics.} Volatility, introduced as Volatools by Walters and Petroni~\cite{walters2007volatools},
-and the methods in \emph{The Art of Memory Forensics}~\cite{ligh2014art} established process listing,
-injected-code detection (\texttt{malfind}) and registry analysis from raw images. These tools stop at
-artefact extraction; they do not assess the cryptography they uncover.
+We surveyed 29 works: ten recent papers (2024 onward) that cover every pillar of the project, plus the
+foundational work and specifications they build on. The full survey, in the course's table format with
+cryptographic parameters and relevance to each pillar, is Table~\ref{tab:survey} in Appendix~\ref{app:survey}.
 
-\textit{Finding keys and ciphers in memory.} Shamir and van Someren~\cite{shamir1999hide} showed that key
-material stands out by entropy. Halderman et al.~\cite{halderman2008cold} recovered AES and RSA keys from
-DRAM images by searching for key-schedule structure. Gr\"obert et al.~\cite{grobert2011automated} and
-Lestringant et al.~\cite{lestringant2015automated} identified cryptographic primitives in binaries using
-constants, heuristics and data-flow graphs. Tools such as findcrypt and YARA crypto rules apply the
-constant-matching idea but report a bare match, not a confidence or whether the algorithm is implemented
-or only referenced.
+\textit{Memory forensics and AI-assisted triage.} Volatility began as Volatools~\cite{walters2007volatools}, and
+\emph{The Art of Memory Forensics}~\cite{ligh2014art} set out the standard methods for processes, registry and
+injected code (\texttt{malfind}). volGPT~\cite{oh2024volgpt} feeds Volatility artefacts to an LLM to triage
+ransomware processes and improves on raw plugin output, and ForensicLLM~\cite{sharma2025forensicllm} shows a
+local LLM can match cloud models for forensic questions. Neither tests whether crafted evidence can bias the
+LLM's verdict, and neither assesses the cryptography found.
 
-\textit{Weak RSA keys.} Boneh~\cite{boneh1999twenty} surveyed attacks on RSA including small exponents and
-common moduli. Heninger et al.~\cite{heninger2012mining} and Lenstra et al.~\cite{lenstra2012ron} found
-that a measurable fraction of keys on the Internet share primes, recoverable with pairwise GCD.
-These checks are usually run on certificate scans, not on keys carved from a memory image.
+\textit{Detecting encryption, keys and ciphers.} Key material stands out by entropy~\cite{shamir1999hide},
+and Halderman et al.~\cite{halderman2008cold} recovered AES and RSA keys from RAM images via key-schedule
+structure. Casino et al.~\cite{casino2025not} classify high-entropy segments to separate encryption from
+compression, but do not say which algorithm or how strong. Gr\"obert et al.~\cite{grobert2011automated} and
+Lestringant et al.~\cite{lestringant2015automated} identify primitives in binaries by execution traces and
+data-flow graphs, and Barnes and Ghafarian~\cite{barnes2026machine} classify ransomware from PE-header
+features; all work per binary, not on a whole memory image. The constants we match come from the
+specifications of AES~\cite{fips197}, GCM~\cite{sp80038d}, ChaCha20~\cite{bernstein2008chacha} and
+Curve25519~\cite{bernstein2006curve25519}.
 
-\textit{Crypto in ransomware.} Kharraz et al.~\cite{kharraz2015cutting} analysed ransomware families and
-their use of cryptography. Modern families favour ChaCha20/Salsa20~\cite{bernstein2008chacha} with
-Curve25519~\cite{bernstein2006curve25519} key exchange, alongside AES~\cite{fips197} and
-AES-GCM~\cite{sp80038d}, which motivates our widened cipher scope.
+\textit{Cipher cost and weak keys.} Baig et al.~\cite{baig2024comparative} and Banu et al.~\cite{banu2025analyzing}
+measure the speed and memory hierarchy of AES, DES/3DES, RSA, ElGamal and ECC, which frames which ciphers malware
+uses for bulk data and which for key exchange; Kharraz et al.~\cite{kharraz2015cutting} show how ransomware
+families use them in practice. For RSA, Boneh~\cite{boneh1999twenty} surveys small-exponent and common-modulus
+attacks, Ruzai et al.~\cite{ruzai2024concurrent} factor sets of moduli linked by weak key equations, and
+Heninger et al.~\cite{heninger2012mining} and Lenstra et al.~\cite{lenstra2012ron} broke 0.50\% of TLS host keys
+and about 0.2\% of collected moduli through shared primes. These checks have been run on certificate scans and in
+theory, not on keys carved from a memory image.
 
-\textit{Prompt injection.} Perez and Ribeiro~\cite{perez2022ignore} demonstrated goal hijacking via
-``ignore previous prompt'', and Greshake et al.~\cite{greshake2023not} showed \emph{indirect} injection
-through data an LLM application retrieves, which is exactly our setting: the data is a memory dump.
-Hines et al.~\cite{hines2024spotlighting} proposed spotlighting untrusted input, and Liu et al.~\cite{liu2024formalizing}
-benchmarked attacks and defences, finding that no single defence is sufficient.
+\textit{Tokens and one-time passwords.} Raghu~\cite{raghu2025context} quantifies the cost of hardening JWT/OAuth
+in production, and Rujichaikul and Rassameeroj~\cite{rujichaikul2025token} detect token misuse with rule-based
+signatures (81.4\% accuracy). RFC~4226~\cite{rfc4226} sets the minimum OTP secret length we check. None of these
+look for tokens left in memory.
 
-\textit{Gap.} We found no tool that (a) joins memory artefacts with cipher identification \emph{and} RSA
-weak-key testing on carved keys, (b) reports calibrated confidence and evidence basis per algorithm, and
-(c) uses an LLM for reporting while measuring its exposure to injection through forensic artefacts.
-Table~\ref{tab:survey} summarises the surveyed work.
+\textit{LLM robustness.} Perez and Ribeiro~\cite{perez2022ignore} showed goal hijacking via ``ignore previous
+instructions'', and Greshake et al.~\cite{greshake2023not} showed \emph{indirect} injection through data an
+application retrieves, which is our setting since a memory dump is attacker-controlled data. Spotlighting~\cite{hines2024spotlighting}
+and the architectural defence of Gokcimen~\cite{gokcimen2025novel} reduce attack success, and Liu et al.~\cite{liu2024formalizing}
+found no single defence sufficient. None is evaluated on forensic evidence or checks that a report's claims cite real evidence.
 
-% NOTE: the teacher's literature-survey table format was not available when this draft was written.
-% Replace the columns below with the prescribed format; the rows can be reused.
-\begin{table*}[t]
-\centering
-\caption{Literature survey summary (draft layout, to be converted to the prescribed format)}
-\label{tab:survey}
-\footnotesize
-\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.4cm}c>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
-\toprule
-Work & Year & Method / contribution & Limitation relevant to TriageGuard\\
-\midrule
-Walters and Petroni~\cite{walters2007volatools} & 2007 & Volatile memory analysis framework (Volatility origin) & Artefact extraction only, no crypto assessment\\
-Ligh et al.~\cite{ligh2014art} & 2014 & Memory forensics methodology, malfind, registry & Manual interpretation and reporting\\
-Shamir and van Someren~\cite{shamir1999hide} & 1999 & Locating keys by entropy & Finds random-looking areas, not the algorithm\\
-Halderman et al.~\cite{halderman2008cold} & 2008 & Key recovery from DRAM via key schedules & Needs key schedules in memory; no reporting\\
-Gr\"obert et al.~\cite{grobert2011automated} & 2011 & Crypto primitive identification in binaries & Dynamic traces of single binaries, not full dumps\\
-Lestringant et al.~\cite{lestringant2015automated} & 2015 & Data-flow graph isomorphism for crypto code & Static binaries; heavy analysis per sample\\
-Heninger et al.~\cite{heninger2012mining} & 2012 & Shared primes via batch GCD at Internet scale & Certificate scans, not keys carved from RAM\\
-Lenstra et al.~\cite{lenstra2012ron} & 2012 & Public key survey, shared factors & Same as above\\
-Kharraz et al.~\cite{kharraz2015cutting} & 2015 & Ransomware behaviour and crypto use & Behavioural; no memory triage tool\\
-Greshake et al.~\cite{greshake2023not} & 2023 & Indirect prompt injection in LLM apps & General apps; no forensic setting\\
-Hines et al.~\cite{hines2024spotlighting} & 2024 & Spotlighting untrusted input & One defence; no output validation\\
-Liu et al.~\cite{liu2024formalizing} & 2024 & Benchmark of injection attacks and defences & General tasks, no evidence citation\\
-\bottomrule
-\end{tabularx}
-\end{table*}
+\textit{Gap.} Each pillar is covered somewhere, but no existing work (a) joins memory artefacts with cipher
+identification \emph{and} weak-key testing on keys carved from the dump, (b) reports a confidence and evidence
+basis per algorithm and a strength score per key, and (c) uses an LLM for the report while measuring and
+defending its exposure to injection through the evidence itself. TriageGuard targets exactly this combination.
 
 \subsection{Scope}
 \textit{In scope:} Windows memory images (Volatility3 stage), any file for the crypto and credential stages,
