@@ -6,5 +6,7 @@
  "pcap": "rsasnakeoil2.pcap (Wireshark sample)",
  "order": 1,
  "findings": 80,
- "risk": 55
+ "risk": 77,
+ "compromise": 55,
+ "exposure": 99
 }

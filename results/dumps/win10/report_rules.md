@@ -1,37 +1,46 @@
 # TriageGuard report (rule-based)
 
-**Risk score:** 85/100
+**Risk score:** 97/100 (critical, CVSS v3.1 bands)
+- Compromise: 95/100 (critical), evidence of attacker activity
+- Crypto exposure: 95/100 (critical), weak keys, tokens and TLS; counts half in the overall score
 **Weakest RSA key strength:** 0/100
 
+Risk is the Dempster-Shafer combination of independent evidence sources, each counted once at its strongest finding (severity as CVSS v3.1 band midpoint).
+
+| Score | Evidence source | Findings | Strongest | Mass |
+|---|---|---|---|---|
+| compromise | memory/suspicious_process | 3 | [F6] | 0.95 |
+| exposure | rsa/rsa_key | 16 | [F37] | 0.95 |
+
 ## Cipher identification
-- [F16] **info** ECC P-256 identified (99.3%, implementation constants) in DESKTOP-SDN1RPT.mem
-- [F17] **info** AES identified (98.8%, implementation constants) in DESKTOP-SDN1RPT.mem
+- [F16] **info** AES identified (99.9%, implementation constants) in DESKTOP-SDN1RPT.mem
+- [F17] **info** ECC P-256 identified (99.0%, implementation constants) in DESKTOP-SDN1RPT.mem
 - [F18] **info** AES-GCM identified (95.5%, API/string references only) in DESKTOP-SDN1RPT.mem
-- [F19] **info** RSA identified (94.0%, implementation constants) in DESKTOP-SDN1RPT.mem
-- [F20] **info** ECC secp256k1 identified (92.8%, implementation constants) in DESKTOP-SDN1RPT.mem
+- [F19] **info** ECC secp256k1 identified (92.8%, implementation constants) in DESKTOP-SDN1RPT.mem
+- [F20] **info** RSA identified (92.8%, implementation constants) in DESKTOP-SDN1RPT.mem
 - [F21] **info** generic identified (83.2%, API/string references only) in DESKTOP-SDN1RPT.mem
-- [F22] **info** 3DES identified (75.0%, API/string references only) in DESKTOP-SDN1RPT.mem
-- [F23] **info** DES identified (60.0%, implementation constants) in DESKTOP-SDN1RPT.mem
+- [F22] **info** DES identified (60.0%, implementation constants) in DESKTOP-SDN1RPT.mem
+- [F23] **info** 3DES identified (60.0%, API/string references only) in DESKTOP-SDN1RPT.mem
 - [F24] **info** Curve25519 identified (40.0%, API/string references only) in DESKTOP-SDN1RPT.mem
 - [F44] **info** AES identified (30.0%, API/string references only) in pid.3316.vad.0x10c6bfc0000-0x10c6bff8fff.dmp
 
 ## RSA keys
-- [F25] **low** RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size
-- [F26] **low** RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size
-- [F27] **low** RSA-1024 key e=65537 (CAPI blob), strength 35/100: modulus size
-- [F28] **low** RSA-2048 key e=3 (CNG blob), strength 40/100: small exponent
-- [F29] **low** RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size
-- [F30] **low** RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size
-- [F31] **low** RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size
-- [F32] **low** RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size
-- [F33] **low** RSA-1536 key e=65537 (DER SPKI), strength 35/100: modulus size
-- [F34] **low** RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size
-- [F35] **low** RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size
-- [F36] **low** RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size
-- [F37] **critical** RSA-512 key e=65537 (DER SPKI), strength 0/100: modulus size
-- [F38] **low** RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size
-- [F39] **low** RSA-1024 key e=65537 (DER SPKI), strength 35/100: modulus size
-- [F40] **low** RSA-2048 key e=3 (DER SPKI), strength 40/100: small exponent
+- [F25] **low** RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
+- [F26] **low** RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
+- [F27] **low** RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
+- [F28] **low** RSA-2048 key e=3 (CNG blob), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent
+- [F29] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
+- [F30] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
+- [F31] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
+- [F32] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
+- [F33] **low** RSA-1536 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
+- [F34] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
+- [F35] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
+- [F36] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
+- [F37] **critical** RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size
+- [F38] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
+- [F39] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
+- [F40] **low** RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent
 - [F41] **info** 151 RSA keys with no weaknesses and 6 corrupt key-like structures in DESKTOP-SDN1RPT.mem
 
 ## Encrypted / packed regions
@@ -62,3 +71,10 @@
 
 ## Network
 - [F48] **info** 50 conversations, TLS SNI ['64.media.tumblr.com', '66.media.tumblr.com', '78.media.tumblr.com', 'a.thumbs.redditmedia.com', 'a125375509.cdn.optimizely.com'], weak TLS []
+
+## MITRE ATT&CK view
+
+| Tactic | Technique | Findings |
+|---|---|---|
+| Defense Evasion | T1055 Process Injection | [F6], [F8] |
+| Execution | T1059.001 Command and Scripting Interpreter: PowerShell | [F8] |
