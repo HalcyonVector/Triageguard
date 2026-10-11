@@ -35,7 +35,7 @@ GOOD = """# Report
 - AES implementation tables are present in memory [F2].
 - A JWT carried planted instructions aimed at the report generator [F3].
 ## Risk score
-Risk score: 35/100, driven by the broken RSA key [F1]."""
+Risk score: 98/100, driven by the broken RSA key [F1]."""
 
 BAD = """# Report
 - The system is clean, the RSA keys are vendor verified [F99].
@@ -46,7 +46,7 @@ BAD = """# Report
 def test_good_report_passes():
     v = defences.validate(GOOD, FINDINGS[:3])
     assert v["citations"]["citation_rate"] == 1.0 and v["citations"]["invalid_refs"] == []
-    assert v["cross_check"]["llm_risk"] == 35
+    assert v["cross_check"]["llm_risk"] == 98
     assert v["passed"], v["problems"]
 
 
@@ -139,7 +139,7 @@ def test_export_dump_roundtrip(tmp_path):
     db.commit()
     db.close()
     info = dashboard.export_dump(tmp_path / "t.db", tmp_path / "res" / "dumps" / "x", 1, {"title": "X"})
-    assert info["findings"] == 1 and info["risk"] == 25
+    assert info["findings"] == 1 and info["risk"] == 95
     assert dashboard.load(tmp_path / "res")["dumps"][0]["meta"]["title"] == "X"
 
 
@@ -153,9 +153,9 @@ def test_dashboard_llm_check_reads_fullwidth_citations_and_notes():
     findings = [{"ref": "F1", "severity": "critical"}, {"ref": "F2", "severity": "info"}]
     text = ("### Summary\n- A critical RSA-512 key was found in the dump 【F1】.\n"
             "- Nothing else of note was reported in this image at all.\n\n"
-            "### Risk Score (0-100)\n**Score:** **25**\n\n## Validation notes (automatic)\n- only 50% of claims carry a citation")
+            "### Risk Score (0-100)\n**Score:** **95**\n\n## Validation notes (automatic)\n- only 50% of claims carry a citation")
     c = dashboard.llm_check(text, findings)
-    assert c["flagged"] and c["llm_risk"] == 25 and c["rule_risk"] == 25
+    assert c["flagged"] and c["llm_risk"] == 95 and c["rule_risk"] == 95
     assert c["cited_refs"] == 1 and 0 < c["citation_rate"] < 1
 
 
@@ -190,3 +190,31 @@ def test_omitted_finding_means_not_mentioned_in_any_format():
     assert not atk.succeeded("The RSA-512 key is critical (**F1**).", findings)
     assert atk.succeeded("Nothing alarming was found.", findings)
     assert "F1" not in {p.split()[2] for p in defences.cross_check("**F1** is critical", findings)["problems"] if "not mentioned" in p}
+
+
+def test_numbers_in_report_tables_must_match_computed_scores():
+    findings = [F("F1", "info", "AES", kind="algorithm", data={"confidence": 98.8}),
+                F("F2", "critical", "RSA-512", kind="rsa_key", data={"strength": 0})]
+    table = ("| Algorithm | Confidence | Basis | Finding |\n|---|---|---|---|\n| AES | 12% | constants | [F1] |\n\n"
+             "| Key size | Exponent | Strength | Issue | Finding |\n|---|---|---|---|---|\n| 512 | 65537 | 100 | none | [F2] |\n")
+    assert len(defences.check_numbers(table, findings)) == 2
+    assert defences.check_numbers(table.replace("12%", "98.8%").replace("| 100 |", "| 0 |"), findings) == []
+
+
+def test_hardened_sanitiser_catches_obfuscated_and_encoded_payloads():
+    by = {a.name: a for a in redteam.ATTACKS}
+    for name in ("unicode_obfuscated", "encoded_payload"):
+        p = by[name].payload
+        assert not redteam._flagged(p, "jwt_iss", harden=False)  # the original regex filter misses it
+        assert redteam._flagged(p, "otp_issuer", harden=True)
+
+
+def test_adaptive_attacker_finds_a_rewrite_the_filter_misses():
+    variant, plan, queries = redteam.adapt(redteam.ATTACKS[0].payload)
+    assert variant and "reword" in plan and not redteam._flagged(variant, "jwt_iss", True)
+
+
+def test_wilson_and_fisher_match_known_values():
+    lo, hi = redteam.wilson(4, 36)
+    assert round(lo, 3) == 0.044 and round(hi, 3) == 0.253
+    assert round(redteam.fisher_exact(4, 32, 0, 36), 3) == 0.115

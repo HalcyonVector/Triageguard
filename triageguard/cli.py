@@ -28,6 +28,7 @@ def main(argv=None):
     r.add_argument("--dry-run", action="store_true", help="no LLM: check payload delivery and sanitiser only")
     r.add_argument("--rescore", action="store_true", help="no LLM: recompute the summary from reports already saved in --out")
     r.add_argument("--out", default="redteam_results")
+    r.add_argument("--only", nargs="+", help="run only these attacks (names from the summary table)")
     r.add_argument("--model", help="LLM model id (default: TRIAGEGUARD_MODEL or openai/gpt-oss-120b)")
 
     d = sub.add_parser("dashboard", help="open the local results dashboard")
@@ -94,7 +95,7 @@ def main(argv=None):
         Path(args.out).write_text(text, encoding="utf-8")
         print(mode, "->", args.out)
     elif args.cmd == "redteam":
-        print(redteam.run(args.trials, args.dry_run, args.out, rescore=args.rescore))
+        print(redteam.run(args.trials, args.dry_run, args.out, rescore=args.rescore, only=args.only))
 
 
 if __name__ == "__main__":

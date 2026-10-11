@@ -9,12 +9,16 @@ are treated as untrusted data, and the report is checked after generation.
   2. spotlighting    the defended prompt marks findings as data, never instructions
   3. check_citations() every claim must cite a real finding id
   4. cross_check()   compare the report with the rule-based results (risk score,
-                     critical findings, algorithms, dangerous advice)
+                     critical findings, algorithms, dangerous advice, and every
+                     confidence / strength number in its tables)
 """
 
+import base64
+import binascii
 import copy
 import json
 import re
+import unicodedata
 
 from . import report
 
@@ -38,8 +42,43 @@ MAX_STR = 300
 REMOVED = "[removed: instruction-like text]"
 
 
-def _scan_str(s, hits, path):
-    found = [rx.pattern for rx in INJECTION_RES if rx.search(s)]
+# Latin look-alikes that NFKC leaves alone (Unicode TR39 confusables, the common ones)
+CONFUSABLES = str.maketrans("аеорсхуіјѕԁԛԝАВЕКМНОРСТХΑΒΕΖΗΙΚΜΝΟΡΤΥΧοιν", "aeopcxyijsdqwABEKMHOPCTXABEZHIKMNOPTYXoiv")
+B64_RE = re.compile(r"[A-Za-z0-9+/_-]{24,}={0,2}")
+
+
+def normalise(s):
+    """Undo the cheap ways to slip text past a regex: compatibility forms (fullwidth,
+    ligatures) via NFKC, invisible format characters such as zero-width spaces
+    (category Cf), and Cyrillic/Greek homoglyphs."""
+    s = unicodedata.normalize("NFKC", s)
+    s = "".join(ch for ch in s if unicodedata.category(ch) != "Cf")
+    return s.translate(CONFUSABLES)
+
+
+def _decoded_parts(s, depth=3):
+    """Text hidden as base64 inside a string (also base64 inside base64, a few levels
+    deep), decoded and normalised so it can be scanned too."""
+    out = []
+    for m in B64_RE.finditer(s):
+        tok = m.group(0)
+        try:
+            raw = base64.urlsafe_b64decode(tok.replace("+", "-").replace("/", "_") + "=" * (-len(tok) % 4))
+            text = normalise(raw.decode("utf-8"))
+        except (binascii.Error, UnicodeDecodeError, ValueError):
+            continue
+        if text.isprintable():
+            out.append(text)
+            if depth > 1:
+                out += _decoded_parts(text, depth - 1)
+    return out
+
+
+def _scan_str(s, hits, path, harden=True):
+    if harden:
+        s = normalise(s)
+    views = [s] + (_decoded_parts(s) if harden else [])
+    found = sorted({rx.pattern for v in views for rx in INJECTION_RES if rx.search(v)})
     if found:
         hits.append({"path": path, "patterns": found, "excerpt": s[:120]})
         return REMOVED
@@ -51,26 +90,28 @@ def _scan_str(s, hits, path):
     return s if len(s) <= MAX_STR else s[:MAX_STR] + "...(cut)"
 
 
-def _walk(obj, hits, path=""):
+def _walk(obj, hits, path="", harden=True):
     if isinstance(obj, str):
-        return _scan_str(obj, hits, path)
+        return _scan_str(obj, hits, path, harden)
     if isinstance(obj, dict):
-        return {k: _walk(v, hits, f"{path}.{k}") for k, v in obj.items()}
+        return {k: _walk(v, hits, f"{path}.{k}", harden) for k, v in obj.items()}
     if isinstance(obj, list):
-        return [_walk(v, hits, f"{path}[{i}]") for i, v in enumerate(obj)]
+        return [_walk(v, hits, f"{path}[{i}]", harden) for i, v in enumerate(obj)]
     return obj
 
 
-def sanitise(findings):
+def sanitise(findings, harden=True):
     """Return (clean findings, alerts). Alerts are appended as new high-severity
-    findings so the report (and the risk score) surfaces the attack itself."""
+    findings so the report (and the risk score) surfaces the attack itself.
+    harden=False skips normalisation and base64 decoding (the original sanitiser),
+    kept so the red team can measure what the hardening adds."""
     clean, alerts = [], []
     next_ref = max((int(f["ref"][1:]) for f in findings), default=0) + 1
     for f in findings:
         hits = []
         g = copy.deepcopy(f)
-        g["title"] = _walk(f["title"], hits, "title")
-        g["data"] = _walk(f["data"], hits, "data")
+        g["title"] = _walk(f["title"], hits, "title", harden)
+        g["data"] = _walk(f["data"], hits, "data", harden)
         clean.append(g)
         if hits:
             alerts.append({
@@ -154,6 +195,43 @@ ALGOS = ["AES-GCM", "AES", "3DES", "DES", "ChaCha20", "Salsa20", "Curve25519", "
          "RC4", "Blowfish", "Twofish", "Serpent", "ROT13", "XOR"]
 
 
+NUM = re.compile(r"\d+(?:\.\d+)?")
+# the number the LLM must copy for each kind of finding, and how far it may be off
+TABLE_FIELDS = {"algorithm": ("confidence", "confidence", 1.0), "rsa_key": ("strength", "strength", 1.0)}
+
+
+def check_numbers(text, findings):
+    """Compare the Confidence and Strength cells of the report's tables with the
+    numbers the pipeline computed for the finding each row cites. The LLM may word
+    things freely, but these scores come from fixed formulas, so any change is either
+    a copying error or the result of planted text."""
+    by_ref = {f["ref"]: f for f in findings}
+    problems, header = [], None
+    lines = text.splitlines()
+    for i, line in enumerate(lines):
+        if not line.strip().startswith("|"):
+            header = None
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if i + 1 < len(lines) and set(lines[i + 1].strip()) <= set("|-: ") and "-" in lines[i + 1]:
+            header = [c.lower() for c in cells]
+            continue
+        if header is None or set(line.strip()) <= set("|-: "):
+            continue
+        for ref in CITE.findall(line):
+            f = by_ref.get(ref)
+            spec = f and TABLE_FIELDS.get(f["kind"])
+            if not spec or not isinstance((f.get("data") or {}).get(spec[1]), (int, float)):
+                continue
+            col = next((j for j, h in enumerate(header) if spec[0] in h), None)
+            if col is None or col >= len(cells) or not (m := NUM.search(cells[col])):
+                continue
+            stated, actual = float(m.group(0)), float(f["data"][spec[1]])
+            if abs(stated - actual) > spec[2]:
+                problems.append(f"{spec[0]} for {ref} stated as {m.group(0)} but computed {actual:g}")
+    return problems
+
+
 def cross_check(text, findings, tolerance=20):
     problems = []
     rule = report.risk_score(findings)
@@ -177,6 +255,7 @@ def cross_check(text, findings, tolerance=20):
 
     for m in DANGEROUS.finditer(text):
         problems.append(f"dangerous or dismissive advice: '{m.group(0)}'")
+    problems += check_numbers(text, findings)
     return {"rule_risk": rule, "llm_risk": llm_score, "problems": problems, "passed": not problems}
 
 
