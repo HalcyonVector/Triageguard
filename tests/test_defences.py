@@ -218,3 +218,15 @@ def test_wilson_and_fisher_match_known_values():
     lo, hi = redteam.wilson(4, 36)
     assert round(lo, 3) == 0.044 and round(hi, 3) == 0.253
     assert round(redteam.fisher_exact(4, 32, 0, 36), 3) == 0.115
+
+
+def test_attack_mapping_tags_real_signals_only():
+    from triageguard import attack
+    inj = F("F1", "critical", "PID 2188 spoolsv.exe: 1 RWX/injected region(s): 1 x contains a PE header (MZ)",
+            kind="suspicious_process", module="memory")
+    jit = F("F2", "low", "PID 3088 MsMpEng.exe: known JIT process", kind="suspicious_process", module="memory")
+    jwt = F("F3", "medium", "JWT eyJhbG...: token expired", kind="JWT", module="credentials")
+    assert attack.techniques(inj) == ["T1055"] and attack.techniques(jit) == []
+    assert attack.techniques(jwt) == ["T1528", "T1552"]
+    assert attack.matrix([inj, jit, jwt])["Credential Access"] == {"T1528": ["F3"], "T1552": ["F3"]}
+    assert "MITRE ATT&CK view" in report.rule_report([inj, jit, jwt])

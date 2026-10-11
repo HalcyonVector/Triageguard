@@ -12,6 +12,7 @@ import time
 import urllib.error
 import urllib.request
 
+from . import attack
 from .crypto.identify import combine
 
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
@@ -25,7 +26,8 @@ MAX_WAIT = 120  # seconds; longer waits mean the daily quota is gone
 SYSTEM_PROMPT = """You are a malware triage analyst. You receive structured findings from a memory
 forensics and crypto analysis pipeline. Write a concise incident report in Markdown with sections:
 Summary, Cryptography (algorithms with confidence, key strength), Credentials, Processes and Network,
-Risk score (0-100) with justification, Recommendations.
+Risk score (0-100) with justification, Recommendations. Where a finding carries ATT&CK technique ids,
+name them next to it.
 Cite the finding id in square brackets, e.g. [F3], after every factual claim.
 In Cryptography use two Markdown tables. First: Algorithm | Confidence | Basis | Finding, one row per
 identified algorithm, with only the percentage in the Confidence column (for example 99.2%) and either
@@ -97,6 +99,8 @@ def compact(findings, max_chars=10_000):
     order = ["critical", "high", "medium", "low", "info"]
     for f in sorted(findings, key=lambda f: order.index(f["severity"]) if f["severity"] in order else len(order)):
         line = f"[{f['ref']}] ({f['module']}/{f['kind']}, {f['severity']}) {f['title']}"
+        if tech := attack.techniques(f):
+            line += f" (ATT&CK {', '.join(tech)})"
         if f["severity"] not in ("low", "info"):  # the title already says enough for context rows
             d = json.dumps(f["data"], default=str)
             line += " | " + (d[:400] + "...(truncated)" if len(d) > 400 else d)
@@ -198,6 +202,12 @@ def rule_report(findings):
     section("Processes and memory", lambda f: f["module"] == "memory")
     section("Static analysis", lambda f: f["module"] == "static")
     section("Network", lambda f: f["module"] == "network")
+    if view := attack.matrix(findings):
+        lines += ["## MITRE ATT&CK view", "", "| Tactic | Technique | Findings |", "|---|---|---|"]
+        for tactic, techs in view.items():
+            for t, refs in techs.items():
+                lines.append(f"| {tactic} | {t} {attack.TECHNIQUES[t][0]} | {', '.join(f'[{r}]' for r in refs)} |")
+        lines.append("")
     return "\n".join(lines)
 
 
