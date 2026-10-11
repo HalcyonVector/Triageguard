@@ -160,17 +160,20 @@ def _pollard_rho(n, max_bits=100):
 
 
 def assess(keys):
-    """Run weakness tests. Adds 'issues' and 'strength' (0-100) to each key."""
+    """Run weakness tests. Adds 'issues', 'security_bits', 'nist_status' and 'strength' (0-100) to each key."""
     for k in keys:
         k["issues"] = []
         n, e, bits = k["n"], k["e"], k["bits"]
-        if bits <= 512:
+        # severity bands follow the factoring record and NIST SP 800-131A Rev. 2 (see strength_score)
+        if bits <= FACTORED_RECORD_BITS:
             k["issues"].append({"test": "modulus size", "severity": "critical",
-                                "detail": f"{bits}-bit modulus is publicly factorable (RSA-512 broken since 1999)"})
+                                "detail": f"{bits}-bit modulus is publicly factorable (record: RSA-250, 829 bits, 2020)"})
         elif bits < 1024:
-            k["issues"].append({"test": "modulus size", "severity": "high", "detail": f"{bits}-bit modulus is factorable with academic resources"})
+            k["issues"].append({"test": "modulus size", "severity": "high", "detail": f"{bits}-bit modulus is below 80-bit security (NIST SP 800-57)"})
         elif bits < 2048:
-            k["issues"].append({"test": "modulus size", "severity": "medium", "detail": f"{bits}-bit modulus is below the NIST 2048-bit minimum"})
+            k["issues"].append({"test": "modulus size", "severity": "medium",
+                                "detail": f"{bits}-bit modulus is below 112-bit security, disallowed by NIST SP 800-131A"})
+        # FIPS 186-5 (A.1.1) requires 2^16 < e < 2^256
         if e < 65537:
             # Hastad needs about e ciphertexts of one message, so only tiny e is a practical risk
             k["issues"].append({"test": "small exponent", "severity": "high" if e == 3 else "medium" if e <= 17 else "low",
@@ -208,14 +211,67 @@ def assess(keys):
                                         "detail": f"gcd with key {other['fingerprint']} is a prime factor; both keys broken"})
                     k["factor"] = g
 
-    penalty = {"critical": 100, "high": 50, "medium": 25, "low": 10, "info": 0}
     for k in keys:
         if k.get("corrupt"):
-            k["strength"] = None
-            continue
-        base = 100 if k["bits"] >= 3072 else 90 if k["bits"] >= 2048 else 60
-        k["strength"] = max(0, base - max([penalty[x["severity"]] for x in k["issues"]], default=0))
+            k["strength"] = k["security_bits"] = k["nist_status"] = None
+        else:
+            k.update(strength_score(k))
     return keys
+
+
+# ---------------------------------------------------------------- strength
+
+# NIST SP 800-57 Part 1 Rev. 5, Table 2: comparable security strength (bits) of an
+# RSA modulus of at least this many bits. Sizes in between get the lower strength,
+# which is how the table is meant to be read.
+NIST_RSA_STRENGTH = [(15360, 256), (7680, 192), (3072, 128), (2048, 112), (1024, 80)]
+# NIST SP 800-131A Rev. 2: below 112 bits is disallowed for new keys (legacy use only)
+NIST_MIN_BITS = 112
+# 128-bit security is SP 800-57's target for protection beyond 2030, so it scores 100
+TARGET_BITS = 128
+# RSA-250 (829 bits) is the largest RSA challenge number factored in public
+# (Boudot et al., 2020); any modulus this size or smaller is demonstrably breakable
+FACTORED_RECORD_BITS = 829
+# these tests recover the private key or the plaintext outright
+BREAKS = {"small factor", "close primes (Fermat)", "shared prime (GCD)"}
+
+
+def gnfs_strength(bits):
+    """Security strength of a modulus below the SP 800-57 table, from the GNFS cost
+    formula in FIPS 140-2 Implementation Guidance 7.5 (also SP 800-56B Rev. 2, App. D):
+        E(n) = (1.923 * cbrt(n ln 2) * (ln(n ln 2))^(2/3) - 4.69) / ln 2
+    It gives 80.0 for n = 1024, matching the table."""
+    x = bits * math.log(2)
+    return (1.923 * x ** (1 / 3) * math.log(x) ** (2 / 3) - 4.69) / math.log(2)
+
+
+def security_bits(bits):
+    for size, strength in NIST_RSA_STRENGTH:
+        if bits >= size:
+            return strength
+    return round(gnfs_strength(bits), 1)
+
+
+def strength_score(k):
+    """0-100 strength = NIST security strength as a share of the 128-bit target.
+
+    0 when a test recovered the key, when the modulus is shared with a standard
+    second exponent (common-modulus attack), or when the size is at or below the
+    public factoring record. A small exponent does not lower the factoring cost,
+    so it is reported as a FIPS 186-5 compliance issue, not as lost bits."""
+    tests = {i["test"] for i in k["issues"]}
+    broken = (tests & BREAKS or k["bits"] <= FACTORED_RECORD_BITS
+              or any(i["test"] == "shared modulus" and i["severity"] == "critical" for i in k["issues"]))
+    sec = 0 if broken else security_bits(k["bits"])
+    if broken:
+        status = "broken"
+    elif sec < NIST_MIN_BITS:
+        status = "disallowed (legacy use only)"
+    elif k.get("e", 65537) < 65537:
+        status = "non-compliant exponent (FIPS 186-5)"
+    else:
+        status = "acceptable"
+    return {"security_bits": sec, "strength": round(100 * min(sec, TARGET_BITS) / TARGET_BITS), "nist_status": status}
 
 
 def to_serialisable(keys):

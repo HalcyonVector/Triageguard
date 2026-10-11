@@ -1,8 +1,22 @@
 """Byte signatures used to identify ciphers in memory and binaries.
 
-Each signature has a weight between 0 and 1. Confidence for an algorithm is
-1 - prod(1 - w) over the distinct signatures that matched, so one strong hit
-counts a lot and several weak hits add up without ever reaching 100%.
+Each signature has a weight between 0 and 1: in Dempster-Shafer terms, the basic
+probability mass it commits to "this algorithm is present" (the rest stays on
+"don't know"). Confidence for an algorithm is Dempster's combination of the
+signatures that matched, 1 - prod(1 - w) (see identify.combine), so one strong
+hit counts a lot and several weak hits add up without ever reaching 100%.
+
+The masses are analyst-assigned, as in any DS evidence model; there is no
+published table for them. They follow fixed tiers so each one can be justified:
+  0.7   a constant unique to the algorithm that only an implementation or a live key
+        needs (key blob headers, curve order/d, the GCM chaining-mode flag)
+  0.6   a lookup table unique to the algorithm (S-box, T-tables, GHASH tables, field prime)
+  0.5   a unique table or string that also sits in generic libraries (inverse S-box,
+        DES tables, OIDs, cipher-mode names)
+  0.3-0.4 an algorithm or API name: the cipher is referenced, maybe never called
+  0.1-0.25 short or ambiguous patterns (Rcon, "AES" as a UTF-16 word)
+A 16-byte constant matches random data with probability about 2^-128 per offset,
+so a hit is never chance; the tiers express how much a hit says about use.
 
 Strings are searched as both ASCII and UTF-16LE (Windows APIs use wide strings).
 """
@@ -45,11 +59,11 @@ SIGNATURES = [
     Sig("DES", "DES S1 box", _h("0e040d01020f0b08030a060c05090007"), 0.5),
     Sig("DES", "DES SPtrans table (OpenSSL)", _h("000808020000080002000002"), 0.6),
     _api("DES", "CALG_DES", 0.3),
-    _api("3DES", "CALG_3DES", 0.5),
+    _api("3DES", "CALG_3DES", 0.3),
     _api("3DES", "DES-EDE3", 0.5, "string"),
-    Sig("3DES", "BCRYPT_3DES_ALGORITHM", "3DES".encode("utf-16le") + b"\x00\x00", 0.5, "api"),
+    Sig("3DES", "BCRYPT_3DES_ALGORITHM", "3DES".encode("utf-16le") + b"\x00\x00", 0.2, "api"),
     # ---------------- ChaCha20 / Salsa20 ----------------
-    Sig("ChaCha20/Salsa20", "sigma 'expand 32-byte k'", b"expand 32-byte k", 0.75),
+    Sig("ChaCha20/Salsa20", "sigma 'expand 32-byte k'", b"expand 32-byte k", 0.7),
     Sig("ChaCha20/Salsa20", "tau 'expand 16-byte k'", b"expand 16-byte k", 0.4),
     _api("ChaCha20/Salsa20", "chacha20", 0.4, "string"),
     _api("ChaCha20/Salsa20", "salsa20", 0.4, "string"),
@@ -71,8 +85,8 @@ SIGNATURES = [
     Sig("ECC P-256", "P-256 b (LE)", _h("4b60d2273e3cce3bf6b053ccb0061d65bc86987655bdebb3e7933aaad835c65a"), 0.7),
     Sig("ECC P-256", "P-256 order n (BE)", _h("ffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551"), 0.6),
     Sig("ECC P-256", "P-256 Gx (BE)", _h("6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296"), 0.6),
-    _api("ECC P-256", "ECDH_P256", 0.5),
-    _api("ECC P-256", "ECDSA_P256", 0.5),
+    _api("ECC P-256", "ECDH_P256", 0.4),
+    _api("ECC P-256", "ECDSA_P256", 0.4),
     _api("ECC P-256", "prime256v1", 0.4, "string"),
     Sig("ECC secp256k1", "secp256k1 order n (BE)", _h("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141"), 0.7),
     Sig("ECC secp256k1", "secp256k1 p (BE)", _h("fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f"), 0.6),
@@ -84,7 +98,7 @@ SIGNATURES = [
     Sig("RSA", "PEM RSA private key", b"-----BEGIN RSA PRIVATE KEY-----", 0.7, "string"),
     Sig("RSA", "PEM public key", b"-----BEGIN PUBLIC KEY-----", 0.4, "string"),
     _api("RSA", "CryptImportKey", 0.2),
-    _api("RSA", "RSAPUBLICBLOB", 0.5),
+    _api("RSA", "RSAPUBLICBLOB", 0.4),
     _api("RSA", "BCRYPT_RSA_ALGORITHM", 0.3),
     # ---------------- Generic crypto API usage (no algo) ----------------
     _api("generic", "CryptEncrypt", 0.3),

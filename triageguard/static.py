@@ -4,7 +4,7 @@ import hashlib
 import re
 from pathlib import Path
 
-from .crypto.entropy import shannon
+from .crypto.entropy import HIGH, shannon
 
 ASCII_RE = re.compile(rb"[\x20-\x7e]{6,}")
 WIDE_RE = re.compile(rb"(?:[\x20-\x7e]\x00){6,}")
@@ -42,7 +42,7 @@ def pe_info(path):
         "timestamp": pe.FILE_HEADER.TimeDateStamp,
         "imphash": pe.get_imphash(),
         "sections": sections,
-        "packed_sections": [s["name"] for s in sections if s["entropy"] > 7.2],
+        "packed_sections": [s["name"] for s in sections if s["entropy"] > HIGH],  # Lyda and Hamrock 2007
         "imports": imports,
         "crypto_imports": sorted(flat & CRYPTO_IMPORTS),
     }

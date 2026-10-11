@@ -12,6 +12,8 @@ import time
 import urllib.error
 import urllib.request
 
+from .crypto.identify import combine
+
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 # llama-3.3-70b-versatile was shut down by Groq on 2026-08-16 (404 model not found);
 # gpt-oss-120b is their listed replacement. Override with TRIAGEGUARD_MODEL or --model.
@@ -19,7 +21,6 @@ FALLBACK_MODEL = "openai/gpt-oss-120b"
 DEFAULT_MODEL = None  # resolved at call time so --model / TRIAGEGUARD_MODEL set after import still apply
 MAX_RETRIES = 6
 MAX_WAIT = 120  # seconds; longer waits mean the daily quota is gone
-SEV_POINTS = {"critical": 25, "high": 12, "medium": 5, "low": 2, "info": 0}
 
 SYSTEM_PROMPT = """You are a malware triage analyst. You receive structured findings from a memory
 forensics and crypto analysis pipeline. Write a concise incident report in Markdown with sections:
@@ -32,17 +33,54 @@ identified algorithm, with only the percentage in the Confidence column (for exa
 Key size | Exponent | Strength | Issue | Finding, with only the 0-100 number in the Strength column."""
 
 
-# max findings counted per severity, so a pile of low-severity context (e.g. the
-# certificate store in a full dump) cannot add up to a critical score on its own
-SEV_CAP = {"critical": 4, "high": 4, "medium": 4, "low": 5}
+# CVSS v3.1 qualitative severity rating scale (FIRST, CVSS v3.1 specification, section 5):
+# None 0.0, Low 0.1-3.9, Medium 4.0-6.9, High 7.0-8.9, Critical 9.0-10.0. A finding of a
+# given severity counts as the middle of its band, on a 0-1 scale.
+SEV_MASS = {"critical": 0.95, "high": 0.80, "medium": 0.55, "low": 0.20, "info": 0.0}
+
+
+def finding_mass(f):
+    """Mass one finding commits to "this host is compromised or exposed": its CVSS band
+    midpoint, scaled by the detector's own confidence when it has one (cipher ID)."""
+    m = SEV_MASS.get(f["severity"], 0.0)
+    conf = (f.get("data") or {}).get("confidence")
+    if isinstance(conf, (int, float)):
+        m *= conf / 100
+    return m
+
+
+def risk_breakdown(findings):
+    """One row per evidence source (module/kind), strongest finding first.
+
+    Findings from one detector are not independent (37 certificates from one
+    certificate store, several RWX regions from one malfind pass), and Dempster's rule
+    must not count the same evidence twice. Denoeux's cautious rule for non-distinct
+    evidence (Artificial Intelligence 172, 2008) combines simple support functions on
+    the same hypothesis by keeping the largest mass, so each source counts once, at
+    its strongest finding."""
+    src = {}
+    for f in findings:
+        key = f"{f.get('module', '?')}/{f.get('kind', '?')}"
+        m = finding_mass(f)
+        row = src.setdefault(key, {"source": key, "mass": 0.0, "ref": None, "count": 0})
+        row["count"] += 1
+        if m > row["mass"]:
+            row["mass"], row["ref"] = m, f["ref"]
+    return sorted((r for r in src.values() if r["mass"] > 0), key=lambda r: -r["mass"])
 
 
 def risk_score(findings):
-    """Rule-based risk score: severity points with a per-tier cap, at most 100."""
-    counts = {}
-    for f in findings:
-        counts[f["severity"]] = counts.get(f["severity"], 0) + 1
-    return min(100, sum(SEV_POINTS.get(s, 0) * min(n, SEV_CAP.get(s, 0)) for s, n in counts.items()))
+    """Evidence-fusion risk, 0-100: Dempster's rule across independent sources
+    (memory, RSA, credentials, network, ...) of each source's cautious-rule mass,
+    risk = 100 * (1 - prod(1 - m_source)). One critical source alone gives 95; two
+    independent medium sources give 80; low-severity context cannot pile up because
+    a source counts once. Belief never reaches 1, so 99 is the ceiling."""
+    return min(99, round(100 * combine(r["mass"] for r in risk_breakdown(findings))))
+
+
+def risk_band(score):
+    """The CVSS v3.1 qualitative rating for a 0-100 risk (the same bands, times 10)."""
+    return "critical" if score >= 90 else "high" if score >= 70 else "medium" if score >= 40 else "low" if score > 0 else "none"
 
 
 def key_strength(findings):
@@ -133,11 +171,18 @@ def llm_report(findings, model=DEFAULT_MODEL):
 
 def rule_report(findings):
     lines = ["# TriageGuard report (rule-based)", ""]
-    lines.append(f"**Risk score:** {risk_score(findings)}/100")
+    risk = risk_score(findings)
+    lines.append(f"**Risk score:** {risk}/100 ({risk_band(risk)}, CVSS v3.1 bands)")
     ks = key_strength(findings)
     if ks is not None:
         lines.append(f"**Weakest RSA key strength:** {ks}/100")
     lines.append("")
+    if rows := risk_breakdown(findings):
+        lines += ["Risk is the Dempster-Shafer combination of independent evidence sources, each counted once "
+                  "at its strongest finding (severity as CVSS v3.1 band midpoint).", "",
+                  "| Evidence source | Findings | Strongest | Mass |", "|---|---|---|---|"]
+        lines += [f"| {r['source']} | {r['count']} | [{r['ref']}] | {r['mass']:.2f} |" for r in rows]
+        lines.append("")
 
     def section(title, pred):
         rows = [f for f in findings if pred(f)]

@@ -35,7 +35,8 @@ def record_crypto(db, path, result, is_full_dump):
             # legacy certs), so size/exponent alone is context, not an incident
             sev = "low"
         issues = "; ".join(i["test"] for i in k["issues"]) or "no weaknesses found"
-        db.add("rsa", "rsa_key", f"RSA-{k['bits']} key e={k['e']} ({k['format']}), strength {k['strength']}/100: {issues}",
+        db.add("rsa", "rsa_key", f"RSA-{k['bits']} key e={k['e']} ({k['format']}), strength {k['strength']}/100 "
+               f"({k['security_bits']}-bit security, {k['nist_status']}): {issues}",
                k, sev, path, k["offset"])
     if clean or corrupt:
         db.add("rsa", "rsa_summary",
@@ -117,4 +118,4 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
     out = workdir / f"report_run{run_id}.md"
     out.write_text(text, encoding="utf-8")  # LLM output often has non-cp1252 characters
     return {"run_id": run_id, "findings": len(findings), "report": str(out), "report_mode": mode,
-            "risk_score": report.risk_score(findings)}
+            "risk_score": report.risk_score(findings), "risk_band": report.risk_band(report.risk_score(findings))}

@@ -39,8 +39,21 @@ def scan_file(path):
         return scan_buffer(mm)
 
 
+def combine(masses):
+    """Dempster's rule of combination for simple support functions that all back the
+    same hypothesis ("algorithm A is present"). Each matched signature commits mass w
+    to A and 1 - w to "don't know"; with no competing hypothesis there is no conflict
+    and the combined belief is Bel(A) = 1 - prod(1 - w) (Shafer 1976, ch. 4). This is
+    the same expression as Pearl's noisy-OR (1988). It assumes the signatures are
+    independent pieces of evidence, so repeat hits of one signature count once."""
+    miss = 1.0
+    for w in masses:
+        miss *= 1 - w
+    return 1 - miss
+
+
 def score(found):
-    """Turn raw signature hits into per-algorithm confidence.
+    """Turn raw signature hits into per-algorithm confidence (belief, in %).
 
     Returns a list of dicts sorted by confidence, highest first.
     """
@@ -50,13 +63,10 @@ def score(found):
 
     results = []
     for algo, hits in by_algo.items():
-        miss = 1.0
-        for sig, _ in hits:
-            miss *= 1 - sig.weight
         has_constant = any(s.kind == "constant" for s, _ in hits)
         results.append({
             "algorithm": algo,
-            "confidence": round((1 - miss) * 100, 1),
+            "confidence": round(combine(s.weight for s, _ in hits) * 100, 1),
             # constants mean the cipher is implemented here; API strings only
             # mean it is referenced (could be an import that is never called)
             "basis": "implementation constants" if has_constant else "API/string references only",
@@ -66,15 +76,18 @@ def score(found):
             ],
         })
 
-    # AES-GCM implies AES; if GCM is seen but AES itself was weak, lift AES a bit
+    # AES-GCM is a subset of AES, and belief is monotone over subsets (Bel(A) >= Bel(B)
+    # when B is contained in A), so mass committed to AES-GCM also supports AES: combine
+    # the two with the same rule. This replaces an earlier fixed 0.8 factor.
     algos = {r["algorithm"]: r for r in results}
-    if "AES-GCM" in algos and "AES" not in algos:
-        results.append({
-            "algorithm": "AES",
-            "confidence": round(algos["AES-GCM"]["confidence"] * 0.8, 1),
-            "basis": "inferred from AES-GCM evidence",
-            "evidence": [],
-        })
+    if gcm := algos.get("AES-GCM"):
+        aes = algos.get("AES")
+        if aes is None:
+            results.append({"algorithm": "AES", "confidence": gcm["confidence"],
+                            "basis": "inferred from AES-GCM evidence", "evidence": []})
+        else:
+            aes["confidence"] = round(combine([aes["confidence"] / 100, gcm["confidence"] / 100]) * 100, 1)
+            aes["evidence"].append({"signature": "AES-GCM evidence (subset of AES)", "kind": "inferred", "count": 1, "offsets": []})
 
     results.sort(key=lambda r: r["confidence"], reverse=True)
     return results

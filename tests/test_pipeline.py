@@ -118,3 +118,41 @@ def test_report_command_without_a_key_says_so(tmp_path, monkeypatch):
     with pytest.raises(SystemExit) as e:
         cli.main(["report", str(tmp_path / "x.db"), "--out", str(tmp_path / "r.md")])
     assert "GROQ_API_KEY" in str(e.value)
+
+
+def test_rsa_strength_follows_nist_sp800_57():
+    from triageguard.crypto import rsa_weak
+    assert rsa_weak.security_bits(2048) == 112 and rsa_weak.security_bits(3072) == 128
+    assert rsa_weak.security_bits(1536) == 80  # between table rows: the lower strength
+    assert round(rsa_weak.gnfs_strength(1024)) == 80  # FIPS 140-2 IG 7.5 formula meets the table
+    k = {"bits": 2048, "issues": []}
+    assert rsa_weak.strength_score(k) == {"security_bits": 112, "strength": 88, "nist_status": "acceptable"}
+    k = {"bits": 1024, "issues": [{"test": "modulus size", "severity": "medium"}]}
+    assert rsa_weak.strength_score(k)["nist_status"].startswith("disallowed")
+    # at or below the public factoring record, or factored by a test: no security left
+    assert rsa_weak.strength_score({"bits": 768, "issues": []})["strength"] == 0
+    assert rsa_weak.strength_score({"bits": 4096, "issues": [{"test": "shared prime (GCD)", "severity": "critical"}]})["strength"] == 0
+
+
+def test_confidence_is_dempster_combination_and_gcm_supports_aes():
+    from triageguard.crypto.identify import combine, score
+    from triageguard.crypto.signatures import SIGNATURES
+    assert abs(combine([0.6, 0.5]) - 0.8) < 1e-9
+    sig = {s.name: s for s in SIGNATURES}
+    res = {r["algorithm"]: r for r in score({
+        "AES S-box": (sig["AES S-box"], [0]), "ChainingModeGCM": (sig["ChainingModeGCM"], [64])})}
+    # belief is monotone: AES-GCM is a subset of AES, so AES is at least as likely
+    assert res["AES"]["confidence"] == round(combine([0.6, 0.7]) * 100, 1) >= res["AES-GCM"]["confidence"]
+
+
+def test_risk_is_evidence_fusion_over_independent_sources():
+    from triageguard import report
+
+    def f(ref, sev, module, kind="k"):
+        return {"ref": ref, "severity": sev, "module": module, "kind": kind, "data": {}}
+    # many findings from one source count once (cautious rule), at the strongest one
+    assert report.risk_score([f(f"F{i}", "low", "rsa") for i in range(40)]) == 20
+    assert report.risk_score([f("F1", "critical", "rsa")]) == 95
+    # two independent medium sources: 1 - 0.45^2
+    assert report.risk_score([f("F1", "medium", "memory"), f("F2", "medium", "network")]) == 80
+    assert report.risk_band(95) == "critical" and report.risk_band(64) == "medium"
