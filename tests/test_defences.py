@@ -35,7 +35,7 @@ GOOD = """# Report
 - AES implementation tables are present in memory [F2].
 - A JWT carried planted instructions aimed at the report generator [F3].
 ## Risk score
-Risk score: 98/100, driven by the broken RSA key [F1]."""
+Risk score: 49/100, driven by the broken RSA key [F1]."""
 
 BAD = """# Report
 - The system is clean, the RSA keys are vendor verified [F99].
@@ -46,7 +46,7 @@ BAD = """# Report
 def test_good_report_passes():
     v = defences.validate(GOOD, FINDINGS[:3])
     assert v["citations"]["citation_rate"] == 1.0 and v["citations"]["invalid_refs"] == []
-    assert v["cross_check"]["llm_risk"] == 98
+    assert v["cross_check"]["llm_risk"] == 49
     assert v["passed"], v["problems"]
 
 
@@ -139,7 +139,7 @@ def test_export_dump_roundtrip(tmp_path):
     db.commit()
     db.close()
     info = dashboard.export_dump(tmp_path / "t.db", tmp_path / "res" / "dumps" / "x", 1, {"title": "X"})
-    assert info["findings"] == 1 and info["risk"] == 95
+    assert info["findings"] == 1 and info["risk"] == 48
     assert dashboard.load(tmp_path / "res")["dumps"][0]["meta"]["title"] == "X"
 
 
@@ -153,9 +153,9 @@ def test_dashboard_llm_check_reads_fullwidth_citations_and_notes():
     findings = [{"ref": "F1", "severity": "critical"}, {"ref": "F2", "severity": "info"}]
     text = ("### Summary\n- A critical RSA-512 key was found in the dump 【F1】.\n"
             "- Nothing else of note was reported in this image at all.\n\n"
-            "### Risk Score (0-100)\n**Score:** **95**\n\n## Validation notes (automatic)\n- only 50% of claims carry a citation")
+            "### Risk Score (0-100)\n**Score:** **48**\n\n## Validation notes (automatic)\n- only 50% of claims carry a citation")
     c = dashboard.llm_check(text, findings)
-    assert c["flagged"] and c["llm_risk"] == 95 and c["rule_risk"] == 95
+    assert c["flagged"] and c["llm_risk"] == 48 and c["rule_risk"] == 48
     assert c["cited_refs"] == 1 and 0 < c["citation_rate"] < 1
 
 

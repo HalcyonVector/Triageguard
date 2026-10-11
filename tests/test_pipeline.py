@@ -151,8 +151,13 @@ def test_risk_is_evidence_fusion_over_independent_sources():
     def f(ref, sev, module, kind="k"):
         return {"ref": ref, "severity": sev, "module": module, "kind": kind, "data": {}}
     # many findings from one source count once (cautious rule), at the strongest one
-    assert report.risk_score([f(f"F{i}", "low", "rsa") for i in range(40)]) == 20
-    assert report.risk_score([f("F1", "critical", "rsa")]) == 95
+    assert report.exposure_score([f(f"F{i}", "low", "rsa") for i in range(40)]) == 20
+    assert report.compromise_score([f("F1", "critical", "memory")]) == 95
     # two independent medium sources: 1 - 0.45^2
-    assert report.risk_score([f("F1", "medium", "memory"), f("F2", "medium", "network")]) == 80
+    assert report.compromise_score([f("F1", "medium", "memory"), f("F2", "medium", "static")]) == 80
+    # overall: compromise in full, exposure discounted to half (Shafer discounting)
+    both = [f("F1", "medium", "memory"), f("F2", "critical", "rsa")]
+    assert (report.compromise_score(both), report.exposure_score(both)) == (55, 95)
+    assert report.risk_score(both) == round(100 * (1 - 0.45 * (1 - 0.5 * 0.95)))
+    assert report.risk_score([f("F1", "critical", "rsa")]) < 50  # weak crypto alone is not an attack
     assert report.risk_band(95) == "critical" and report.risk_band(64) == "medium"

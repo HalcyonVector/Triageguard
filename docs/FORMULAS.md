@@ -13,7 +13,8 @@ the source it rests on, and what is our own choice because no standard covers it
 | RSA strength 0-100 | `100 * min(bits, 128) / 128` | 128 bits is SP 800-57's target beyond 2030 | the linear 0-100 scale |
 | RSA status | broken / disallowed (< 112 bits) / non-compliant exponent / acceptable | NIST SP 800-131A Rev. 2; FIPS 186-5 A.1.1 (e > 2^16) | none |
 | Finding mass | middle of its CVSS v3.1 band / 10: 0.95, 0.80, 0.55, 0.20, 0 | CVSS v3.1 qualitative rating scale (FIRST 2019) | taking the band midpoint |
-| Risk 0-100 | `100 * (1 - prod over sources (1 - max mass in source))`, at most 99 | Dempster's rule across independent sources; Denoeux's cautious rule (2008) within a dependent source | grouping a source by module/kind |
+| Compromise, Crypto exposure 0-100 | `100 * (1 - prod over sources (1 - max mass in source))`, at most 99; compromise = memory, static, defence sources, exposure = RSA, credentials, network, crypto | Dempster's rule across independent sources; Denoeux's cautious rule (2008) within a dependent source | grouping a source by module/kind, and which modules count as compromise |
+| Overall risk 0-100 | `100 * (1 - (1 - C)(1 - 0.5 E))` | Dempster's rule after Shafer's discounting of the exposure evidence (Shafer 1976, ch. 11) | reliability 0.5: a dump never shows whether a weakness was exploited, so indifference |
 | Risk band | 90+ critical, 70+ high, 40+ medium, else low | CVSS v3.1 bands times 10 | none |
 | OTP secret | flag under 128 bits | RFC 4226 section 4 (128 required, 160 recommended) | none |
 | JWT | `alg=none` high, HS* noted | RFC 8725 (JWT best current practice) | severities |
@@ -34,9 +35,9 @@ points per severity (25/12/5/2) with a cap per severity, and AES-GCM evidence li
 
 | Saved result | Before | After |
 |---|---|---|
-| Windows 7 risk | 30 | 64 (medium band) |
-| Windows 10 risk | 85 | 99 (critical: injected PE, RSA-512 key) |
-| Windows 11 risk | 55 | 99 (critical: RSA-512 key) |
+| Windows 7 risk | 30 | 60 (compromise 55, exposure 20) |
+| Windows 10 risk | 85 | 97 (compromise 95: injected PE; exposure 95: RSA-512 key) |
+| Windows 11 risk | 55 | 77 (compromise 55; exposure 99: RSA-512 key, JWTs, weak TLS) |
 | RSA-1024, e=65537 | 35 | 62 (80-bit, disallowed) |
 | RSA-2048, e=3 | 40 | 88 (112-bit, non-compliant exponent) |
 | RSA-4096, e=3 | 50 | 100 (non-compliant exponent) |

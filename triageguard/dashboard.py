@@ -43,7 +43,8 @@ def export_dump(db_path, out_dir, run_id=1, meta=None):
     (out / "findings.json").write_text(json.dumps(slim, indent=1), encoding="utf-8")
     (out / "report_rules.md").write_text(report.rule_report(full), encoding="utf-8")
     info = dict(meta or {})
-    info.update({"findings": len(full), "risk": report.risk_score(full)})
+    info.update({"findings": len(full), "risk": report.risk_score(full), "compromise": report.compromise_score(full),
+                 "exposure": report.exposure_score(full)})
     (out / "meta.json").write_text(json.dumps(info, indent=1), encoding="utf-8")
     return info
 

@@ -26,7 +26,8 @@ MAX_WAIT = 120  # seconds; longer waits mean the daily quota is gone
 SYSTEM_PROMPT = """You are a malware triage analyst. You receive structured findings from a memory
 forensics and crypto analysis pipeline. Write a concise incident report in Markdown with sections:
 Summary, Cryptography (algorithms with confidence, key strength), Credentials, Processes and Network,
-Risk score (0-100) with justification, Recommendations. Where a finding carries ATT&CK technique ids,
+Risk score (0-100, overall) with its two parts, Compromise (0-100, evidence of attacker activity) and
+Crypto exposure (0-100, how weak its keys, tokens and TLS are), each with justification, Recommendations. Where a finding carries ATT&CK technique ids,
 name them next to it.
 Cite the finding id in square brackets, e.g. [F3], after every factual claim.
 In Cryptography use two Markdown tables. First: Algorithm | Confidence | Basis | Finding, one row per
@@ -51,7 +52,17 @@ def finding_mass(f):
     return m
 
 
-def risk_breakdown(findings):
+# Two hypotheses, each fused on its own: "the host was attacked" (what an attacker did)
+# and "the host's cryptography is exposed" (weak keys, tokens in memory, weak TLS).
+# A 512-bit certificate in the Windows store is the second, not the first.
+COMPROMISE = {"memory", "static", "defence"}
+
+
+def hypothesis(f):
+    return "compromise" if f.get("module") in COMPROMISE else "exposure"
+
+
+def risk_breakdown(findings, hyp=None):
     """One row per evidence source (module/kind), strongest finding first.
 
     Findings from one detector are not independent (37 certificates from one
@@ -62,22 +73,51 @@ def risk_breakdown(findings):
     its strongest finding."""
     src = {}
     for f in findings:
+        if hyp and hypothesis(f) != hyp:
+            continue
         key = f"{f.get('module', '?')}/{f.get('kind', '?')}"
         m = finding_mass(f)
-        row = src.setdefault(key, {"source": key, "mass": 0.0, "ref": None, "count": 0})
+        row = src.setdefault(key, {"source": key, "hypothesis": hypothesis(f), "mass": 0.0, "ref": None, "count": 0})
         row["count"] += 1
         if m > row["mass"]:
             row["mass"], row["ref"] = m, f["ref"]
     return sorted((r for r in src.values() if r["mass"] > 0), key=lambda r: -r["mass"])
 
 
+def _fused(findings, hyp):
+    return min(99, round(100 * combine(r["mass"] for r in risk_breakdown(findings, hyp))))
+
+
+def compromise_score(findings):
+    """Compromise risk, 0-100: Dempster's rule across independent sources (memory,
+    static, defence) of each source's cautious-rule mass, 100 * (1 - prod(1 - m)).
+    One critical source alone gives 95; two independent medium sources give 80;
+    low-severity context cannot pile up because a source counts once. Belief never
+    reaches 1, so 99 is the ceiling."""
+    return _fused(findings, "compromise")
+
+
+def exposure_score(findings):
+    """Crypto exposure, 0-100: the same fusion over the RSA, credential, network and
+    cipher findings."""
+    return _fused(findings, "exposure")
+
+
+# Reliability of exposure evidence as evidence of harm. A weak key or a token in memory
+# is a vulnerability; nothing in a dump says whether it was exploited, so by the
+# principle of indifference it counts half.
+EXPOSURE_RELIABILITY = 0.5
+
+
 def risk_score(findings):
-    """Evidence-fusion risk, 0-100: Dempster's rule across independent sources
-    (memory, RSA, credentials, network, ...) of each source's cautious-rule mass,
-    risk = 100 * (1 - prod(1 - m_source)). One critical source alone gives 95; two
-    independent medium sources give 80; low-severity context cannot pile up because
-    a source counts once. Belief never reaches 1, so 99 is the ceiling."""
-    return min(99, round(100 * combine(r["mass"] for r in risk_breakdown(findings))))
+    """Overall risk, 0-100: the compromise belief combined by Dempster's rule with the
+    exposure belief after Shafer's discounting (Shafer 1976, ch. 11), which scales a
+    source's mass by its reliability alpha:
+        risk = 100 * (1 - (1 - C) * (1 - alpha * E)),  alpha = 0.5
+    Attacker activity counts in full; weak crypto raises the score without being
+    mistaken for proof of an attack."""
+    c, e = compromise_score(findings) / 100, exposure_score(findings) / 100
+    return min(99, round(100 * (1 - (1 - c) * (1 - EXPOSURE_RELIABILITY * e))))
 
 
 def risk_band(score):
@@ -169,14 +209,17 @@ def llm_report(findings, model=DEFAULT_MODEL):
         return None
     return chat([
         {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": f"Rule-based risk score: {risk_score(findings)}\n\nFindings:\n{compact(findings)}"},
+        {"role": "user", "content": f"Rule-based risk score: {risk_score(findings)} (compromise {compromise_score(findings)}, "
+                                    f"crypto exposure {exposure_score(findings)})\n\nFindings:\n{compact(findings)}"},
     ], model)
 
 
 def rule_report(findings):
     lines = ["# TriageGuard report (rule-based)", ""]
-    risk = risk_score(findings)
+    risk, comp, exp = risk_score(findings), compromise_score(findings), exposure_score(findings)
     lines.append(f"**Risk score:** {risk}/100 ({risk_band(risk)}, CVSS v3.1 bands)")
+    lines.append(f"- Compromise: {comp}/100 ({risk_band(comp)}), evidence of attacker activity")
+    lines.append(f"- Crypto exposure: {exp}/100 ({risk_band(exp)}), weak keys, tokens and TLS; counts half in the overall score")
     ks = key_strength(findings)
     if ks is not None:
         lines.append(f"**Weakest RSA key strength:** {ks}/100")
@@ -184,8 +227,8 @@ def rule_report(findings):
     if rows := risk_breakdown(findings):
         lines += ["Risk is the Dempster-Shafer combination of independent evidence sources, each counted once "
                   "at its strongest finding (severity as CVSS v3.1 band midpoint).", "",
-                  "| Evidence source | Findings | Strongest | Mass |", "|---|---|---|---|"]
-        lines += [f"| {r['source']} | {r['count']} | [{r['ref']}] | {r['mass']:.2f} |" for r in rows]
+                  "| Score | Evidence source | Findings | Strongest | Mass |", "|---|---|---|---|---|"]
+        lines += [f"| {r['hypothesis']} | {r['source']} | {r['count']} | [{r['ref']}] | {r['mass']:.2f} |" for r in rows]
         lines.append("")
 
     def section(title, pred):

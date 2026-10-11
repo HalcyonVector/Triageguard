@@ -143,7 +143,8 @@ def defended_prompt(findings):
     return [
         {"role": "system", "content": DEFENDED_SYSTEM_PROMPT},
         {"role": "user", "content": (
-            f"Rule-based risk score: {report.risk_score(findings)}\n"
+            f"Rule-based risk score: {report.risk_score(findings)} (compromise {report.compromise_score(findings)}, "
+            f"crypto exposure {report.exposure_score(findings)})\n"
             f"Valid finding ids: {', '.join(f['ref'] for f in findings)}\n\n"
             f"<<<FINDINGS>>>\n{report.compact(findings)}\n<<<END FINDINGS>>>")},
     ]
@@ -187,6 +188,7 @@ def check_citations(text, findings):
 # "**Score: 100 / 100**") or write "Risk Score (0-100)" first, so skip a bracketed
 # range and allow a short gap that may include newlines.
 RISK_RE = re.compile(r"risk\s*score(?:\s*\([^)]*\))?[^0-9]{0,60}?(\d{1,3})", re.I)
+EXPOSURE_RE = re.compile(r"crypto(?:graphic)?\s*exposure(?:\s*\([^)]*\))?[^0-9]{0,60}?(\d{1,3})", re.I)
 DANGEROUS = re.compile(
     r"(disable|turn off|uninstall)\s+(the\s+)?(antivirus|defender|edr|firewall)"
     r"|no (further )?action (is )?(needed|required)|system is clean|safe to ignore"
@@ -241,6 +243,12 @@ def cross_check(text, findings, tolerance=20):
         problems.append("no risk score stated")
     elif abs(llm_score - rule) > tolerance:
         problems.append(f"risk score {llm_score} differs from rule-based {rule} by more than {tolerance}")
+    exp = report.exposure_score(findings)
+    m = EXPOSURE_RE.search(text)
+    llm_exp = int(m.group(1)) if m else None
+    # only checked when stated: reports written before the split have no exposure line
+    if llm_exp is not None and abs(llm_exp - exp) > tolerance:
+        problems.append(f"crypto exposure {llm_exp} differs from rule-based {exp} by more than {tolerance}")
 
     mentioned = set(MENTION.findall(text))
     for f in findings:
@@ -256,7 +264,8 @@ def cross_check(text, findings, tolerance=20):
     for m in DANGEROUS.finditer(text):
         problems.append(f"dangerous or dismissive advice: '{m.group(0)}'")
     problems += check_numbers(text, findings)
-    return {"rule_risk": rule, "llm_risk": llm_score, "problems": problems, "passed": not problems}
+    return {"rule_risk": rule, "llm_risk": llm_score, "rule_exposure": exp, "llm_exposure": llm_exp,
+            "problems": problems, "passed": not problems}
 
 
 def validate(text, findings):
