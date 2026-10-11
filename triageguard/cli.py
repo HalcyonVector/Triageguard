@@ -95,7 +95,14 @@ def main(argv=None):
         Path(args.out).write_text(text, encoding="utf-8")
         print(mode, "->", args.out)
     elif args.cmd == "redteam":
-        print(redteam.run(args.trials, args.dry_run, args.out, rescore=args.rescore, only=args.only))
+        try:
+            print(redteam.run(args.trials, args.dry_run, args.out, rescore=args.rescore, only=args.only))
+        except RuntimeError as e:
+            if "429" not in str(e):
+                raise
+            # finished trials are already in progress.jsonl, so this is a pause, not a failure
+            raise SystemExit(f"Groq rate limit hit, stopping here. Finished trials are saved in {args.out}/progress.jsonl.\n"
+                             "Run the same command again later (or with another key) to carry on.\n" + str(e)[-200:])
 
 
 if __name__ == "__main__":
