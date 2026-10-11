@@ -48,7 +48,8 @@ Everything lands in SQLite (`store.py`), one row per finding with a citation id.
 ### Cipher identification
 
 Signatures live in `crypto/signatures.py`. Confidence per algorithm is `1 - prod(1 - w)` over the matched
-signatures, and each result says whether it rests on implementation constants (the cipher is actually
+signatures, which is Dempster's rule of combination for evidence that all backs one algorithm (see
+[docs/FORMULAS.md](docs/FORMULAS.md) for the source of every score), and each result says whether it rests on implementation constants (the cipher is actually
 implemented here) or only on API/string references.
 
 | Algorithm | Evidence |
@@ -67,8 +68,9 @@ correctly, and 1 MB of random data gives zero hits.
 ### RSA weak key tests
 
 Keys are pulled from CAPI blobs, CNG blobs, DER SubjectPublicKeyInfo and PEM, then tested for: modulus
-size (<=512 critical, <1024 high, <2048 medium), small exponent, shared modulus with different exponents,
-shared prime via pairwise GCD, close primes via Fermat, and small factors. Each key gets a 0 to 100 strength score.
+size (<=829 critical, <1024 high, <2048 medium), small exponent, shared modulus with different exponents,
+shared prime via pairwise GCD, close primes via Fermat, and small factors. Each key gets its NIST SP 800-57
+security strength in bits and a 0 to 100 strength score (that strength as a share of 128 bits).
 
 ### Real dump test
 
@@ -83,7 +85,7 @@ about 22 minutes. What changed after it:
 | `windows.netscan` returns nothing on 24H2 | falls back to `windows.netstat` (52 connections) |
 | 636 RSA keys from the certificate store, "small factor" criticals | moduli with tiny factors are corrupt memory, not keys; clean keys go into one summary; size/exponent issues in a full dump are low |
 | Defender (MsMpEng) JIT regions flagged high by malfind | one finding per process; known JIT processes and zeroed regions are low, a PE header is critical |
-| risk score stuck at 100 | points per severity are capped, so low findings cannot add up to critical |
+| risk score stuck at 100 | risk is evidence fusion: findings from one source count once, so low findings cannot add up to critical |
 
 Result: 689 findings down to 80, risk 55. The command line check picks up Notepad holding
 `Desktop\encryption_log.txt` open, which is the lead the challenge is built around.
@@ -109,7 +111,8 @@ Each attack is delivered two ways (JWT `iss` claim, OTP `issuer` label). Defence
 2. **Spotlighting + mandatory citation:** the prompt marks findings as untrusted data, lists the valid
    ids, and every claim must cite one. Citations are checked after generation.
 3. **Rule-based cross-check:** the LLM's risk score is compared with the rule-based one, every
-   critical/high finding must be mentioned, algorithms must exist in the findings, and dismissive or
+   critical/high finding must be mentioned, algorithms must exist in the findings, every confidence and
+   strength number in its tables must match the computed one, and dismissive or
    dangerous advice is flagged. A failing report gets one retry, then ships with validation notes.
 
 ```bash

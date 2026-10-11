@@ -8,7 +8,7 @@ red-teaming (Section~\ref{sec:redteam}).
 
 \begin{table}[t]
 \centering
-\caption{Automated tests (\texttt{pytest}, 28 tests, all passing)}
+\caption{Automated tests (\texttt{pytest}, 35 tests, all passing)}
 \label{tab:tests}
 \footnotesize
 \begin{tabularx}{\columnwidth}{@{}Xc@{}}
@@ -17,6 +17,9 @@ Area covered & Tests\\
 \midrule
 Cipher ID on widened scope; zero hits on 1\,MB random data & 2\\
 RSA weak keys; corrupt modulus is not a weak key & 2\\
+NIST strength, Dempster-Shafer confidence, fused risk & 3\\
+Numeric cross-check of report tables & 1\\
+Hardened sanitiser, adaptive attacker, Wilson and Fisher & 3\\
 Credentials (JWT, OTP, tokens) & 1\\
 End-to-end pipeline; weak TLS flags & 2\\
 malfind, command-line, shared-code and shell-parent heuristics & 2\\
@@ -30,12 +33,12 @@ Groq retry hint, resumable red-team, truncation warning & 3\\
 Risk-score regex on real LLM layouts & 1\\
 Dashboard snapshot and export round trip & 2\\
 \midrule
-Total & 28\\
+Total & 35\\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Table~\ref{tab:tests} groups the 28 tests; the full suite passes in about 37\,s.
+Table~\ref{tab:tests} groups the 35 tests; the full suite passes in about 70\,s.
 
 \subsection{Ground truth on the synthetic image}
 \texttt{samples/make\_synthetic.py} builds a 119\,KB image from a fixed seed with known artefacts: AES,
@@ -59,16 +62,18 @@ RSA keys extracted (CAPI, CNG, DER, PEM) & 7 & 7\\
 \quad shared prime pair (GCD) & 2 & 2 (critical)\\
 \quad close primes (Fermat) & 1 & 1 (critical)\\
 \quad shared modulus pair & 2 & 2 (critical)\\
-\quad sound 2048-bit key & 1 & clean, strength 90\\
+\quad sound 2048-bit key & 1 & clean, strength 88 (112-bit)\\
 High-entropy region & 1 & 1 (64\,KB)\\
 Credentials (\texttt{alg=none} JWT, HS256 JWT, 80-bit OTP, GitHub token) & 4 & 4\\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Confidence scores were RSA 91\%, AES-GCM 88\%, Curve25519 76\%, ChaCha20 75\% and AES 60\%; AES is lowest
-because only a 32-byte fragment of the S-box was planted, which is the intended behaviour of the weighted
-formula. On real libraries, OpenSSL \texttt{libcrypto.so.3}, libsodium and libgcrypt are identified
+Confidence scores were AES 95.2\%, RSA 91\%, AES-GCM 88\%, Curve25519 76\% and ChaCha20 70\%. AES alone
+would score 60\% (only a 32-byte fragment of the S-box was planted), but the planted GHASH tables are
+evidence for AES-GCM and therefore for AES, which the Dempster-Shafer combination now accounts for (it was
+60\% under the earlier fixed 0.8 factor). ChaCha20 moved from 75\% to 70\% when its constant was put in the
+0.7 tier. On real libraries, OpenSSL \texttt{libcrypto.so.3}, libsodium and libgcrypt are identified
 correctly, and 1\,MB of random data gives zero hits.
 \emph{Caveat:} we built this image, so it shows the detectors work on clean, known input; it is not a
 measure of accuracy on real malware. The ground-truth test inside our own VM (P7) addresses this.
@@ -78,16 +83,17 @@ Table~\ref{tab:dumps} and Fig.~\ref{fig:sev} summarise three public training ima
 
 \begin{table*}[t]
 \centering
-\caption{Results on three public memory dumps}
+\caption{Results on three public memory dumps. Risk is the evidence-fusion score, recomputed from the saved
+findings; the earlier points-based score is in brackets.}
 \label{tab:dumps}
 \footnotesize
 \begin{tabularx}{\textwidth}{@{}lllccX@{}}
 \toprule
 Dump & OS & Size & Findings & Risk & What stands out\\
 \midrule
-13Cubed challenge + \texttt{rsasnakeoil2.pcap} & Win 11 24H2 & 4.3\,GB & 80 & 55 & RSA-512 key (strength 0), Notepad holding \texttt{Desktop\textbackslash encryption\_log.txt}, 4 expired JWTs, SSL~3.0 with 3DES and static RSA in the pcap\\
-DFIR Madness case 001 + 188\,MB pcap & Win 10 & 2\,GB & 48 & 85 & PE header injected into \texttt{spoolsv.exe}, \texttt{powershell.exe} with 5 injected regions, 546 TLS~1.2 handshakes all with strong suites (correctly not flagged)\\
-Hacktoria Memory Mystery & Win 7 SP1 x86 & 1\,GB & 58 & 30 & identical code in 5 unrelated processes (system-wide hook, medium), \texttt{cmd.exe} started by \texttt{vmtoolsd.exe}\\
+13Cubed challenge + \texttt{rsasnakeoil2.pcap} & Win 11 24H2 & 4.3\,GB & 80 & 99 (55) & RSA-512 key (strength 0), Notepad holding \texttt{Desktop\textbackslash encryption\_log.txt}, 4 expired JWTs, SSL~3.0 with 3DES and static RSA in the pcap\\
+DFIR Madness case 001 + 188\,MB pcap & Win 10 & 2\,GB & 48 & 99 (85) & PE header injected into \texttt{spoolsv.exe}, \texttt{powershell.exe} with 5 injected regions, 546 TLS~1.2 handshakes all with strong suites (correctly not flagged)\\
+Hacktoria Memory Mystery & Win 7 SP1 x86 & 1\,GB & 58 & 64 (30) & identical code in 5 unrelated processes (system-wide hook, medium), \texttt{cmd.exe} started by \texttt{vmtoolsd.exe}\\
 \bottomrule
 \end{tabularx}
 \end{table*}
@@ -119,9 +125,17 @@ and found 7 executable, writable regions; the crypto stage identified 10 algorit
 the network stage read 546 TLS~1.2 handshakes and raised nothing, which was correct. The full Win11 run
 takes about 22 minutes, mostly in Volatility3.
 
-\textit{LLM reports.} All three dumps have a defended LLM report. The validator passes Win10 (91\% of claim
-lines cited) and Win7 (93\%) and flags Win11 (72\%), whose report raised the risk to 75 against our 55
-(within tolerance, but explained). The flag shows the validator is not a rubber stamp.
+The fused risk puts Win10 and Win11 in the critical band because each holds a critical source (an injected
+PE in \texttt{spoolsv.exe}; a 512-bit RSA key), and Win7 in the medium band (its worst source is medium).
+Under the earlier score Win11 sat at 55 only because one critical finding earned 25 points; the fused score
+follows CVSS, where one critical finding already means 9.0 or more. RSA strengths on these dumps change
+from 35 to 62 for 1024-bit keys (80-bit security, disallowed) and from 40 to 88 for 2048-bit keys with
+$e=3$ (112-bit, flagged as non-compliant exponent); the 512-bit keys stay at 0.
+
+\textit{LLM reports.} All three dumps have a defended LLM report, written against the earlier risk score.
+The validator passed Win10 (91\% of claim lines cited) and Win7 (93\%) and flagged Win11 (72\%), whose report
+raised the risk to 75 against the then 55. The new numeric check finds no copied confidence or strength
+figure that differs from the computed one in any of the three. They will be regenerated with the new scores.
 
 \begin{figure}[t]
 \centering
@@ -186,6 +200,40 @@ the rule cross-check passed 39/39 (38/39 undefended), and cited claims rose from
 (Table~\ref{tab:redteam}, Fig.~\ref{fig:cite}). A dry run without the LLM shows every payload reaches the
 LLM input (12/12) and the sanitiser alone catches 10/12; the two misses are \emph{subtle\_benign}, which has no
 trigger words and is left to the cross-check. The clean control raises no false alarm.
+
+\textit{Statistics.} With 36 trials per mode the 95\% Wilson intervals~\cite{wilson1927probable} are
+[4\%, 25\%] undefended and [0\%, 10\%] defended, and a two-sided Fisher exact test gives $p=0.115$: the drop
+is consistent with the defences working but is not significant at 0.05 on this many trials. The red-team
+summary now prints both.
+
+\subsection{Second round: attacks on the defences}
+Four attacks aim at the defences themselves: \emph{number\_tamper} (asks for different confidence and
+strength figures), \emph{encoded\_payload} (the downplay instruction in base64), \emph{unicode\_obfuscated}
+(zero-width spaces and Cyrillic look-alikes) and \emph{authority\_claim} (a fake incident-commander sign-off
+with no trigger words). An \emph{adaptive} attacker~\cite{tramer2020adaptive,nasr2025attacker} queries the
+sanitiser and rewrites each payload (zero-width splitting, homoglyphs, rewording, base64, and pairs of these)
+until it is no longer flagged. Without the LLM (dry run, 10 attacks $\times$ 2 fields):
+
+\begin{table}[t]
+\centering
+\caption{Sanitiser against fixed and adaptive attackers (dry run)}
+\label{tab:adaptive}
+\footnotesize
+\begin{tabular}{@{}lcc@{}}
+\toprule
+& original filter & hardened filter\\
+\midrule
+Fixed payloads caught & 10/20 & 14/20\\
+Adaptive attacker evades & 20/20 & 16/20\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Normalisation and base64 decoding catch the obfuscated and encoded payloads, which no rewrite then gets past,
+but rewording beats any pattern list within four queries (Table~\ref{tab:adaptive}). So the input filter is
+a first layer, and what has to hold is the output side: citations, the cross-check and the new numeric check,
+which do not depend on how the payload was phrased. The LLM runs of these 15 attacks (10 fixed plus 5
+adaptive variants) are the next measurement.
 
 \subsection{Bugs in our own evaluation}
 Reading reports whose scores looked wrong exposed two scoring bugs. (1) The checker recognised only
