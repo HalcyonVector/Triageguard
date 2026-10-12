@@ -202,7 +202,8 @@ def start_job(req, results_dir):
     steps = [("Analysing", py + ["analyze", str(dump), "--db", str(db), "--out", str(out), "--no-llm"] + (["--pcap", pcap] if pcap else [])),
              ("Exporting", py + ["export", str(db), name, "--results", str(results), "--title", str(req.get("title") or dump.stem),
                                  "--os", str(req.get("os") or ""), "--source", str(dump.name), "--size", size,
-                                 "--pcap", Path(pcap).name if pcap else ""])]
+                                 "--pcap", Path(pcap).name if pcap else "",
+                                 "--order", str(len(list((results / "dumps").glob("*/meta.json"))) + 1)])]
     if req.get("llm") and report.llm_available():
         steps.append(("Writing the LLM report", py + ["report", str(db), "--out", str(results / "dumps" / name / "report_llm.md")]))
     threading.Thread(target=_run_job, args=(job_id, steps), daemon=True).start()
