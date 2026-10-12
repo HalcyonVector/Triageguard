@@ -204,22 +204,31 @@ a.cite { color: var(--accent); font-family: var(--mono); font-size: .92em; text-
 .cmat td:first-child, .cmat th:first-child { text-align: left; }
 .dot { display: inline-block; border-radius: 50%; vertical-align: middle; }
 
-/* pipeline diagram */
-.pipe { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 26px; position: relative; }
-.pcol { display: grid; gap: 10px; align-content: start; position: relative; min-width: 0; }
-.pcol + .pcol::before { content: ""; position: absolute; left: -22px; top: 46px; width: 18px; height: 18px;
-  background: var(--accent); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12h13M13 6l6 6-6 6' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12h13M13 6l6 6-6 6' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat; }
-.phead { display: flex; gap: 8px; align-items: baseline; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
-.phead b { font: 700 11px var(--mono); color: var(--accent); }
-.phead span { font: 600 11px var(--mono); letter-spacing: 1.3px; text-transform: uppercase; color: var(--muted); }
-.stage { background: var(--panel); border: 1px solid var(--line); border-radius: 11px; padding: 11px 12px; display: grid; gap: 4px; position: relative; overflow: hidden; }
+/* pipeline diagram: top-down flow */
+.flow { position: relative; display: grid; gap: 0; }
+.step:not(:last-of-type)::before, .hand::before { content: ""; position: absolute; left: 17px; width: 2px; background: var(--accent); opacity: .4; }
+.step:not(:last-of-type)::before { top: 36px; bottom: 0; }
+.hand::before { top: 0; bottom: 0; }
+.step { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 16px; position: relative; }
+.node { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font: 700 13px var(--mono);
+  color: var(--accent); background: var(--bg2); border: 2px solid var(--accent); position: relative; z-index: 1; }
+.shead { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; min-height: 36px; padding-top: 7px; margin-bottom: 8px; }
+.shead b { font: 600 12px var(--mono); letter-spacing: 1.4px; text-transform: uppercase; color: var(--text); }
+.shead small { color: var(--muted); font-size: 13px; }
+.stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+.stage { background: var(--panel); border: 1px solid var(--line); border-radius: 11px; padding: 11px 13px 11px 15px; display: grid; gap: 4px; align-content: start; position: relative; overflow: hidden; min-width: 0; }
 .stage::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--c, var(--accent)); opacity: .9; }
+.stage .sn { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
 .stage b { font-size: 13.5px; }
 .stage .how { color: var(--muted); font-size: 12.5px; line-height: 1.45; }
 .stage .out { font: 11px var(--mono); color: var(--faint); }
-.stage .cnt { position: absolute; right: 10px; top: 9px; font: 600 11px var(--mono); color: var(--c, var(--accent)); }
-.pipe-foot { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px; font-size: 12.5px; color: var(--faint); }
+.stage .cnt { font: 600 11px var(--mono); color: var(--c, var(--accent)); background: var(--panel2); border-radius: 6px; padding: 1px 7px; white-space: nowrap; }
+.hand { position: relative; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 16px; align-items: center; padding: 6px 0; }
+.hand i { justify-self: center; width: 16px; height: 16px; background: var(--accent); position: relative; z-index: 1;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 4v15M6 13l6 6 6-6' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 4v15M6 13l6 6 6-6' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat; }
+.hand span { font: 11px var(--mono); color: var(--faint); }
+.pipe-foot { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--faint); }
 
 /* buttons and the analyse dialog */
 .primary { font: 600 14px var(--sans); color: var(--ink-on-accent); background: linear-gradient(135deg, var(--accent), var(--accent2)); border: 0; border-radius: 10px; padding: 9px 16px; cursor: pointer; box-shadow: 0 6px 20px var(--glow1); display: inline-flex; gap: 8px; align-items: center; }
@@ -245,7 +254,6 @@ dialog::backdrop { background: rgba(3,6,12,.6); backdrop-filter: blur(3px); }
 .logbox { font: 12px/1.5 var(--mono); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; height: 220px; overflow: auto; white-space: pre-wrap; word-break: break-all; color: var(--muted); margin: 0; }
 .dlg .btns { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
 
-@media (max-width: 1100px) { .pipe { grid-template-columns: 1fr 1fr; } .pcol + .pcol::before { display: none; } }
 @media (max-width: 960px) {
   .app { grid-template-columns: 1fr; }
   .side { position: static; height: auto; padding: 16px; gap: 14px; }
@@ -254,7 +262,7 @@ dialog::backdrop { background: rgba(3,6,12,.6); backdrop-filter: blur(3px); }
   .side .foot { margin-top: 0; }
   main { padding: 20px 16px 60px; }
   .split { grid-template-columns: 1fr; }
-  .pipe { grid-template-columns: 1fr; } .row2 { grid-template-columns: 1fr; }
+  .row2 { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -371,33 +379,37 @@ function bindPicker(root) {
 /* ---------- Board ---------- */
 function tacticCount(d, t) { return new Set(Object.values(d.matrix[t] || {}).flat()).size; }
 const STAGES = [
-  ["Evidence in", [
-    ["Memory image", "Raw, .mem, .vmem, crash dump or VM core. Read-only, never executed.", "the dump", "info", null],
+  ["Evidence in", "What goes in. Nothing is ever executed.", "raw bytes", [
+    ["Memory image", "Raw, .mem, .vmem, crash dump or VM core, opened read-only.", "the dump", "info", null],
     ["Network capture", "Optional .pcap from the same incident.", "packets", "info", null]]],
-  ["Extract", [
+  ["Extract", "Pull processes and suspicious code out of memory.", "processes, injected regions, dumped files", [
     ["Volatility 3", "pslist, cmdline, netscan and malfind; injected regions are dumped to disk.", "processes, injected code", "compromise", "memory"],
     ["Static analysis", "pefile headers, YARA rules and entropy on every dumped region.", "packed or malicious code", "compromise", "static"]]],
-  ["Crypto and secrets", [
+  ["Crypto and secrets", "Four checks run side by side on the extracted data.", "findings with a CVSS band", [
     ["Cipher ID", "S-box and constant signatures, combined by Dempster's rule.", "AES, DES, ChaCha20, ECC…", "exposure", "crypto"],
     ["RSA keys", "DER/PEM parsing; small factor, Fermat and shared-prime tests; NIST SP 800-57 strength.", "broken or weak keys", "exposure", "rsa"],
     ["Credentials", "JWT, OAuth and OTP secrets, judged against RFC 8725 and RFC 4226.", "leaked tokens", "exposure", "credentials"],
     ["Network", "pyshark: TLS versions and cipher suites against RFC 8996 and SP 800-52.", "weak protocols", "exposure", "network"]]],
-  ["Score", [
+  ["Score", "Turn the findings into numbers and techniques.", "scores, ATT&CK ids, citation ids", [
     ["Evidence fusion", "CVSS band masses; strongest finding per source; Dempster's rule across sources.", "compromise, exposure, overall", "accent", null],
     ["ATT&CK mapping", "Each finding mapped to MITRE ATT&CK, prompt injection to ATLAS.", "techniques", "accent", null]]],
-  ["Report", [
+  ["Report", "Store everything and write the analyst report.", null, [
     ["Evidence store", "SQLite, every finding gets a citation id like F12.", "findings F1…Fn", "accent2", null],
     ["Defended LLM report", "Sanitised input, mandatory citations, numeric cross-check, one retry.", "report + validation", "accent2", null]]],
 ];
 function pipelineHtml(d) {
   const by = {}; d.findings.forEach((f) => { by[f.module] = (by[f.module] || 0) + 1; });
   const col = {info: "var(--faint)", compromise: "var(--compromise)", exposure: "var(--exposure)", accent: "var(--accent)", accent2: "var(--accent2)"};
-  return `<div class="pipe">${STAGES.map(([head, items], i) => `<div class="pcol"><div class="phead"><b>${i + 1}</b><span>${head}</span></div>
-    ${items.map(([name, how, out, c, mod]) => `<div class="stage" style="--c:${col[c]}">${mod ? `<span class="cnt" title="findings from this stage in ${esc(d.meta.title || d.id)}">${by[mod] || 0}</span>` : ""}
-      <b>${esc(name)}</b><div class="how">${esc(how)}</div><div class="out">→ ${esc(out)}</div></div>`).join("")}</div>`).join("")}</div>
+  const name = esc(d.meta.title || d.id);
+  return `<div class="flow">${STAGES.map(([head, blurb, hand, items], i) => `<div class="step"><span class="node">${i + 1}</span><div>
+      <div class="shead"><b>${head}</b><small>${esc(blurb)}</small></div>
+      <div class="stages">${items.map(([n, how, out, c, mod]) => `<div class="stage" style="--c:${col[c]}">
+        <div class="sn"><b>${esc(n)}</b>${mod ? `<span class="cnt" title="findings from this stage in ${name}">${by[mod] || 0} found</span>` : ""}</div>
+        <div class="how">${esc(how)}</div><div class="out">→ ${esc(out)}</div></div>`).join("")}</div></div></div>
+    ${hand ? `<div class="hand"><i></i><span>passes on: ${esc(hand)}</span></div>` : ""}`).join("")}</div>
     <div class="pipe-foot"><span><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--compromise);margin-right:6px"></i>feeds the compromise score</span>
       <span><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--exposure);margin-right:6px"></i>feeds the crypto exposure score</span>
-      <span>Numbers on the right of a stage: findings it produced for ${esc(d.meta.title || d.id)}.</span></div>`;
+      <span>"found" counts are for ${name}.</span></div>`;
 }
 function cipherRows() {
   const names = {}, per = {};
