@@ -30,10 +30,28 @@ TIMEOUT = 1800
 SYMBOLS = os.environ.get("TRIAGEGUARD_VOL_SYMBOLS")
 
 
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def venv_python():
+    """The project's own venv interpreter if there is one, else the running one.
+    Lets the dashboard run the pipeline with the right packages even when it was
+    started from a plain `python` without activating the venv."""
+    for rel in (".venv/Scripts/python.exe", ".venv/bin/python", "venv/Scripts/python.exe", "venv/bin/python"):
+        if (ROOT / rel).is_file():
+            return str(ROOT / rel)
+    return sys.executable
+
+
 def _vol():
-    # also look next to the running interpreter, so a venv works without being activated
-    here = str(Path(sys.executable).parent)
-    return shutil.which("vol") or shutil.which("vol3") or shutil.which("vol", path=here) or shutil.which("vol3", path=here)
+    # also look next to the running interpreter and in the project venv, so it works without activating
+    dirs = [str(Path(sys.executable).parent), str(Path(venv_python()).parent)]
+    for d in [None, *dirs]:
+        for name in ("vol", "vol3"):
+            found = shutil.which(name, path=d) if d else shutil.which(name)
+            if found:
+                return found
+    return None
 
 
 def run_plugin(dump, plugin, extra=(), outdir=None):

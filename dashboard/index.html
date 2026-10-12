@@ -247,6 +247,9 @@ dialog::backdrop { background: rgba(3,6,12,.6); backdrop-filter: blur(3px); }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
 .check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
 .err { color: var(--bad); font-size: 13.5px; }
+.warnbox { display: grid; gap: 4px; border: 1px solid var(--exposure); border-left-width: 3px; border-radius: 10px; padding: 10px 12px; font-size: 13px; color: var(--muted); }
+.warnbox b { color: var(--exposure); font-size: 13.5px; }
+.warnbox code { font: 12px var(--mono); color: var(--text); }
 .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
 .steps div { font: 11px var(--mono); color: var(--faint); border-top: 3px solid var(--panel2); padding-top: 6px; }
 .steps div.now { color: var(--text); border-color: var(--accent2); }
@@ -465,13 +468,22 @@ function renderBoard() {
 }
 
 /* ---------- Analyse a dump ---------- */
-let job = null, pollTimer = null, envInfo = {llm: false};
+let job = null, pollTimer = null, envInfo = {llm: false, volatility: true, missing: [], tshark: true};
+function envWarn() {
+  const w = [];
+  if (!envInfo.volatility) w.push("Volatility 3 was not found, so process and injected-code extraction would be skipped.");
+  if ((envInfo.missing || []).length) w.push(`Missing Python packages: ${envInfo.missing.join(", ")}.`);
+  if (!w.length) return "";
+  return `<div class="warnbox"><b>Setup is incomplete</b>${w.map((x) => `<span>${esc(x)}</span>`).join("")}
+    <span>Close the dashboard and start it with <code>TriageGuard.bat</code> in the project folder; it installs what is missing.</span></div>`;
+}
 function openAnalyse() {
   fetch("/api/env").then((r) => r.json()).then((e) => { envInfo = e; }).catch(() => {}).finally(() => {
     if (job && job.status === "running") return showJob();
     $("dlgbody").innerHTML = `
       <h3 id="dlgtitle">Analyse a memory dump</h3>
       <p>Runs the whole pipeline on a file on this computer, then adds it to the board. Large images take a while; you can close this window and come back.</p>
+      ${envWarn()}
       <form id="af" class="dlg" style="padding:0">
         <div class="field"><label for="a-dump">Memory image</label><input id="a-dump" required placeholder="D:\\data\\case\\memory.raw" autocomplete="off"><small>Full path. Hold Shift, right-click the file, "Copy as path", and paste here.</small></div>
         <div class="field"><label for="a-pcap">Network capture (optional)</label><input id="a-pcap" placeholder="D:\\data\\case\\traffic.pcap" autocomplete="off"></div>
@@ -480,7 +492,7 @@ function openAnalyse() {
           <div class="field"><label for="a-name">Short name</label><input id="a-name" placeholder="from the file name"><small>Folder under results/dumps</small></div>
         </div>
         <div class="field"><label for="a-os">Operating system (optional)</label><input id="a-os" placeholder="Windows 10, x64"></div>
-        <label class="check"><input type="checkbox" id="a-llm" ${envInfo.llm ? "checked" : "disabled"}> Also write the defended LLM report ${envInfo.llm ? "" : '<span class="muted">(set GROQ_API_KEY before starting the dashboard)</span>'}</label>
+        <label class="check"><input type="checkbox" id="a-llm" ${envInfo.llm ? "checked" : "disabled"}> Also write the defended LLM report ${envInfo.llm ? "" : '<span class="muted">(add GROQ_API_KEY=... to a .env file in the project folder, then restart)</span>'}</label>
         <div class="err" id="a-err"></div>
         <div class="btns"><button class="ghost" type="button" id="a-cancel">Cancel</button><button class="primary" type="submit" id="a-go">Start analysis</button></div>
       </form>`;

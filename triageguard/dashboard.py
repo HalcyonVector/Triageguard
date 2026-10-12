@@ -14,6 +14,7 @@ import csv
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import threading
@@ -22,7 +23,7 @@ import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from . import attack, report
+from . import attack, memory, report
 from .store import Store
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -159,6 +160,19 @@ def _slug(text):
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:40] or "dump"
 
 
+def env_check():
+    """What the Analyse button can use on this machine, checked with the interpreter jobs run on."""
+    py = memory.venv_python()
+    probe = "import importlib.util as u; print(','.join(m for m in ('pefile', 'pyshark') if not u.find_spec(m)))"
+    try:
+        missing = subprocess.run([py, "-c", probe], capture_output=True, text=True, timeout=30).stdout.strip()
+    except (OSError, subprocess.SubprocessError):
+        missing = "pefile,pyshark"
+    return {"llm": report.llm_available(), "volatility": bool(memory._vol()),
+            "missing": [m for m in missing.split(",") if m], "tshark": bool(shutil.which("tshark")
+            or Path(r"C:\Program Files\Wireshark\tshark.exe").is_file()), "python": py}
+
+
 def start_job(req, results_dir):
     """Validate a request from the dashboard form and start the pipeline in the background.
     Returns (job id, None) or (None, error message for the user)."""
@@ -184,7 +198,7 @@ def start_job(req, results_dir):
     out = dump.parent / f"out_{name}_{stamp}"
     n = dump.stat().st_size
     size = f"{n / 2**30:.1f} GB" if n >= 2**30 else f"{n / 2**20:.0f} MB"
-    py = [sys.executable, "-u", "-m", "triageguard"]
+    py = [memory.venv_python(), "-u", "-m", "triageguard"]
     steps = [("Analysing", py + ["analyze", str(dump), "--db", str(db), "--out", str(out), "--no-llm"] + (["--pcap", pcap] if pcap else [])),
              ("Exporting", py + ["export", str(db), name, "--results", str(results), "--title", str(req.get("title") or dump.stem),
                                  "--os", str(req.get("os") or ""), "--source", str(dump.name), "--size", size,
@@ -236,7 +250,7 @@ def serve(port=8765, results_dir="results", open_browser=True):
             elif self.path == "/api/data":
                 self._json(load(results_dir))
             elif self.path == "/api/env":
-                self._json({"llm": report.llm_available()})
+                self._json(env_check())
             elif self.path.startswith("/api/jobs/"):
                 job = JOBS.get(self.path.rsplit("/", 1)[-1])
                 self._json(job or {"error": "no such job"}, 200 if job else 404)

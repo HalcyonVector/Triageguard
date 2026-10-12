@@ -6,7 +6,19 @@ from pathlib import Path
 from . import crypto, pipeline, redteam
 
 
+def load_env_file(path=Path(__file__).resolve().parents[1] / ".env"):
+    """Read KEY=value lines from the project's .env (git-ignored) into the environment,
+    so the Groq key does not have to be set by hand in every new terminal."""
+    if not path.is_file():
+        return
+    for line in path.read_text(encoding="utf-8-sig").splitlines():
+        key, sep, val = line.strip().partition("=")
+        if sep and key and not key.startswith("#"):
+            os.environ.setdefault(key.strip(), val.strip().strip('"'))
+
+
 def main(argv=None):
+    load_env_file()
     ap = argparse.ArgumentParser(prog="triageguard", description="Memory forensics + crypto malware triage")
     sub = ap.add_subparsers(dest="cmd", required=True)
 

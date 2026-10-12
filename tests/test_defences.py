@@ -276,3 +276,14 @@ def test_dashboard_job_validation(tmp_path):
     assert "No file" in dashboard.start_job({"dump": str(tmp_path / "missing.raw")}, tmp_path)[1]
     assert "already exists" in dashboard.start_job({"dump": str(img), "name": "taken"}, tmp_path)[1]
     assert "lowercase" in dashboard.start_job({"dump": str(img), "name": "../evil"}, tmp_path)[1]
+
+
+def test_env_file_does_not_override(tmp_path, monkeypatch):
+    from triageguard import cli
+    (tmp_path / ".env").write_text('# key\nTG_TEST_A="one"\nTG_TEST_B=two\n', encoding="utf-8")
+    monkeypatch.setenv("TG_TEST_B", "kept")
+    monkeypatch.delenv("TG_TEST_A", raising=False)
+    cli.load_env_file(tmp_path / ".env")
+    import os
+    assert os.environ["TG_TEST_A"] == "one" and os.environ["TG_TEST_B"] == "kept"
+    monkeypatch.delenv("TG_TEST_A")

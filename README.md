@@ -137,7 +137,10 @@ control raises no false alarm.
 
 ## Results
 
-Everything below is saved in `results/`. To browse it all in one page, run `python -m triageguard dashboard`.
+Everything below is saved in `results/`. To browse it all in one page, double-click `TriageGuard.bat` on Windows
+(it creates `.venv` and installs the requirements the first time, pulls the latest code, then opens the dashboard),
+or run `python -m triageguard dashboard`. The dashboard always runs analyses with the project's `.venv`, activated or
+not, and reads `GROQ_API_KEY` from a git-ignored `.env` file in the project folder if there is one.
 The dashboard's **Analyse a dump** button takes the path of a memory image (and optionally a pcap) on this
 computer, runs analyze, export and, if a Groq key is set, the defended LLM report, and adds the dump to the board.
 It uses only the standard library, binds to localhost, and works offline. Pick a dump in the sidebar and the
