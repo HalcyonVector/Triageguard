@@ -190,9 +190,10 @@ def check_citations(text, findings):
 # The gap between a label and its number may not name another score: since the split, a
 # "## Risk Score" heading is often followed by a table whose first row is Compromise, and
 # a plain [^0-9] gap read that row's number as the overall risk.
-# The number itself may not be part of a finding id ("F6") or a key size ("0-bit security").
+# The number itself may not be part of a finding id ("F6"), a key size ("0-bit security")
+# or a scale ("Score (0-100)" in a table header).
 _GAP = (r"(?:\s*\([^)]*\))?(?:(?!compromise|exposure|overall)[^0-9]){0,60}?"
-        r"(?<![A-Za-z])(\d{1,3})(?!\d|\s*[-\u2010-\u2014]?\s*bit)")
+        r"(?<![A-Za-z])(\d{1,3})(?!\d|\s*[-\u2010-\u2014]?\s*bit|\s*[-\u2010-\u2014]\s*\d)")
 RISK_RE = re.compile(r"risk\s*score" + _GAP, re.I)
 OVERALL_RE = re.compile(r"overall(?=[\s*]*(?:risk|score|\|))(?:[\s*]*risk)?(?:[\s*]*score)?" + _GAP, re.I)
 EXPOSURE_RE = re.compile(r"crypto(?:graphic)?\s*exposure" + _GAP, re.I)
