@@ -138,6 +138,8 @@ control raises no false alarm.
 ## Results
 
 Everything below is saved in `results/`. To browse it all in one page, run `python -m triageguard dashboard`.
+The dashboard's **Analyse a dump** button takes the path of a memory image (and optionally a pcap) on this
+computer, runs analyze, export and, if a Groq key is set, the defended LLM report, and adds the dump to the board.
 It uses only the standard library, binds to localhost, and works offline. Pick a dump in the sidebar and the
 Overview, Cryptography (cipher confidence and RSA strength in their own columns), Findings and Report views
 follow it; Red team and Progress cover everything. Reports have clickable citations, and each LLM report shows
@@ -211,7 +213,7 @@ no real user credentials. The synthetic sample is generated locally from random 
       memory dump, then measure how many ciphers and keys TriageGuard finds and how many false alarms it raises
 - [ ] More public dumps for variety (another Windows 10/11 image with ransomware-style activity, a Windows Server image)
 - [ ] Stronger red-team: harder attacks (several fields at once, no trigger words), more trials per attack, a second LLM
-- [ ] Optional: run an analysis from the dashboard (dump path box, Run button, live progress log, automatic export)
+- [x] Run an analysis from the dashboard (dump path box, Run button, live progress log, automatic export)
 - [ ] Later: Linux and macOS memory stage (Volatility's `linux.*` and `mac.*` plugins, OS detection, symbol tables
       for the exact kernel, ELF/Mach-O versions of the injection checks); the crypto and credential stages already work on any OS
 - [ ] Final report

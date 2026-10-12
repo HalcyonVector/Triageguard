@@ -266,3 +266,13 @@ def test_attack_mapping_tags_real_signals_only():
     assert attack.techniques(jwt) == ["T1528", "T1552"]
     assert attack.matrix([inj, jit, jwt])["Credential Access"] == {"T1528": ["F3"], "T1552": ["F3"]}
     assert "MITRE ATT&CK view" in report.rule_report([inj, jit, jwt])
+
+
+def test_dashboard_job_validation(tmp_path):
+    from triageguard import dashboard
+    (tmp_path / "dumps" / "taken").mkdir(parents=True)
+    img = tmp_path / "x.raw"
+    img.write_bytes(b"\0" * 16)
+    assert "No file" in dashboard.start_job({"dump": str(tmp_path / "missing.raw")}, tmp_path)[1]
+    assert "already exists" in dashboard.start_job({"dump": str(img), "name": "taken"}, tmp_path)[1]
+    assert "lowercase" in dashboard.start_job({"dump": str(img), "name": "../evil"}, tmp_path)[1]

@@ -47,11 +47,11 @@ body {
 .app { display: grid; grid-template-columns: 250px minmax(0, 1fr); min-height: 100vh; }
 .side { position: sticky; top: 0; height: 100vh; padding: 24px 16px; display: flex; flex-direction: column; gap: 20px;
   border-right: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 70%, transparent); backdrop-filter: blur(10px); overflow-y: auto; }
-.logo { display: flex; gap: 12px; align-items: center; }
-.logo .mark { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; font: 700 14px var(--mono); color: var(--ink-on-accent);
-  background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 0 22px var(--glow1); }
-.logo b { display: block; font-size: 17px; letter-spacing: .2px; }
-.logo small { color: var(--faint); font-size: 11.5px; }
+.logo { display: flex; gap: 11px; align-items: center; padding: 2px 4px; }
+.logo svg { flex: none; width: 34px; height: 38px; }
+.logo .word { font: 700 18px/1.1 var(--sans); letter-spacing: -.3px; }
+.logo .word span { color: var(--accent); font-weight: 600; }
+.logo small { display: block; color: var(--faint); font: 10px var(--mono); letter-spacing: 1.2px; text-transform: uppercase; margin-top: 3px; }
 .label { font: 600 10.5px var(--mono); letter-spacing: 1.5px; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
 nav { display: flex; flex-direction: column; gap: 2px; }
 nav button, .dumpbtn { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; cursor: pointer; font: inherit; font-size: 14px;
@@ -197,6 +197,48 @@ a.cite { color: var(--accent); font-family: var(--mono); font-size: .92em; text-
 .drawer .big { font-size: 17px; font-weight: 600; line-height: 1.4; }
 .linkbtn { font: 600 12.5px var(--sans); color: var(--accent); background: transparent; border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 8px; padding: 7px 12px; cursor: pointer; justify-self: start; }
 
+/* pipeline diagram */
+.pipe { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 26px; position: relative; }
+.pcol { display: grid; gap: 10px; align-content: start; position: relative; min-width: 0; }
+.pcol + .pcol::before { content: ""; position: absolute; left: -22px; top: 46px; width: 18px; height: 18px;
+  background: var(--accent); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12h13M13 6l6 6-6 6' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12h13M13 6l6 6-6 6' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat; }
+.phead { display: flex; gap: 8px; align-items: baseline; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.phead b { font: 700 11px var(--mono); color: var(--accent); }
+.phead span { font: 600 11px var(--mono); letter-spacing: 1.3px; text-transform: uppercase; color: var(--muted); }
+.stage { background: var(--panel); border: 1px solid var(--line); border-radius: 11px; padding: 11px 12px; display: grid; gap: 4px; position: relative; overflow: hidden; }
+.stage::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--c, var(--accent)); opacity: .9; }
+.stage b { font-size: 13.5px; }
+.stage .how { color: var(--muted); font-size: 12.5px; line-height: 1.45; }
+.stage .out { font: 11px var(--mono); color: var(--faint); }
+.stage .cnt { position: absolute; right: 10px; top: 9px; font: 600 11px var(--mono); color: var(--c, var(--accent)); }
+.pipe-foot { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px; font-size: 12.5px; color: var(--faint); }
+
+/* buttons and the analyse dialog */
+.primary { font: 600 14px var(--sans); color: var(--ink-on-accent); background: linear-gradient(135deg, var(--accent), var(--accent2)); border: 0; border-radius: 10px; padding: 9px 16px; cursor: pointer; box-shadow: 0 6px 20px var(--glow1); display: inline-flex; gap: 8px; align-items: center; }
+.primary:hover { filter: brightness(1.08); } .primary[disabled] { opacity: .5; cursor: not-allowed; }
+.ghost { font: 500 14px var(--sans); color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 9px 14px; cursor: pointer; }
+.topright { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+dialog { width: min(640px, calc(100vw - 32px)); max-height: calc(100vh - 40px); border: 1px solid var(--line); border-radius: 16px; padding: 0; background: var(--bg2); color: var(--text); box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+dialog::backdrop { background: rgba(3,6,12,.6); backdrop-filter: blur(3px); }
+.dlg { padding: 22px; display: grid; gap: 14px; }
+.dlg h3 { font-size: 19px; margin: 0; }
+.dlg p { margin: 0; color: var(--muted); font-size: 13.5px; }
+.field { display: grid; gap: 5px; }
+.field label { font: 600 11px var(--mono); letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+.field input { font: 14px var(--mono); color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 9px; padding: 9px 11px; width: 100%; }
+.field small { color: var(--faint); font-size: 12px; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+.check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.err { color: var(--bad); font-size: 13.5px; }
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.steps div { font: 11px var(--mono); color: var(--faint); border-top: 3px solid var(--panel2); padding-top: 6px; }
+.steps div.now { color: var(--text); border-color: var(--accent2); }
+.steps div.ok { color: var(--accent); border-color: var(--accent); }
+.logbox { font: 12px/1.5 var(--mono); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; height: 220px; overflow: auto; white-space: pre-wrap; word-break: break-all; color: var(--muted); margin: 0; }
+.dlg .btns { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+
+@media (max-width: 1100px) { .pipe { grid-template-columns: 1fr 1fr; } .pcol + .pcol::before { display: none; } }
 @media (max-width: 960px) {
   .app { grid-template-columns: 1fr; }
   .side { position: static; height: auto; padding: 16px; gap: 14px; }
@@ -205,6 +247,7 @@ a.cite { color: var(--accent); font-family: var(--mono); font-size: .92em; text-
   .side .foot { margin-top: 0; }
   main { padding: 20px 16px 60px; }
   .split { grid-template-columns: 1fr; }
+  .pipe { grid-template-columns: 1fr; } .row2 { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -212,7 +255,15 @@ a.cite { color: var(--accent); font-family: var(--mono); font-size: .92em; text-
 <body>
 <div class="app">
   <aside class="side">
-    <div class="logo"><div class="mark">TG</div><div><b>TriageGuard</b><small>memory forensics + crypto triage</small></div></div>
+    <div class="logo">
+      <svg viewBox="0 0 34 38" aria-hidden="true">
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--accent)"/><stop offset="1" style="stop-color:var(--accent2)"/></linearGradient></defs>
+        <path d="M17 1.5 L31.5 7 V18.5 C31.5 27.5 25.5 33.5 17 36.5 C8.5 33.5 2.5 27.5 2.5 18.5 V7 Z" fill="none" stroke="url(#lg)" stroke-width="2.2" stroke-linejoin="round"/>
+        <g style="fill:var(--muted)" opacity=".55"><rect x="9" y="11" width="4" height="4" rx="1"/><rect x="15" y="11" width="4" height="4" rx="1"/><rect x="21" y="11" width="4" height="4" rx="1"/>
+        <rect x="9" y="17" width="4" height="4" rx="1"/><rect x="21" y="17" width="4" height="4" rx="1"/><rect x="9" y="23" width="4" height="4" rx="1"/><rect x="15" y="23" width="4" height="4" rx="1"/></g>
+        <rect x="15" y="17" width="4" height="4" rx="1" style="fill:var(--bad)"/><rect x="21" y="23" width="4" height="4" rx="1" style="fill:var(--accent)"/>
+      </svg>
+      <div><div class="word">Triage<span>Guard</span></div><small>memory · crypto triage</small></div></div>
     <div><div class="label">All dumps</div>
       <nav id="nav-all">
         <button data-tab="board"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Board</button>
@@ -234,7 +285,8 @@ a.cite { color: var(--accent); font-family: var(--mono); font-size: .92em; text-
     </div>
   </aside>
   <main>
-    <div class="top"><div><h1 id="title">Board</h1><div class="sub" id="subtitle"></div></div><span class="pill" id="scope"></span></div>
+    <div class="top"><div><h1 id="title">Board</h1><div class="sub" id="subtitle"></div></div><div class="topright"><span class="pill" id="scope"></span><button class="primary" id="addbtn" type="button">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Analyse a dump</button></div></div>
     <section id="board"></section>
     <section id="summary" class="hidden"></section>
     <section id="crypto" class="hidden"></section>
@@ -246,6 +298,7 @@ a.cite { color: var(--accent); font-family: var(--mono); font-size: .92em; text-
   </main>
 </div>
 <aside class="drawer" id="drawer" aria-label="Finding details"></aside>
+<dialog id="dlg" aria-labelledby="dlgtitle"><div class="dlg" id="dlgbody"></div></dialog>
 
 <script>
 const SEV = ["critical", "high", "medium", "low", "info"];
@@ -310,47 +363,128 @@ function bindPicker(root) {
 }
 
 /* ---------- Board ---------- */
-function topFinding(d) {
-  return [...d.findings].sort((a, b) => SEV.indexOf(a.severity) - SEV.indexOf(b.severity) || refNum(a.ref) - refNum(b.ref))[0];
-}
 function tacticCount(d, t) { return new Set(Object.values(d.matrix[t] || {}).flat()).size; }
+const STAGES = [
+  ["Evidence in", [
+    ["Memory image", "Raw, .mem, .vmem, crash dump or VM core. Read-only, never executed.", "the dump", "info", null],
+    ["Network capture", "Optional .pcap from the same incident.", "packets", "info", null]]],
+  ["Extract", [
+    ["Volatility 3", "pslist, cmdline, netscan and malfind; injected regions are dumped to disk.", "processes, injected code", "compromise", "memory"],
+    ["Static analysis", "pefile headers, YARA rules and entropy on every dumped region.", "packed or malicious code", "compromise", "static"]]],
+  ["Crypto and secrets", [
+    ["Cipher ID", "S-box and constant signatures, combined by Dempster's rule.", "AES, DES, ChaCha20, ECC…", "exposure", "crypto"],
+    ["RSA keys", "DER/PEM parsing; small factor, Fermat and shared-prime tests; NIST SP 800-57 strength.", "broken or weak keys", "exposure", "rsa"],
+    ["Credentials", "JWT, OAuth and OTP secrets, judged against RFC 8725 and RFC 4226.", "leaked tokens", "exposure", "credentials"],
+    ["Network", "pyshark: TLS versions and cipher suites against RFC 8996 and SP 800-52.", "weak protocols", "exposure", "network"]]],
+  ["Score", [
+    ["Evidence fusion", "CVSS band masses; strongest finding per source; Dempster's rule across sources.", "compromise, exposure, overall", "accent", null],
+    ["ATT&CK mapping", "Each finding mapped to MITRE ATT&CK, prompt injection to ATLAS.", "techniques", "accent", null]]],
+  ["Report", [
+    ["Evidence store", "SQLite, every finding gets a citation id like F12.", "findings F1…Fn", "accent2", null],
+    ["Defended LLM report", "Sanitised input, mandatory citations, numeric cross-check, one retry.", "report + validation", "accent2", null]]],
+];
+function pipelineHtml(d) {
+  const by = {}; d.findings.forEach((f) => { by[f.module] = (by[f.module] || 0) + 1; });
+  const col = {info: "var(--faint)", compromise: "var(--compromise)", exposure: "var(--exposure)", accent: "var(--accent)", accent2: "var(--accent2)"};
+  return `<div class="pipe">${STAGES.map(([head, items], i) => `<div class="pcol"><div class="phead"><b>${i + 1}</b><span>${head}</span></div>
+    ${items.map(([name, how, out, c, mod]) => `<div class="stage" style="--c:${col[c]}">${mod ? `<span class="cnt" title="findings from this stage in ${esc(d.meta.title || d.id)}">${by[mod] || 0}</span>` : ""}
+      <b>${esc(name)}</b><div class="how">${esc(how)}</div><div class="out">→ ${esc(out)}</div></div>`).join("")}</div>`).join("")}</div>
+    <div class="pipe-foot"><span><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--compromise);margin-right:6px"></i>feeds the compromise score</span>
+      <span><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--exposure);margin-right:6px"></i>feeds the crypto exposure score</span>
+      <span>Numbers on the right of a stage: findings it produced for ${esc(d.meta.title || d.id)}.</span></div>`;
+}
 function renderBoard() {
-  const rounds = D.rounds, last = rounds[rounds.length - 1];
-  const maxT = Math.max(1, ...D.dumps.flatMap((d) => TACTICS.map((t) => tacticCount(d, t))));
-  const heat = (n) => n ? `background:color-mix(in srgb, var(--exposure) ${Math.round(25 + 65 * n / maxT)}%, transparent);color:var(--text)` : "background:var(--panel2);color:var(--faint)";
+  const last = D.rounds[D.rounds.length - 1];
   $("board").innerHTML = `
-    <div class="grid g3">${D.dumps.map((d) => { const top = topFinding(d) || {}; return `
+    <div class="grid g3">${D.dumps.map((d) => `
       <button class="card dumpcard ${d.id === dump().id ? "sel" : ""}" data-dump="${d.id}" type="button">
-        <div class="hd"><div><h3>${esc(d.meta.title || d.id)}</h3><div class="m">${esc(d.meta.os || "")}${d.meta.size ? " · " + esc(d.meta.size) : ""}<br>${esc(d.meta.source || "")}</div></div>
+        <div class="hd"><div><h3>${esc(d.meta.title || d.id)}</h3><div class="m">${esc(d.meta.os || "")}${d.meta.size ? " · " + esc(d.meta.size) : ""}</div></div>
           <div style="text-align:right"><div class="score" style="color:${sevVar(d.scores.band)}">${d.scores.risk}</div><span class="band sev-${d.scores.band}">${d.scores.band}</span></div></div>
         ${ceBars(d.scores)}
-        ${sevBar(d.findings)}
-        <div class="kv"><span>${d.findings.length} findings</span><span>${d.findings.filter((f) => ["critical", "high"].includes(f.severity)).length} critical + high</span><span>${d.meta.pcap ? "with pcap" : "memory only"}</span></div>
-        ${top.ref ? `<div class="m" style="color:var(--muted)"><span class="chip sev-${top.severity}">${top.severity}</span> ${esc(top.title)}</div>` : ""}
-      </button>`; }).join("")}</div>
-    <div class="legend"><span><i style="background:var(--compromise)"></i>compromise: signs an attacker acted</span><span><i style="background:var(--exposure)"></i>crypto exposure: weak keys, tokens, protocols</span>${SEV.map((k) => `<span><i style="background:var(--${k})"></i>${k}</span>`).join("")}</div>
-
-    <div class="split" style="margin-top:22px">
-      <div class="card"><h3>ATT&amp;CK tactics by dump</h3>
-        <div class="heat"><table class="heatwrap"><tr><th></th>${TACTICS.map((t) => `<th style="text-align:center">${t}</th>`).join("")}</tr>
-        ${D.dumps.map((d) => `<tr><td class="h">${esc(d.meta.title || d.id)}</td>${TACTICS.map((t) => { const n = tacticCount(d, t);
-          return `<td class="cell" style="${heat(n)}" title="${esc(Object.keys(d.matrix[t] || {}).map((x) => x + " " + techName(x)).join(", ") || "none")}">${n || "·"}</td>`; }).join("")}</tr>`).join("")}
-        </table></div>
-        <p class="note">Cells count findings mapped to each tactic. Info and low findings are not mapped, so benign context (JIT regions, the acquisition tool) never looks like an attack.</p></div>
-      <div class="card"><h3>LLM red team</h3>${last ? `
-        <div class="strip" style="margin-bottom:12px">
-          <div><div class="k">Attack success</div><div class="v">${last.stats.asr_base}/${last.stats.n} → ${last.stats.asr_def}/${last.stats.n}</div></div>
-          <div><div class="k">Unflagged</div><div class="v">${last.stats.unflagged}</div></div>
-          <div><div class="k">Cited claims</div><div class="v">${pct(last.stats.cite_base)}% → ${pct(last.stats.cite_def)}%</div></div></div>
-        ${rtChart(rounds, true)}
-        <p class="note">${last.name}: ${last.stats.reports} reports on a synthetic image. Bars are 95% Wilson intervals.</p>` : `<p class="muted">No red-team results found.</p>`}</div>
-    </div>
-
-    <h2>Pipeline</h2>
-    <div class="card"><div class="strip" style="gap:10px 22px">${["Volatility 3 memory", "Static analysis", "Cipher ID (Dempster-Shafer)", "RSA weak keys (NIST SP 800-57)", "Credentials", "Network (pcap)", "Evidence fusion", "ATT&CK mapping", "Defended LLM report"].map((s, i, a) =>
-      `<span class="mono" style="font-size:12.5px">${esc(s)}${i < a.length - 1 ? ' <span style="color:var(--accent)">→</span>' : ""}</span>`).join("")}</div></div>`;
+        <div class="kv"><span>${d.findings.length} findings</span><span>${d.findings.filter((f) => ["critical", "high"].includes(f.severity)).length} critical or high</span></div>
+      </button>`).join("")}</div>
+    ${last ? `<p class="note">LLM red team, ${esc(last.name.toLowerCase())}: attacks succeeded ${last.stats.asr_base}/${last.stats.n} times on the plain report and ${last.stats.asr_def}/${last.stats.n} with the defences. Details in Red team.</p>` : ""}
+    <h2>How TriageGuard works</h2>
+    <div class="card">${pipelineHtml(dump())}</div>`;
   bindPicker($("board"));
 }
+
+/* ---------- Analyse a dump ---------- */
+let job = null, pollTimer = null, envInfo = {llm: false};
+function openAnalyse() {
+  fetch("/api/env").then((r) => r.json()).then((e) => { envInfo = e; }).catch(() => {}).finally(() => {
+    if (job && job.status === "running") return showJob();
+    $("dlgbody").innerHTML = `
+      <h3 id="dlgtitle">Analyse a memory dump</h3>
+      <p>Runs the whole pipeline on a file on this computer, then adds it to the board. Large images take a while; you can close this window and come back.</p>
+      <form id="af" class="dlg" style="padding:0">
+        <div class="field"><label for="a-dump">Memory image</label><input id="a-dump" required placeholder="D:\\data\\case\\memory.raw" autocomplete="off"><small>Full path. Hold Shift, right-click the file, "Copy as path", and paste here.</small></div>
+        <div class="field"><label for="a-pcap">Network capture (optional)</label><input id="a-pcap" placeholder="D:\\data\\case\\traffic.pcap" autocomplete="off"></div>
+        <div class="row2">
+          <div class="field"><label for="a-title">Display name</label><input id="a-title" placeholder="Windows 10 (my VM)"></div>
+          <div class="field"><label for="a-name">Short name</label><input id="a-name" placeholder="from the file name"><small>Folder under results/dumps</small></div>
+        </div>
+        <div class="field"><label for="a-os">Operating system (optional)</label><input id="a-os" placeholder="Windows 10, x64"></div>
+        <label class="check"><input type="checkbox" id="a-llm" ${envInfo.llm ? "checked" : "disabled"}> Also write the defended LLM report ${envInfo.llm ? "" : '<span class="muted">(set GROQ_API_KEY before starting the dashboard)</span>'}</label>
+        <div class="err" id="a-err"></div>
+        <div class="btns"><button class="ghost" type="button" id="a-cancel">Cancel</button><button class="primary" type="submit" id="a-go">Start analysis</button></div>
+      </form>`;
+    $("a-cancel").onclick = () => $("dlg").close();
+    $("af").onsubmit = (ev) => {
+      ev.preventDefault();
+      const body = {dump: $("a-dump").value, pcap: $("a-pcap").value, title: $("a-title").value, name: $("a-name").value, os: $("a-os").value, llm: $("a-llm").checked};
+      $("a-go").disabled = true; $("a-err").textContent = "";
+      fetch("/api/analyze", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)})
+        .then((r) => r.json()).then((res) => {
+          if (res.error) { $("a-err").textContent = res.error; $("a-go").disabled = false; return; }
+          job = {id: res.job, status: "running", stage: "Starting", log: []}; showJob(); poll();
+        }).catch((e) => { $("a-err").textContent = "Could not reach the dashboard server: " + e; $("a-go").disabled = false; });
+    };
+    if (!$("dlg").open) $("dlg").showModal();
+    $("a-dump").focus();
+  });
+}
+const JOB_STEPS = ["Extract (Volatility 3)", "Static + crypto", "Credentials + network", "Export to the board"];
+function jobStep(j) {
+  if (j.status === "done") return 4;
+  if (j.stage === "Exporting" || j.stage === "Writing the LLM report") return 3;
+  const m = [...j.log].reverse().map((l) => l.match(/^\[(\d)\/6\]/)).find(Boolean);
+  const k = m ? +m[1] : 0;
+  return k >= 4 ? 2 : k >= 2 ? 1 : 0;
+}
+function showJob() {
+  const j = job, st = jobStep(j);
+  $("dlgbody").innerHTML = `
+    <h3 id="dlgtitle">${j.status === "done" ? "Analysis finished" : j.status === "failed" ? "Analysis stopped" : "Analysing…"}</h3>
+    <div class="steps">${JOB_STEPS.map((s, i) => `<div class="${i < st ? "ok" : i === st && j.status === "running" ? "now" : ""}">${s}</div>`).join("")}</div>
+    <p>${j.status === "failed" ? `<span class="err">${esc(j.error)}</span>` : esc(j.stage)}</p>
+    <pre class="logbox" id="logbox">${esc((j.log || []).join("\n"))}</pre>
+    <div class="btns">${j.status === "done" ? `<button class="primary" type="button" id="j-open">Open the new dump</button>` : ""}
+      <button class="ghost" type="button" id="j-close">${j.status === "running" ? "Hide (keeps running)" : "Close"}</button></div>`;
+  const lb = $("logbox"); lb.scrollTop = lb.scrollHeight;
+  $("j-close").onclick = () => $("dlg").close();
+  if ($("j-open")) $("j-open").onclick = () => { $("dlg").close(); reload(j.name, "summary"); job = null; };
+  if (!$("dlg").open) $("dlg").showModal();
+  $("addbtn").textContent = j.status === "running" ? "Analysis running…" : "Analyse a dump";
+}
+function poll() {
+  clearTimeout(pollTimer);
+  fetch("/api/jobs/" + job.id).then((r) => r.json()).then((j) => {
+    job = j;
+    if ($("dlg").open) showJob(); else $("addbtn").textContent = j.status === "running" ? "Analysis running…" : "Analyse a dump";
+    if (j.status === "running") pollTimer = setTimeout(poll, 1500);
+    else if (j.status === "done") reload(null, null);
+  }).catch(() => { pollTimer = setTimeout(poll, 4000); });
+}
+function reload(selectId, goTab) {
+  return fetch("/api/data").then((r) => r.json()).then((d) => {
+    D = Object.assign({dumps: [], rounds: [], techniques: {}}, d);
+    if (selectId && D.dumps.some((x) => x.id === selectId)) cur = selectId;
+    renderDumpViews(); renderRedteam(); renderRoadmap();
+    if (goTab) show(goTab);
+  });
+}
+$("addbtn").onclick = openAnalyse;
 
 /* ---------- Summary: evidence fusion ---------- */
 function fusionSvg(d) {
@@ -471,10 +605,17 @@ function renderCrypto() {
 /* ---------- ATT&CK ---------- */
 function renderAttack() {
   const d = dump(), m = d.matrix, other = Object.keys(m).filter((t) => !TACTICS.includes(t));
+  const maxT = Math.max(1, ...D.dumps.flatMap((x) => TACTICS.map((t) => tacticCount(x, t))));
+  const heat = (n) => n ? `background:color-mix(in srgb, var(--exposure) ${Math.round(25 + 65 * n / maxT)}%, transparent);color:var(--text)` : "background:var(--panel2);color:var(--faint)";
   $("attack").innerHTML = `
     <div class="tactics">${[...TACTICS, ...other].map((t) => `<div class="card tactic"><h3>${esc(t)}</h3>${
       Object.keys(m[t] || {}).length ? Object.entries(m[t]).map(([id, refs]) => `<div class="tech"><span class="id">${id}</span><b>${esc(techName(id))}</b>
         <div class="refs">${[...new Set(refs)].map(cite).join(" ")}</div></div>`).join("") : `<div class="empty">Nothing mapped</div>`}</div>`).join("")}</div>
+    <h2>All dumps by tactic</h2>
+    <div class="card heat"><table class="heatwrap"><tr><th></th>${TACTICS.map((t) => `<th style="text-align:center">${t}</th>`).join("")}</tr>
+      ${D.dumps.map((x) => `<tr><td class="h">${esc(x.meta.title || x.id)}</td>${TACTICS.map((t) => { const n = tacticCount(x, t);
+        return `<td class="cell" style="${heat(n)}" title="${esc(Object.keys(x.matrix[t] || {}).map((k) => k + " " + techName(k)).join(", ") || "none")}">${n || "·"}</td>`; }).join("")}</tr>`).join("")}
+    </table></div>
     <p class="note">Mapped from each finding's module, kind and title (triageguard/attack.py). Weak RSA keys are a hygiene problem, not an attacker action, so they get no technique. Prompt-injection findings map to MITRE ATLAS AML.T0051.</p>`;
   bindCites($("attack"));
 }
@@ -652,7 +793,7 @@ function renderRedteam() {
 
 /* ---------- Progress ---------- */
 const WORKSTREAMS = [
-  ["Pipeline", [["Memory (Volatility 3)", 1], ["Static analysis", 1], ["Crypto module", 1], ["Credentials", 1], ["Network (pcap)", 1], ["Evidence fusion and ATT&CK mapping", 1], ["Later: Linux and macOS memory", 0]]],
+  ["Pipeline", [["Memory (Volatility 3)", 1], ["Static analysis", 1], ["Crypto module", 1], ["Credentials", 1], ["Network (pcap)", 1], ["Evidence fusion and ATT&CK mapping", 1], ["Analyse a dump from the dashboard", 1], ["Later: Linux and macOS memory", 0]]],
   ["Grounded scoring", [["Cipher confidence: Dempster-Shafer", 1], ["RSA strength: NIST SP 800-57", 1], ["Risk: compromise + exposure, fused", 1], ["Every formula sourced (FORMULAS.md)", 1]]],
   ["Evaluation", [["Windows 11, 10 and 7 dumps", 1], ["Red team round 1 (78 reports)", 1], ["Red team round 2 (186 reports, adaptive)", 1], ["More public dumps", 0], ["Ground-truth crypto test (own VM)", 0]]],
   ["Write-up", [["Literature survey", 1], ["README and demo script", 1], ["Dashboard v2", 1], ["Final report and PQC paragraph", 0]]],
@@ -676,7 +817,7 @@ function renderRoadmap() {
       <div class="card rowflex">${ring(p, p + "%")}<div><div class="label">Overall</div><div class="muted">${done} of ${all.length} tasks done</div></div></div>
       <div class="card stat"><div class="label">Public dumps</div><div class="num">${D.dumps.length}</div><div class="lab">${D.dumps.map((d) => esc(d.meta.title || d.id)).join(", ")}</div></div>
       <div class="card stat"><div class="label">LLM reports measured</div><div class="num">${D.rounds.reduce((s, r) => s + r.stats.reports, 0)}</div><div class="lab">${last ? `latest: ${last.stats.asr_base}/${last.stats.n} → ${last.stats.asr_def}/${last.stats.n}` : ""}</div></div>
-      <div class="card stat"><div class="label">Automated tests</div><div class="num">38</div><div class="lab">all passing</div></div>
+      <div class="card stat"><div class="label">Automated tests</div><div class="num">39</div><div class="lab">all passing</div></div>
     </div>
     <h2>Workstreams</h2>
     <div class="grid g2">${WORKSTREAMS.map(([name, items]) => { const d = items.filter((x) => x[1]).length, q = Math.round(d / items.length * 100);
@@ -708,10 +849,9 @@ $("theme").onclick = () => {
 };
 applyTheme(store.get("tg-theme") || "dark");
 
-fetch("/api/data").then((r) => r.json()).then((d) => {
-  D = Object.assign({dumps: [], rounds: [], techniques: {}}, d);
-  cur = store.get("tg-dump") && D.dumps.some((x) => x.id === store.get("tg-dump")) ? store.get("tg-dump") : (D.dumps[0] || {}).id;
-  renderDumpViews(); renderRedteam(); renderRoadmap();
+cur = store.get("tg-dump");
+reload(null, null).then(() => {
+  if (!D.dumps.some((x) => x.id === cur)) { cur = (D.dumps[0] || {}).id; renderDumpViews(); }
   show(store.get("tg-tab") || "board");
 }).catch((e) => { $("board").innerHTML = `<div class="card">Could not load data from the dashboard server: ${esc(e)}. Start it with <code>python -m triageguard dashboard</code>.</div>`; });
 window.addEventListener("beforeunload", () => store.set("tg-dump", cur || ""));

@@ -2,8 +2,9 @@
 
     python -m triageguard dashboard            # then open http://127.0.0.1:8765
 
-Standard library only, binds to localhost, and serves two things: the page and one
-JSON document. Each analysed dump lives in results/dumps/<name>/ (see export_dump):
+Standard library only, binds to localhost, and serves the page, one JSON document,
+and a small job runner behind the "Analyse a dump" button (analyze, export, and an
+optional LLM report, run as child processes with their log streamed back). Each analysed dump lives in results/dumps/<name>/ (see export_dump):
 meta.json, findings.json, report_rules.md and, when an LLM key was available,
 report_llm.md. Red-team rounds come from results/redteam_results.csv (round 1) and
 results/redteam_v2/results.csv (round 2), whichever exist.
@@ -11,6 +12,12 @@ results/redteam_v2/results.csv (round 2), whichever exist.
 
 import csv
 import json
+import os
+import re
+import subprocess
+import sys
+import threading
+import time
 import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -142,24 +149,113 @@ def load(results_dir):
             "techniques": {k: list(v) for k, v in attack.TECHNIQUES.items()}}
 
 
+# ------------------------------------------------------------- analyse-a-dump jobs
+JOBS = {}
+_LOCK = threading.Lock()
+NAME_RE = re.compile(r"^[a-z0-9][a-z0-9_-]{0,39}$")
+
+
+def _slug(text):
+    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:40] or "dump"
+
+
+def start_job(req, results_dir):
+    """Validate a request from the dashboard form and start the pipeline in the background.
+    Returns (job id, None) or (None, error message for the user)."""
+    dump = Path(str(req.get("dump", "")).strip().strip('"')).expanduser()
+    pcap = str(req.get("pcap", "")).strip().strip('"')
+    if not dump.is_file():
+        return None, f"No file at {dump}. Paste the full path to the memory image."
+    if pcap and not Path(pcap).expanduser().is_file():
+        return None, f"No file at {pcap}. Leave the pcap empty if you don't have one."
+    name = str(req.get("name") or _slug(dump.stem)).strip().lower()
+    if not NAME_RE.match(name):
+        return None, "The short name may use lowercase letters, digits, - and _ only."
+    results = Path(results_dir).resolve()
+    if (results / "dumps" / name).exists():
+        return None, f"results/dumps/{name} already exists. Pick another short name."
+    with _LOCK:
+        if any(j["status"] == "running" for j in JOBS.values()):
+            return None, "Another analysis is still running. Wait for it to finish."
+        job_id = f"{name}-{int(time.time())}"
+        JOBS[job_id] = {"id": job_id, "name": name, "status": "running", "stage": "Starting", "log": [], "error": ""}
+    stamp = time.strftime("%Y%m%d-%H%M%S")
+    db = dump.parent / f"{name}_{stamp}.db"  # fresh database, so the export always reads run 1
+    out = dump.parent / f"out_{name}_{stamp}"
+    n = dump.stat().st_size
+    size = f"{n / 2**30:.1f} GB" if n >= 2**30 else f"{n / 2**20:.0f} MB"
+    py = [sys.executable, "-u", "-m", "triageguard"]
+    steps = [("Analysing", py + ["analyze", str(dump), "--db", str(db), "--out", str(out), "--no-llm"] + (["--pcap", pcap] if pcap else [])),
+             ("Exporting", py + ["export", str(db), name, "--results", str(results), "--title", str(req.get("title") or dump.stem),
+                                 "--os", str(req.get("os") or ""), "--source", str(dump.name), "--size", size,
+                                 "--pcap", Path(pcap).name if pcap else ""])]
+    if req.get("llm") and report.llm_available():
+        steps.append(("Writing the LLM report", py + ["report", str(db), "--out", str(results / "dumps" / name / "report_llm.md")]))
+    threading.Thread(target=_run_job, args=(job_id, steps), daemon=True).start()
+    return job_id, None
+
+
+def _run_job(job_id, steps):
+    job = JOBS[job_id]
+    env = dict(os.environ, PYTHONIOENCODING="utf-8")
+    try:
+        for label, cmd in steps:
+            job["stage"] = label
+            job["log"].append(f"$ triageguard {' '.join(cmd[4:6])} ...")
+            proc = subprocess.Popen(cmd, cwd=ROOT, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                    text=True, encoding="utf-8", errors="replace")
+            for line in proc.stdout:
+                job["log"].append(line.rstrip())
+                del job["log"][:-400]
+            if proc.wait() != 0:
+                raise RuntimeError(f"{label} failed (exit {proc.returncode}); see the log above")
+        job["status"], job["stage"] = "done", "Done"
+    except Exception as e:  # shown to the user in the dialog
+        job["status"], job["error"] = "failed", str(e)
+
+
 def serve(port=8765, results_dir="results", open_browser=True):
+    origins = {f"http://127.0.0.1:{port}", f"http://localhost:{port}"}
+
     class Handler(BaseHTTPRequestHandler):
-        def _send(self, body, ctype):
+        def _send(self, body, ctype, code=200):
             data = body.encode("utf-8")
-            self.send_response(200)
+            self.send_response(code)
             self.send_header("Content-Type", ctype)
             self.send_header("Content-Length", str(len(data)))
             self.send_header("Cache-Control", "no-store")
             self.end_headers()
             self.wfile.write(data)
 
+        def _json(self, obj, code=200):
+            self._send(json.dumps(obj), "application/json; charset=utf-8", code)
+
         def do_GET(self):
             if self.path in ("/", "/index.html"):
                 self._send(_read(PAGE), "text/html; charset=utf-8")
             elif self.path == "/api/data":
-                self._send(json.dumps(load(results_dir)), "application/json; charset=utf-8")
+                self._json(load(results_dir))
+            elif self.path == "/api/env":
+                self._json({"llm": report.llm_available()})
+            elif self.path.startswith("/api/jobs/"):
+                job = JOBS.get(self.path.rsplit("/", 1)[-1])
+                self._json(job or {"error": "no such job"}, 200 if job else 404)
             else:
                 self.send_error(404)
+
+        def do_POST(self):
+            # only the dashboard itself may start jobs: a JSON body forces a CORS preflight
+            # (which this server never answers), and the Origin check stops other pages
+            if self.path != "/api/analyze" or "application/json" not in self.headers.get("Content-Type", "") \
+                    or self.headers.get("Origin", next(iter(origins))) not in origins:
+                self.send_error(403)
+                return
+            try:
+                req = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0)) or 2) or "{}")
+            except ValueError:
+                return self._json({"error": "Bad request"}, 400)
+            job_id, err = start_job(req, results_dir)
+            self._json({"error": err} if err else {"job": job_id}, 400 if err else 200)
 
         def log_message(self, *_):
             pass
