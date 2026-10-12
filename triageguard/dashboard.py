@@ -5,7 +5,8 @@
 Standard library only, binds to localhost, and serves two things: the page and one
 JSON document. Each analysed dump lives in results/dumps/<name>/ (see export_dump):
 meta.json, findings.json, report_rules.md and, when an LLM key was available,
-report_llm.md. The red-team table comes from results/redteam_results.csv.
+report_llm.md. Red-team rounds come from results/redteam_results.csv (round 1) and
+results/redteam_v2/results.csv (round 2), whichever exist.
 """
 
 import csv
@@ -14,7 +15,7 @@ import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from . import report
+from . import attack, report
 from .store import Store
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -66,6 +67,46 @@ def llm_check(text, findings):
             "flagged": NOTES in text}
 
 
+REDTEAM_ROUNDS = [("Round 1", "redteam_results.csv", "6 attacks, before the risk split"),
+                  ("Round 2", "redteam_v2/results.csv", "15 attacks incl. adaptive, hardened sanitiser")]
+
+
+def _csv(path):
+    if not Path(path).exists():
+        return []
+    with open(path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def round_stats(rows):
+    """Headline numbers for one red-team round, with the same statistics as summary.md."""
+    from .redteam import fisher_exact, wilson
+    atk = [r for r in rows if r.get("attack") != "control"]
+
+    def mode(m):
+        return [r for r in atk if r.get("mode") == m]
+
+    def wins(rs):
+        return sum(r.get("attack_success") == "True" for r in rs)
+
+    def mean(m, key):
+        rs = [r for r in rows if r.get("mode") == m and r.get(key) not in (None, "")]
+        return sum(float(r[key]) for r in rs) / len(rs) if rs else 0
+
+    def passed(m):
+        rs = [r for r in rows if r.get("mode") == m]
+        return [sum(r.get("cross_check_passed") == "True" for r in rs), len(rs)]
+
+    b, d = mode("baseline"), mode("defended")
+    kb, kd = wins(b), wins(d)
+    return {"n": len(b), "asr_base": kb, "asr_def": kd,
+            "unflagged": sum(r.get("unflagged_success") == "True" for r in d),
+            "wilson_base": wilson(kb, len(b)), "wilson_def": wilson(kd, len(d)),
+            "fisher_p": fisher_exact(kb, len(b) - kb, kd, len(d) - kd) if b and d else None,
+            "cite_base": mean("baseline", "citation_rate"), "cite_def": mean("defended", "citation_rate"),
+            "xcheck_base": passed("baseline"), "xcheck_def": passed("defended"), "reports": len(rows)}
+
+
 def load(results_dir):
     results = Path(results_dir)
     dumps = []
@@ -74,21 +115,31 @@ def load(results_dir):
             continue
         meta = json.loads(_read(d / "meta.json") or "{}")
         findings = json.loads(_read(d / "findings.json"))
+        for f in findings:
+            f["attack"] = attack.techniques(f)
         llm = _read(d / "report_llm.md")
+        risk = report.risk_score(findings)
         dumps.append({
             "id": d.name,
             "meta": meta,
             "findings": findings,
+            # recomputed from the findings, so an old meta.json can't show stale scores
+            "scores": {"risk": risk, "band": report.risk_band(risk), "compromise": report.compromise_score(findings),
+                       "exposure": report.exposure_score(findings), "reliability": report.EXPOSURE_RELIABILITY},
+            "breakdown": report.risk_breakdown(findings),
+            "matrix": attack.matrix(findings),
             "report_llm": llm,
             "llm_check": llm_check(llm, findings) if llm else None,
             "report_rules": _read(d / "report_rules.md"),
         })
     dumps.sort(key=lambda x: x["meta"].get("order", 99))
-    redteam = []
-    if (results / "redteam_results.csv").exists():
-        with open(results / "redteam_results.csv", newline="", encoding="utf-8") as f:
-            redteam = list(csv.DictReader(f))
-    return {"dumps": dumps, "redteam": redteam}
+    rounds = []
+    for name, rel, note in REDTEAM_ROUNDS:
+        rows = _csv(results / rel)
+        if rows:
+            rounds.append({"name": name, "note": note, "rows": rows, "stats": round_stats(rows)})
+    return {"dumps": dumps, "rounds": rounds, "redteam": rounds[-1]["rows"] if rounds else [],
+            "techniques": {k: list(v) for k, v in attack.TECHNIQUES.items()}}
 
 
 def serve(port=8765, results_dir="results", open_browser=True):

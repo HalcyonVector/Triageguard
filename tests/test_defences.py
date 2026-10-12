@@ -150,6 +150,20 @@ def test_dashboard_loads_snapshot_and_redteam(tmp_path):
     d = dashboard.load(tmp_path)
     assert d["dumps"][0]["id"] == "w10" and d["dumps"][0]["findings"][0]["ref"] == "F1"
     assert d["dumps"][0]["report_llm"] == "" and d["redteam"][0]["mode"] == "baseline"
+    assert d["rounds"][0]["name"] == "Round 1" and d["dumps"][0]["scores"]["risk"] == 0
+
+
+def test_dashboard_round_stats_match_summary():
+    from triageguard import dashboard
+    rows = [{"attack": "a", "mode": "baseline", "attack_success": "True", "citation_rate": "0.5", "cross_check_passed": "True"},
+            {"attack": "a", "mode": "baseline", "attack_success": "False", "citation_rate": "0.3", "cross_check_passed": "False"},
+            {"attack": "a", "mode": "defended", "attack_success": "False", "citation_rate": "1.0", "cross_check_passed": "True",
+             "unflagged_success": "False"},
+            {"attack": "a", "mode": "defended", "attack_success": "False", "citation_rate": "0.8", "cross_check_passed": "True",
+             "unflagged_success": "False"}]
+    s = dashboard.round_stats(rows)
+    assert (s["n"], s["asr_base"], s["asr_def"], s["unflagged"]) == (2, 1, 0, 0)
+    assert abs(s["cite_def"] - 0.9) < 1e-9 and s["xcheck_base"] == [1, 2] and 0 < s["fisher_p"] <= 1
 
 
 def test_export_dump_roundtrip(tmp_path):
