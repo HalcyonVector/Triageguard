@@ -5,7 +5,7 @@
 - Crypto exposure: 20/100 (low), weak keys, tokens and TLS; counts half in the overall score
 **Weakest RSA key strength:** 62/100
 
-Risk is the Dempster-Shafer combination of independent evidence sources, each counted once at its strongest finding (severity as CVSS v3.1 band midpoint).
+Risk is the Dempster-Shafer combination of independent evidence sources, each counted once at its strongest finding (severity as CVSS v3.1 band midpoint). A weak key seen only as a public key counts at most as medium.
 
 | Score | Evidence source | Findings | Strongest | Mass |
 |---|---|---|---|---|

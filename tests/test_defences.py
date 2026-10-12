@@ -287,3 +287,13 @@ def test_env_file_does_not_override(tmp_path, monkeypatch):
     import os
     assert os.environ["TG_TEST_A"] == "one" and os.environ["TG_TEST_B"] == "kept"
     monkeypatch.delenv("TG_TEST_A")
+
+
+def test_weak_public_key_counts_as_medium():
+    from triageguard import report
+    pub = {"ref": "F1", "module": "rsa", "kind": "rsa_key", "severity": "critical",
+           "title": "RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size"}
+    priv = dict(pub, ref="F2", title=pub["title"].replace("DER SPKI", "PEM"))
+    assert report.finding_mass(pub) == report.SEV_MASS["medium"]
+    assert report.finding_mass(priv) == report.SEV_MASS["critical"]
+    assert report.key_strength([pub]) == 0  # read from the title when data is missing

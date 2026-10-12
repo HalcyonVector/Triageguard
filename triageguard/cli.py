@@ -48,6 +48,8 @@ def main(argv=None):
     d.add_argument("--results", default="results", help="folder with the saved dumps and red-team CSV")
     d.add_argument("--no-browser", action="store_true")
 
+    rs = sub.add_parser("rescore-results", help="recompute scores and rule reports of every exported dump after a scoring change")
+    rs.add_argument("--results", default="results")
     e = sub.add_parser("export", help="save one analysed dump's results under results/dumps/<name> for the dashboard")
     e.add_argument("db")
     e.add_argument("name", help="folder name, e.g. win10")
@@ -81,6 +83,9 @@ def main(argv=None):
         for k in r["rsa_keys"]:
             print(f"RSA-{k['bits']} e={k['e']} strength={k['strength']} issues={[i['test'] for i in k['issues']]}")
         print(f"{len(r['high_entropy_regions'])} high-entropy regions")
+    elif args.cmd == "rescore-results":
+        from . import dashboard
+        print(json.dumps(dashboard.rescore(args.results)))
     elif args.cmd == "dashboard":
         from . import dashboard
         dashboard.serve(args.port, args.results, not args.no_browser)

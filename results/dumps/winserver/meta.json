@@ -6,7 +6,7 @@
  "pcap": "case001.pcap",
  "order": 99,
  "findings": 124,
- "risk": 97,
+ "risk": 96,
  "compromise": 95,
- "exposure": 95
+ "exposure": 55
 }

@@ -6,7 +6,7 @@
  "pcap": "case001.pcap, 188 MB real traffic",
  "order": 2,
  "findings": 48,
- "risk": 97,
+ "risk": 96,
  "compromise": 95,
- "exposure": 95
+ "exposure": 55
 }

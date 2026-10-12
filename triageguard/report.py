@@ -42,10 +42,29 @@ Key size | Exponent | Strength | Issue | Finding, with only the 0-100 number in 
 SEV_MASS = {"critical": 0.95, "high": 0.80, "medium": 0.55, "low": 0.20, "info": 0.0}
 
 
+# Key formats that hold only a public key. A weak public key in memory (typically a
+# legacy certificate in the Windows store; all four Windows dumps carry the same kind of
+# RSA-512 SPKI) only exposes the host if the host relies on that key, which a dump cannot
+# show. In CVSS v3.1 terms that raises Attack Complexity to High, which moves a critical
+# base score into the medium band, so such a finding counts at most as medium.
+PUBLIC_ONLY = ("DER SPKI", "PEM public")
+
+
+def public_only(f):
+    fmt = (f.get("data") or {}).get("format") or ""
+    if not fmt and f.get("kind") == "rsa_key":
+        m = re.search(r"\(([^)]*)\)", f.get("title", ""))
+        fmt = m.group(1) if m else ""
+    return f.get("kind") == "rsa_key" and fmt in PUBLIC_ONLY
+
+
 def finding_mass(f):
     """Mass one finding commits to "this host is compromised or exposed": its CVSS band
-    midpoint, scaled by the detector's own confidence when it has one (cipher ID)."""
+    midpoint, scaled by the detector's own confidence when it has one (cipher ID), and
+    capped at medium for a weak key seen only as a public key."""
     m = SEV_MASS.get(f["severity"], 0.0)
+    if public_only(f):
+        m = min(m, SEV_MASS["medium"])
     conf = (f.get("data") or {}).get("confidence")
     if isinstance(conf, (int, float)):
         m *= conf / 100
@@ -126,7 +145,15 @@ def risk_band(score):
 
 
 def key_strength(findings):
-    scores = [f["data"]["strength"] for f in findings if f["kind"] == "rsa_key" and f["data"].get("strength") is not None]
+    scores = []
+    for f in findings:
+        if f["kind"] != "rsa_key":
+            continue
+        st = (f.get("data") or {}).get("strength")
+        if st is None and (m := re.search(r"strength (\d+)/100", f.get("title", ""))):
+            st = int(m.group(1))  # slim findings.json keeps only the title
+        if st is not None:
+            scores.append(st)
     return min(scores) if scores else None
 
 
@@ -226,7 +253,8 @@ def rule_report(findings):
     lines.append("")
     if rows := risk_breakdown(findings):
         lines += ["Risk is the Dempster-Shafer combination of independent evidence sources, each counted once "
-                  "at its strongest finding (severity as CVSS v3.1 band midpoint).", "",
+                  "at its strongest finding (severity as CVSS v3.1 band midpoint). A weak key seen only as a "
+                  "public key counts at most as medium.", "",
                   "| Score | Evidence source | Findings | Strongest | Mass |", "|---|---|---|---|---|"]
         lines += [f"| {r['hypothesis']} | {r['source']} | {r['count']} | [{r['ref']}] | {r['mass']:.2f} |" for r in rows]
         lines.append("")

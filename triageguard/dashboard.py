@@ -58,6 +58,22 @@ def export_dump(db_path, out_dir, run_id=1, meta=None):
     return info
 
 
+def rescore(results_dir="results"):
+    """Recompute the rule-based report and the scores in meta.json of every exported dump
+    from its findings.json, after a change to the scoring. LLM reports are left alone."""
+    done = {}
+    for d in sorted(Path(results_dir, "dumps").glob("*/findings.json")):
+        findings = json.loads(_read(d))
+        (d.parent / "report_rules.md").write_text(report.rule_report(findings), encoding="utf-8")
+        meta_p = d.parent / "meta.json"
+        meta = json.loads(_read(meta_p)) if meta_p.exists() else {}
+        meta.update({"risk": report.risk_score(findings), "compromise": report.compromise_score(findings),
+                     "exposure": report.exposure_score(findings)})
+        meta_p.write_text(json.dumps(meta, indent=1), encoding="utf-8")
+        done[d.parent.name] = meta["risk"]
+    return done
+
+
 NOTES = "\n\n## Validation notes (automatic)"
 
 

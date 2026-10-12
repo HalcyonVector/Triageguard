@@ -1,16 +1,16 @@
 # TriageGuard report (rule-based)
 
-**Risk score:** 77/100 (high, CVSS v3.1 bands)
+**Risk score:** 75/100 (high, CVSS v3.1 bands)
 - Compromise: 55/100 (medium), evidence of attacker activity
-- Crypto exposure: 99/100 (critical), weak keys, tokens and TLS; counts half in the overall score
+- Crypto exposure: 91/100 (critical), weak keys, tokens and TLS; counts half in the overall score
 **Weakest RSA key strength:** 0/100
 
-Risk is the Dempster-Shafer combination of independent evidence sources, each counted once at its strongest finding (severity as CVSS v3.1 band midpoint).
+Risk is the Dempster-Shafer combination of independent evidence sources, each counted once at its strongest finding (severity as CVSS v3.1 band midpoint). A weak key seen only as a public key counts at most as medium.
 
 | Score | Evidence source | Findings | Strongest | Mass |
 |---|---|---|---|---|
-| exposure | rsa/rsa_key | 38 | [F65] | 0.95 |
 | compromise | memory/suspicious_process | 4 | [F8] | 0.55 |
+| exposure | rsa/rsa_key | 38 | [F65] | 0.55 |
 | exposure | credentials/JWT | 4 | [F76] | 0.55 |
 | exposure | network/pcap_summary | 1 | [F80] | 0.55 |
 

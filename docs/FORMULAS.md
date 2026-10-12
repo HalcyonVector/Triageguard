@@ -13,6 +13,7 @@ the source it rests on, and what is our own choice because no standard covers it
 | RSA strength 0-100 | `100 * min(bits, 128) / 128` | 128 bits is SP 800-57's target beyond 2030 | the linear 0-100 scale |
 | RSA status | broken / disallowed (< 112 bits) / non-compliant exponent / acceptable | NIST SP 800-131A Rev. 2; FIPS 186-5 A.1.1 (e > 2^16) | none |
 | Finding mass | middle of its CVSS v3.1 band / 10: 0.95, 0.80, 0.55, 0.20, 0 | CVSS v3.1 qualitative rating scale (FIRST 2019) | taking the band midpoint |
+| Weak public-only key | mass capped at 0.55 (medium) for an RSA key seen only as DER SPKI or PEM public key | CVSS v3.1: exploiting it needs the host to rely on that key, so Attack Complexity High, which takes a critical base score into the medium band | treating "seen only as a public key" as "use not shown" |
 | Compromise, Crypto exposure 0-100 | `100 * (1 - prod over sources (1 - max mass in source))`, at most 99; compromise = memory, static, defence sources, exposure = RSA, credentials, network, crypto | Dempster's rule across independent sources; Denoeux's cautious rule (2008) within a dependent source | grouping a source by module/kind, and which modules count as compromise |
 | Overall risk 0-100 | `100 * (1 - (1 - C)(1 - 0.5 E))` | Dempster's rule after Shafer's discounting of the exposure evidence (Shafer 1976, ch. 11) | reliability 0.5: a dump never shows whether a weakness was exploited, so indifference |
 | Risk band | 90+ critical, 70+ high, 40+ medium, else low | CVSS v3.1 bands times 10 | none |
@@ -27,6 +28,24 @@ the source it rests on, and what is our own choice because no standard covers it
 Not standard, and said so in the report: the signature masses, the malfind grading (MZ header critical,
 JIT and zero-filled regions low, shared code medium), command-line keywords, and the severity given to each
 finding type. These are heuristics tuned on the three public dumps.
+
+## What changed (2026-10-12): weak public keys
+
+All four Windows dumps carry one RSA-512 key as a bare SubjectPublicKeyInfo, which is most likely a legacy
+certificate in the Windows store rather than anything the host uses. It alone pushed crypto exposure to 95-99.
+It now counts at most as medium; private keys and keys broken by a factoring test keep their severity.
+
+| Saved result | Before | After |
+|---|---|---|
+| Windows 11 | 77 (C55, E99) | 75 (C55, E91: JWTs, weak TLS and the key, each medium) |
+| Windows 10 (case 001 desktop) | 97 (C95, E95) | 96 (C95, E55) |
+| Windows Server 2012 R2 (case 001 DC) | 97 (C95, E95) | 96 (C95, E55) |
+| Windows 7 | 60 (C55, E20) | 60, unchanged |
+
+Considered and rejected: letting several hits from one detector raise a source above its strongest finding.
+They are not independent (the DC's extra malfind hits are .NET processes, Microsoft.ActiveDirectory and
+ServerManager, whose JIT code looks the same), so the cautious rule stays. Win10 and the DC still tie at
+compromise 95, which is correct: both carry an injected PE in spoolsv.exe from the same intrusion.
 
 ## What changed (2026-10-11)
 
