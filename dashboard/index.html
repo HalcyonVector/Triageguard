@@ -390,7 +390,7 @@ const STAGES = [
     ["Static analysis", "pefile headers, YARA rules and entropy on every dumped region.", "packed or malicious code", "compromise", "static"]]],
   ["Crypto and secrets", "Four checks run side by side on the extracted data.", "findings with a CVSS band", [
     ["Cipher ID", "S-box and constant signatures, combined by Dempster's rule.", "AES, DES, ChaCha20, ECC…", "exposure", "crypto"],
-    ["RSA keys", "DER/PEM parsing; small factor, Fermat and shared-prime tests; NIST SP 800-57 strength.", "broken or weak keys", "exposure", "rsa"],
+    ["RSA keys", "DER/PEM/CAPI parsing; small factor, Fermat and shared-prime tests; NIST SP 800-57 strength; private key rebuilt from primes left in ransomware memory.", "broken or weak keys", "exposure", "rsa"],
     ["Credentials", "JWT, OAuth and OTP secrets, judged against RFC 8725 and RFC 4226.", "leaked tokens", "exposure", "credentials"],
     ["Network", "pyshark: TLS versions and cipher suites against RFC 8996 and SP 800-52.", "weak protocols", "exposure", "network"]]],
   ["Score", "Turn the findings into numbers and techniques.", "scores, ATT&CK ids, citation ids", [

@@ -297,3 +297,29 @@ def test_weak_public_key_counts_as_medium():
     assert report.finding_mass(pub) == report.SEV_MASS["medium"]
     assert report.finding_mass(priv) == report.SEV_MASS["critical"]
     assert report.key_strength([pub]) == 0  # read from the title when data is missing
+
+
+def test_key_recovery_finds_leftover_prime():
+    import os
+    import struct
+    from cryptography.hazmat.primitives.asymmetric import rsa
+    from triageguard.crypto import key_recovery, rsa_weak
+    pn = rsa.generate_private_key(65537, 1024).private_numbers()
+    n = pn.public_numbers.n
+    blob = b"\x06\x02\x00\x00\x00\xa4\x00\x00RSA1" + struct.pack("<II", 1024, 65537) + n.to_bytes(128, "little")
+    data = bytearray(os.urandom(256 * 1024))
+    data[64:64 + len(blob)] = blob
+    keys = rsa_weak.extract_keys(bytes(data))
+    assert keys and not key_recovery.recover(keys, bytes(data))  # no prime yet
+    for order in ("little", "big"):
+        buf = bytearray(data)
+        buf[200_000:200_064] = pn.q.to_bytes(64, order)
+        hit = key_recovery.recover(keys, bytes(buf))
+        assert hit and hit[0]["prime_offset"] == hex(200_000) and hit[0]["byte_order"] == order
+
+
+def test_keyscan_targets_pick_ransomware():
+    from triageguard import memory
+    vol = {"processes": [{"PID": 4, "ImageFileName": "System"}, {"PID": 1940, "ImageFileName": "tasksche.exe"}],
+           "cmdlines": [{"PID": 2020, "Process": "x.exe", "Args": r'"C:\Users\bob\Desktop\x.exe" -go'}]}
+    assert memory.keyscan_targets(vol) == [(1940, "tasksche.exe"), (2020, "x.exe")]

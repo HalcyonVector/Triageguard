@@ -179,3 +179,37 @@ def suspicious_processes(results):
                 flags.append({"pid": r.get("PID"), "process": r.get("Process"), "severity": "low", "cmdline": args[:500],
                               "reason": f"runs from a user-writable folder: {args[:200]}"})
     return flags
+
+
+# Ransomware that keeps its RSA key pair in process memory; its processes get a full
+# memory dump so leftover primes can be searched (see crypto/key_recovery.py)
+RANSOM_NAMES = re.compile(r"tasksche|wanadecrypt|wannacry|wcry|mssecsvc|@please_read|decryptor", re.I)
+MAX_KEYSCAN = 4
+
+
+def keyscan_targets(results):
+    """PIDs worth a full process dump for key recovery: ransomware names, ransom-like
+    command lines and programs started from user folders, at most MAX_KEYSCAN."""
+    pids = {}
+    for p in results.get("processes") or []:
+        if isinstance(p, dict) and RANSOM_NAMES.search(str(p.get("ImageFileName", ""))):
+            pids[p.get("PID")] = str(p.get("ImageFileName"))
+    for r in results.get("cmdlines") or []:
+        if not isinstance(r, dict):
+            continue
+        args = str(r.get("Args") or "")
+        if CMDLINE_RE.search(args) or RANSOM_NAMES.search(args) or USER_DIRS_RE.search(args.split('" ')[0]):
+            pids.setdefault(r.get("PID"), str(r.get("Process")))
+    return list(pids.items())[:MAX_KEYSCAN]
+
+
+def dump_process(dump, pid, outdir):
+    """Write the whole address space of one process (windows.memmap --dump); returns the file or None."""
+    outdir = Path(outdir)
+    outdir.mkdir(parents=True, exist_ok=True)
+    try:
+        run_plugin(dump, "windows.memmap", ["--pid", str(pid), "--dump"], outdir)
+    except Exception:
+        return None
+    files = sorted(outdir.glob(f"pid.{pid}.dmp"))
+    return files[0] if files else None

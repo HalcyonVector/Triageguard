@@ -4,6 +4,7 @@ from pathlib import Path
 
 from . import credentials, memory, network, report, static
 from . import crypto
+from .crypto import key_recovery, rsa_weak
 from .store import Store
 
 SEV_ORDER = ["info", "low", "medium", "high", "critical"]
@@ -89,6 +90,24 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
     for b in [*binaries, *dumped]:
         if b not in blocked:
             record_crypto(db, b, crypto.analyse(b), is_full_dump=False)
+
+    for pid, name in memory.keyscan_targets(vol) if memory_stage else []:
+        log(f"      key recovery: dumping {name} (PID {pid})")
+        pdump = memory.dump_process(dump, pid, workdir / "procs")
+        if not pdump:
+            continue
+        with open(pdump, "rb") as f:
+            data = f.read()
+        keys = rsa_weak.extract_keys(data, source=str(pdump))
+        hits = key_recovery.recover(keys, data)
+        for h in hits:
+            db.add("rsa", "key_recovered",
+                   f"RSA-{h['bits']} private key of {name} (PID {pid}) rebuilt from a prime left in its memory at "
+                   f"{h['prime_offset']}: files encrypted under this key can be decrypted",
+                   h, "info", pdump, h["prime_offset"])
+        if not hits:
+            db.add("rsa", "key_recovery", f"No RSA prime found in {name} (PID {pid}) for its {len(keys)} RSA key(s)",
+                   {"pid": pid, "keys": len(keys)}, "info", pdump)
 
     log("[4/6] Credential scan")
     for c in credentials.scan(dump):

@@ -267,7 +267,7 @@ def rule_report(findings):
             lines.append("")
 
     section("Cipher identification", lambda f: f["kind"] == "algorithm")
-    section("RSA keys", lambda f: f["kind"] in ("rsa_key", "rsa_summary"))
+    section("RSA keys", lambda f: f["kind"] in ("rsa_key", "rsa_summary", "key_recovered", "key_recovery"))
     section("Encrypted / packed regions", lambda f: f["kind"] == "entropy")
     section("Credentials", lambda f: f["module"] == "credentials")
     section("Processes and memory", lambda f: f["module"] == "memory")
