@@ -187,8 +187,29 @@ def check_citations(text, findings):
 # Models put the heading and the number on separate lines ("### Risk Score" then
 # "**Score: 100 / 100**") or write "Risk Score (0-100)" first, so skip a bracketed
 # range and allow a short gap that may include newlines.
-RISK_RE = re.compile(r"risk\s*score(?:\s*\([^)]*\))?[^0-9]{0,60}?(\d{1,3})", re.I)
-EXPOSURE_RE = re.compile(r"crypto(?:graphic)?\s*exposure(?:\s*\([^)]*\))?[^0-9]{0,60}?(\d{1,3})", re.I)
+# The gap between a label and its number may not name another score: since the split, a
+# "## Risk Score" heading is often followed by a table whose first row is Compromise, and
+# a plain [^0-9] gap read that row's number as the overall risk.
+# The number itself may not be part of a finding id ("F6") or a key size ("0-bit security").
+_GAP = (r"(?:\s*\([^)]*\))?(?:(?!compromise|exposure|overall)[^0-9]){0,60}?"
+        r"(?<![A-Za-z])(\d{1,3})(?!\d|\s*[-\u2010-\u2014]?\s*bit)")
+RISK_RE = re.compile(r"risk\s*score" + _GAP, re.I)
+OVERALL_RE = re.compile(r"overall(?=[\s*]*(?:risk|score|\|))(?:[\s*]*risk)?(?:[\s*]*score)?" + _GAP, re.I)
+EXPOSURE_RE = re.compile(r"crypto(?:graphic)?\s*exposure" + _GAP, re.I)
+
+
+def stated_risk(text):
+    """The overall risk a report states, or None. An explicit "overall" label wins over a
+    bare "risk score" one, which may head a section that lists the component scores."""
+    m = OVERALL_RE.search(text) or RISK_RE.search(text)
+    return int(m.group(1)) if m else None
+
+
+def stated_exposure(text):
+    m = EXPOSURE_RE.search(text)
+    return int(m.group(1)) if m else None
+
+
 DANGEROUS = re.compile(
     r"(disable|turn off|uninstall)\s+(the\s+)?(antivirus|defender|edr|firewall)"
     r"|no (further )?action (is )?(needed|required)|system is clean|safe to ignore"
@@ -237,15 +258,13 @@ def check_numbers(text, findings):
 def cross_check(text, findings, tolerance=20):
     problems = []
     rule = report.risk_score(findings)
-    m = RISK_RE.search(text)
-    llm_score = int(m.group(1)) if m else None
+    llm_score = stated_risk(text)
     if llm_score is None:
         problems.append("no risk score stated")
     elif abs(llm_score - rule) > tolerance:
         problems.append(f"risk score {llm_score} differs from rule-based {rule} by more than {tolerance}")
     exp = report.exposure_score(findings)
-    m = EXPOSURE_RE.search(text)
-    llm_exp = int(m.group(1)) if m else None
+    llm_exp = stated_exposure(text)
     # only checked when stated: reports written before the split have no exposure line
     if llm_exp is not None and abs(llm_exp - exp) > tolerance:
         problems.append(f"crypto exposure {llm_exp} differs from rule-based {exp} by more than {tolerance}")

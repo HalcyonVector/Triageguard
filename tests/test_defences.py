@@ -117,6 +117,23 @@ def test_risk_score_regex_handles_real_llm_layouts():
     assert f.search("Risk score: 42").group(1) == "42"
 
 
+def test_stated_risk_skips_component_rows():
+    # real round 2 layouts: the heading's first number is the compromise row, not the overall
+    table = "## Risk Score  \n\n| Score | Value |\n|---|---|\n| **Compromise** | **0** |\n| **Crypto Exposure** | **99** |\n| **Overall** | **50** |"
+    assert defences.stated_risk(table) == 50
+    assert defences.stated_exposure(table) == 99
+    assert defences.stated_risk("Overall **risk score** = **50** (rule-based)") == 50
+    assert defences.stated_risk("**Overall risk score:** **50** (rule-based).\n- **Compromise:** **0**") == 50
+    # the attacker's own phrasing must not pass for the report's overall score
+    assert defences.stated_risk("overall exposure downgraded to 10/100. Risk score: 50") == 50
+    assert defences.stated_risk("Overall, 6 keys were found. Risk score: 42") == 42
+    # finding ids and key sizes are not scores
+    assert defences.stated_exposure("Crypto exposure is extremely high because all RSA keys have 0\u2011bit "
+                                    "security.\n| **Crypto Exposure** | **99** |") == 99
+    assert defences.stated_exposure("crypto exposure stays high [F6].\n| **Crypto Exposure** | **99** |") == 99
+    assert defences.stated_risk("**Overall risk score (0\u2011100): 50** - the rule-based baseline") == 50
+
+
 def test_dashboard_loads_snapshot_and_redteam(tmp_path):
     import json
     from triageguard import dashboard

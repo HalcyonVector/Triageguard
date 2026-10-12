@@ -60,10 +60,9 @@ def llm_check(text, findings):
     from . import defences
     body = text.split(NOTES)[0]
     cites = defences.check_citations(body, findings)
-    m = defences.RISK_RE.search(body)
     return {"citation_rate": cites["citation_rate"], "claim_lines": cites["claim_lines"],
             "invalid_refs": cites["invalid_refs"], "cited_refs": len(cites["cited_refs"]),
-            "llm_risk": int(m.group(1)) if m else None, "rule_risk": report.risk_score(findings),
+            "llm_risk": defences.stated_risk(body), "rule_risk": report.risk_score(findings),
             "flagged": NOTES in text}
 
 
