@@ -1,0 +1,1118 @@
+[
+ {
+  "ref": "F1",
+  "module": "memory",
+  "kind": "processes",
+  "title": "processes: 40 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": ""
+ },
+ {
+  "ref": "F2",
+  "module": "memory",
+  "kind": "cmdlines",
+  "title": "cmdlines: 40 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": ""
+ },
+ {
+  "ref": "F3",
+  "module": "memory",
+  "kind": "network",
+  "title": "network: 19685 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": ""
+ },
+ {
+  "ref": "F4",
+  "module": "memory",
+  "kind": "injected",
+  "title": "injected: 15 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": ""
+ },
+ {
+  "ref": "F5",
+  "module": "memory",
+  "kind": "usb",
+  "title": "usb: 19 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": ""
+ },
+ {
+  "ref": "F6",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 1292 Microsoft.Acti: 5 RWX/injected region(s): 5 x executable private memory with code unique to this process",
+  "severity": "high",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "1292"
+ },
+ {
+  "ref": "F7",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 1236 svchost.exe: 1 RWX/injected region(s): 1 x region starts with zero bytes, no code at the region base",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "1236"
+ },
+ {
+  "ref": "F8",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 3724 spoolsv.exe: 4 RWX/injected region(s): 1 x executable private memory with code unique to this process; 3 x contains a PE header (MZ), likely injected DLL/EXE",
+  "severity": "critical",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "3724"
+ },
+ {
+  "ref": "F9",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 3472 explorer.exe: 2 RWX/injected region(s): 2 x region starts with zero bytes, no code at the region base",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "3472"
+ },
+ {
+  "ref": "F10",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 400 ServerManager.: 3 RWX/injected region(s): 3 x executable private memory with code unique to this process",
+  "severity": "high",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "400"
+ },
+ {
+  "ref": "F11",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1236.vad.0x1b10ee0000-0x1b10ee0fff.dmp: entropy 1.184, crypto imports [], yara []",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.1236.vad.0x1b10ee0000-0x1b10ee0fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F12",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1292.vad.0x10500100000-0x1050010cfff.dmp: entropy 0.096, crypto imports [], yara []",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.1292.vad.0x10500100000-0x1050010cfff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F13",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1292.vad.0x10500120000-0x1050012ffff.dmp: entropy 0.278, crypto imports [], yara []",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.1292.vad.0x10500120000-0x1050012ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F14",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1292.vad.0x105001f0000-0x105001fffff.dmp: entropy 0.053, crypto imports [], yara []",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.1292.vad.0x105001f0000-0x105001fffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F15",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1292.vad.0x7ff5ff8d0000-0x7ff5ff8dffff.dmp: entropy 0.036, crypto imports [], yara []",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.1292.vad.0x7ff5ff8d0000-0x7ff5ff8dffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F16",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1292.vad.0x7ff5ff8e0000-0x7ff5ff97ffff.dmp: entropy 0.003, crypto imports [], yara []",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.1292.vad.0x7ff5ff8e0000-0x7ff5ff97ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F17",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3472.vad.0x5770000-0x5770fff.dmp: entropy 0.589, crypto imports [], yara []",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.3472.vad.0x5770000-0x5770fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F18",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3472.vad.0xd840000-0xd840fff.dmp: entropy 1.413, crypto imports [], yara []",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.3472.vad.0xd840000-0xd840fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F19",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3724.vad.0x4afbf20000-0x4afbf51fff.dmp: entropy 5.993, crypto imports [], yara []",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.3724.vad.0x4afbf20000-0x4afbf51fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F20",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3724.vad.0x4afc070000-0x4afc0a8fff.dmp: entropy 5.523, crypto imports [], yara []",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.3724.vad.0x4afc070000-0x4afc0a8fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F21",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3724.vad.0x4afc1f0000-0x4afc25afff.dmp: entropy 5.689, crypto imports [], yara []",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.3724.vad.0x4afc1f0000-0x4afc25afff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F22",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3724.vad.0x4afc260000-0x4afc283fff.dmp: entropy 5.424, crypto imports [], yara []",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.3724.vad.0x4afc260000-0x4afc283fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F23",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.400.vad.0x5dc9cb0000-0x5dc9cbcfff.dmp: entropy 0.107, crypto imports [], yara []",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.400.vad.0x5dc9cb0000-0x5dc9cbcfff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F24",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.400.vad.0x5dc9ce0000-0x5dc9ceffff.dmp: entropy 1.138, crypto imports [], yara []",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.400.vad.0x5dc9ce0000-0x5dc9ceffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F25",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.400.vad.0x5dc9e70000-0x5dc9e7ffff.dmp: entropy 0.662, crypto imports [], yara []",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.400.vad.0x5dc9e70000-0x5dc9e7ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F26",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES identified (99.9%, implementation constants) in citadeldc01.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0xc52140"
+ },
+ {
+  "ref": "F27",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC P-256 identified (99.7%, implementation constants) in citadeldc01.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x293f314"
+ },
+ {
+  "ref": "F28",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "RSA identified (97.8%, implementation constants) in citadeldc01.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x30de5"
+ },
+ {
+  "ref": "F29",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES-GCM identified (95.5%, API/string references only) in citadeldc01.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0xda97200"
+ },
+ {
+  "ref": "F30",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC secp256k1 identified (92.8%, implementation constants) in citadeldc01.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x23fa90"
+ },
+ {
+  "ref": "F31",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "generic identified (83.2%, API/string references only) in citadeldc01.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e1d02e"
+ },
+ {
+  "ref": "F32",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "DES identified (80.0%, implementation constants) in citadeldc01.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x3496ee30"
+ },
+ {
+  "ref": "F33",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "3DES identified (72.0%, API/string references only) in citadeldc01.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x20684f3b"
+ },
+ {
+  "ref": "F34",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x3158bc"
+ },
+ {
+  "ref": "F35",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2ebaf44"
+ },
+ {
+  "ref": "F36",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x71107ae0"
+ },
+ {
+  "ref": "F37",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (CNG blob), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2dd39820"
+ },
+ {
+  "ref": "F38",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=65537 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x312f6"
+ },
+ {
+  "ref": "F39",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=65537 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x31ce5"
+ },
+ {
+  "ref": "F40",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=65537 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x3238e"
+ },
+ {
+  "ref": "F41",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1536 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x36b2600"
+ },
+ {
+  "ref": "F42",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x6dd6ac8"
+ },
+ {
+  "ref": "F43",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x7c9ea89"
+ },
+ {
+  "ref": "F44",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0xc2b8ecc"
+ },
+ {
+  "ref": "F45",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0xc39c58b"
+ },
+ {
+  "ref": "F46",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0xc628f00"
+ },
+ {
+  "ref": "F47",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0xdba041b"
+ },
+ {
+  "ref": "F48",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x1638a0ec"
+ },
+ {
+  "ref": "F49",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=6702873 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x171d3edd"
+ },
+ {
+  "ref": "F50",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=83529 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x187f3edc"
+ },
+ {
+  "ref": "F51",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=7266387 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x1a70bedd"
+ },
+ {
+  "ref": "F52",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x1b06dee5"
+ },
+ {
+  "ref": "F53",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x1b1b355d"
+ },
+ {
+  "ref": "F54",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x1b1c1042"
+ },
+ {
+  "ref": "F55",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x223082a3"
+ },
+ {
+  "ref": "F56",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2230863c"
+ },
+ {
+  "ref": "F57",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x223089d3"
+ },
+ {
+  "ref": "F58",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x22308c72"
+ },
+ {
+  "ref": "F59",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size",
+  "severity": "critical",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x23d70337"
+ },
+ {
+  "ref": "F60",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x289ca057"
+ },
+ {
+  "ref": "F61",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x289ca5c4"
+ },
+ {
+  "ref": "F62",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x289ca875"
+ },
+ {
+  "ref": "F63",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x289cab25"
+ },
+ {
+  "ref": "F64",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2a68ca6e"
+ },
+ {
+  "ref": "F65",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2d7b22e4"
+ },
+ {
+  "ref": "F66",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2d7b26d2"
+ },
+ {
+  "ref": "F67",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2d8f1a29"
+ },
+ {
+  "ref": "F68",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e042d7a"
+ },
+ {
+  "ref": "F69",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e1005c5"
+ },
+ {
+  "ref": "F70",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e1175f9"
+ },
+ {
+  "ref": "F71",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2047 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e117b62"
+ },
+ {
+  "ref": "F72",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=50557 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e2ab957"
+ },
+ {
+  "ref": "F73",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e44d03f"
+ },
+ {
+  "ref": "F74",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e44d3c5"
+ },
+ {
+  "ref": "F75",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e44d67b"
+ },
+ {
+  "ref": "F76",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e44d957"
+ },
+ {
+  "ref": "F77",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e44dc89"
+ },
+ {
+  "ref": "F78",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e46b969"
+ },
+ {
+  "ref": "F79",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e481244"
+ },
+ {
+  "ref": "F80",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e48160f"
+ },
+ {
+  "ref": "F81",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e4819fd"
+ },
+ {
+  "ref": "F82",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e481da7"
+ },
+ {
+  "ref": "F83",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e58a15f"
+ },
+ {
+  "ref": "F84",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e6ffc0b"
+ },
+ {
+  "ref": "F85",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2e85cc0e"
+ },
+ {
+  "ref": "F86",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2eabc9cb"
+ },
+ {
+  "ref": "F87",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2ed03090"
+ },
+ {
+  "ref": "F88",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2ed03441"
+ },
+ {
+  "ref": "F89",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2ed037bc"
+ },
+ {
+  "ref": "F90",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2ed03e38"
+ },
+ {
+  "ref": "F91",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2ed04228"
+ },
+ {
+  "ref": "F92",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2ed0454e"
+ },
+ {
+  "ref": "F93",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2ed4e013"
+ },
+ {
+  "ref": "F94",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2ed4e392"
+ },
+ {
+  "ref": "F95",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2ed4e94d"
+ },
+ {
+  "ref": "F96",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2ed4ecf2"
+ },
+ {
+  "ref": "F97",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2edea503"
+ },
+ {
+  "ref": "F98",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x2ee4ccb2"
+ },
+ {
+  "ref": "F99",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x30c8758a"
+ },
+ {
+  "ref": "F100",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x30c8792d"
+ },
+ {
+  "ref": "F101",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x30e0200f"
+ },
+ {
+  "ref": "F102",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=43147 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x30e02d25"
+ },
+ {
+  "ref": "F103",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x318895ed"
+ },
+ {
+  "ref": "F104",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=40409 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x319126fa"
+ },
+ {
+  "ref": "F105",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x3196f2bf"
+ },
+ {
+  "ref": "F106",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x3196f688"
+ },
+ {
+  "ref": "F107",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x319b0342"
+ },
+ {
+  "ref": "F108",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x319b0642"
+ },
+ {
+  "ref": "F109",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x319b09b5"
+ },
+ {
+  "ref": "F110",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=62353 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x319dc1fd"
+ },
+ {
+  "ref": "F111",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2047 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x31a88221"
+ },
+ {
+  "ref": "F112",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x31b020fa"
+ },
+ {
+  "ref": "F113",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x31b2d765"
+ },
+ {
+  "ref": "F114",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1000 key e=65537 (DER SPKI), strength 62/100 (79.1-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x379cc5c8"
+ },
+ {
+  "ref": "F115",
+  "module": "rsa",
+  "kind": "rsa_summary",
+  "title": "332 RSA keys with no weaknesses and 9 corrupt key-like structures in citadeldc01.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": ""
+ },
+ {
+  "ref": "F116",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "200 high-entropy regions (1753088 bytes) in citadeldc01.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
+  "location": "0x31000"
+ },
+ {
+  "ref": "F117",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "generic identified (51.0%, API/string references only) in pid.3724.vad.0x4afbf20000-0x4afbf51fff.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.3724.vad.0x4afbf20000-0x4afbf51fff.dmp",
+  "location": "0x2ac69"
+ },
+ {
+  "ref": "F118",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES identified (30.0%, API/string references only) in pid.3724.vad.0x4afbf20000-0x4afbf51fff.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.3724.vad.0x4afbf20000-0x4afbf51fff.dmp",
+  "location": "0x222c1"
+ },
+ {
+  "ref": "F119",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "RSA identified (20.0%, API/string references only) in pid.3724.vad.0x4afbf20000-0x4afbf51fff.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.3724.vad.0x4afbf20000-0x4afbf51fff.dmp",
+  "location": "0x2ac57"
+ },
+ {
+  "ref": "F120",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "generic identified (51.0%, API/string references only) in pid.3724.vad.0x4afc070000-0x4afc0a8fff.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.3724.vad.0x4afc070000-0x4afc0a8fff.dmp",
+  "location": "0x2c3a8"
+ },
+ {
+  "ref": "F121",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES identified (30.0%, API/string references only) in pid.3724.vad.0x4afc070000-0x4afc0a8fff.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.3724.vad.0x4afc070000-0x4afc0a8fff.dmp",
+  "location": "0x23a00"
+ },
+ {
+  "ref": "F122",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "RSA identified (20.0%, API/string references only) in pid.3724.vad.0x4afc070000-0x4afc0a8fff.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.3724.vad.0x4afc070000-0x4afc0a8fff.dmp",
+  "location": "0x2c396"
+ },
+ {
+  "ref": "F123",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "generic identified (30.0%, API/string references only) in pid.3724.vad.0x4afc1f0000-0x4afc25afff.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\out_winserver_20261013-012110\\malfind\\pid.3724.vad.0x4afc1f0000-0x4afc25afff.dmp",
+  "location": "0x4fa42"
+ },
+ {
+  "ref": "F124",
+  "module": "network",
+  "kind": "pcap_summary",
+  "title": "50 conversations, TLS SNI ['64.media.tumblr.com', '66.media.tumblr.com', '78.media.tumblr.com', 'a.thumbs.redditmedia.com', 'a125375509.cdn.optimizely.com'], weak TLS []",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001\\case001.pcap",
+  "location": ""
+ }
+]

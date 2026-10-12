@@ -1,0 +1,12 @@
+{
+ "title": "Windows Server 2012 R2 (DC)",
+ "os": "Windows Server 2012 R2, x64",
+ "source": "citadeldc01.mem",
+ "size": "2.0 GB",
+ "pcap": "case001.pcap",
+ "order": 99,
+ "findings": 124,
+ "risk": 97,
+ "compromise": 95,
+ "exposure": 95
+}
