@@ -27,7 +27,11 @@ def _scan(data, size, align):
             lo, hi = data[i], data[i + size - 1]
             # every RSA prime is odd with its top bit set: check both byte orders cheaply
             if (lo & 1 and hi & 0x80) or (hi & 1 and lo & 0x80):
-                yield i, data[i:i + size]
+                window = data[i:i + size]
+                # a random 128-byte prime has about one zero byte; code, strings and
+                # structures have many, and skipping them avoids most big-number work
+                if window.count(0) <= size // 16:
+                    yield i, window
 
 
 def find_factors(moduli, data, align=ALIGN):
