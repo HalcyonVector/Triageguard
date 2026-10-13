@@ -202,8 +202,10 @@ def start_job(req, results_dir):
     if not NAME_RE.match(name):
         return None, "The short name may use lowercase letters, digits, - and _ only."
     results = Path(results_dir).resolve()
-    if (results / "dumps" / name).exists():
-        return None, f"results/dumps/{name} already exists. Pick another short name."
+    old = results / "dumps" / name
+    if old.exists() and not req.get("replace"):
+        return None, f"results/dumps/{name} already exists. Pick another short name, or replace it."
+    prev = json.loads(_read(old / "meta.json")) if (old / "meta.json").exists() else {}
     with _LOCK:
         if any(j["status"] == "running" for j in JOBS.values()):
             return None, "Another analysis is still running. Wait for it to finish."
@@ -216,10 +218,11 @@ def start_job(req, results_dir):
     size = f"{n / 2**30:.1f} GB" if n >= 2**30 else f"{n / 2**20:.0f} MB"
     py = [memory.venv_python(), "-u", "-m", "triageguard"]
     steps = [("Analysing", py + ["analyze", str(dump), "--db", str(db), "--out", str(out), "--no-llm"] + (["--pcap", pcap] if pcap else [])),
-             ("Exporting", py + ["export", str(db), name, "--results", str(results), "--title", str(req.get("title") or dump.stem),
-                                 "--os", str(req.get("os") or ""), "--source", str(dump.name), "--size", size,
+             ("Exporting", py + ["export", str(db), name, "--results", str(results), "--clean",
+                                 "--title", str(req.get("title") or prev.get("title") or dump.stem),
+                                 "--os", str(req.get("os") or prev.get("os") or ""), "--source", str(dump.name), "--size", size,
                                  "--pcap", Path(pcap).name if pcap else "",
-                                 "--order", str(len(list((results / "dumps").glob("*/meta.json"))) + 1)])]
+                                 "--order", str(prev.get("order") or len(list((results / "dumps").glob("*/meta.json"))) + 1)])]
     if req.get("llm") and report.llm_available():
         steps.append(("Writing the LLM report", py + ["report", str(db), "--out", str(results / "dumps" / name / "report_llm.md")]))
     threading.Thread(target=_run_job, args=(job_id, steps), daemon=True).start()

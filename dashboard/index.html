@@ -468,6 +468,7 @@ function renderBoard() {
 }
 
 /* ---------- Analyse a dump ---------- */
+let replaceNext = false;
 let job = null, pollTimer = null, envInfo = {llm: false, volatility: true, missing: [], tshark: true};
 function envWarn() {
   const w = [];
@@ -480,6 +481,7 @@ function envWarn() {
 function openAnalyse() {
   fetch("/api/env").then((r) => r.json()).then((e) => { envInfo = e; }).catch(() => {}).finally(() => {
     if (job && job.status === "running") return showJob();
+    replaceNext = false;
     $("dlgbody").innerHTML = `
       <h3 id="dlgtitle">Analyse a memory dump</h3>
       <p>Runs the whole pipeline on a file on this computer, then adds it to the board. Large images take a while; you can close this window and come back.</p>
@@ -499,11 +501,19 @@ function openAnalyse() {
     $("a-cancel").onclick = () => $("dlg").close();
     $("af").onsubmit = (ev) => {
       ev.preventDefault();
-      const body = {dump: $("a-dump").value, pcap: $("a-pcap").value, title: $("a-title").value, name: $("a-name").value, os: $("a-os").value, llm: $("a-llm").checked};
+      const body = {dump: $("a-dump").value, pcap: $("a-pcap").value, title: $("a-title").value, name: $("a-name").value, os: $("a-os").value, llm: $("a-llm").checked, replace: replaceNext};
       $("a-go").disabled = true; $("a-err").textContent = "";
       fetch("/api/analyze", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)})
         .then((r) => r.json()).then((res) => {
-          if (res.error) { $("a-err").textContent = res.error; $("a-go").disabled = false; return; }
+          if (res.error) {
+            $("a-err").textContent = res.error; $("a-go").disabled = false;
+            if (/already exists/.test(res.error)) {
+              const b = document.createElement("button"); b.type = "button"; b.className = "ghost"; b.textContent = "Replace it";
+              b.onclick = () => { replaceNext = true; $("a-err").textContent = ""; $("a-go").click(); };
+              $("a-err").append(" ", b);
+            }
+            return;
+          }
           job = {id: res.job, status: "running", stage: "Starting", log: []}; showJob(); poll();
         }).catch((e) => { $("a-err").textContent = "Could not reach the dashboard server: " + e; $("a-go").disabled = false; });
     };

@@ -346,3 +346,15 @@ def test_prompt_lists_only_shown_ids():
              "title": f"RSA-1024 key e=65537 (PEM public), strength 62/100 number {i}"} for i in range(1, 6001)]
     prompt = defences.defended_prompt(many)[1]["content"]
     assert len(prompt) < 16_000 and "F6000" not in prompt
+
+
+def test_dashboard_replace_existing(tmp_path, monkeypatch):
+    from triageguard import dashboard
+    (tmp_path / "dumps" / "taken").mkdir(parents=True)
+    img = tmp_path / "x.raw"
+    img.write_bytes(b"\0" * 16)
+    started = []
+    monkeypatch.setattr(dashboard.threading, "Thread", lambda target, args, daemon: type("T", (), {"start": lambda s: started.append(args)})())
+    job, err = dashboard.start_job({"dump": str(img), "name": "taken", "replace": True}, tmp_path)
+    assert err is None and "--clean" in started[0][1][1][1]
+    dashboard.JOBS.clear()

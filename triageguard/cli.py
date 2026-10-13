@@ -17,6 +17,28 @@ def load_env_file(path=Path(__file__).resolve().parents[1] / ".env"):
             os.environ.setdefault(key.strip(), val.strip().strip('"'))
 
 
+def update(root=Path(__file__).resolve().parents[1]):
+    """git pull for the launcher. Files that differ from the repo only in line endings
+    (Windows editors and copies turn LF into CRLF) would block the pull, so they are
+    restored first; real local edits are left alone and reported."""
+    import subprocess
+
+    def git(*a):
+        return subprocess.run(["git", *a], cwd=root, capture_output=True, text=True)
+
+    changed = git("diff", "--name-only").stdout.split()
+    for f in changed:
+        if git("diff", "--ignore-cr-at-eol", "--quiet", "--", f).returncode == 0:
+            git("checkout", "--", f)
+            print(f"restored {f} (only line endings differed)")
+    branch = git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip()
+    r = git("pull", "--ff-only", "origin", branch)
+    print((r.stdout + r.stderr).strip())
+    if r.returncode:
+        print("Could not update the code. Run 'git status' to see which local change is in the way.")
+    return r.returncode
+
+
 def main(argv=None):
     load_env_file()
     ap = argparse.ArgumentParser(prog="triageguard", description="Memory forensics + crypto malware triage")
@@ -61,6 +83,8 @@ def main(argv=None):
     e.add_argument("--size", default="")
     e.add_argument("--pcap", default="")
     e.add_argument("--order", type=int, default=99, help="position in the dashboard")
+    e.add_argument("--clean", action="store_true", help="drop an older LLM report for this name first")
+    sub.add_parser("update", help="pull the latest code, first dropping local changes that are only line endings")
 
     g = sub.add_parser("report", help="(re)generate the LLM report for an analysed dump from its database")
     g.add_argument("db")
@@ -86,6 +110,8 @@ def main(argv=None):
     elif args.cmd == "rescore-results":
         from . import dashboard
         print(json.dumps(dashboard.rescore(args.results)))
+    elif args.cmd == "update":
+        raise SystemExit(update())
     elif args.cmd == "dashboard":
         from . import dashboard
         dashboard.serve(args.port, args.results, not args.no_browser)
@@ -93,13 +119,15 @@ def main(argv=None):
         from . import dashboard
         meta = {k: getattr(args, k) for k in ("title", "os", "source", "size", "pcap", "order")}
         out = Path(args.results) / "dumps" / args.name
+        if args.clean:
+            (out / "report_llm.md").unlink(missing_ok=True)
         print(json.dumps(dashboard.export_dump(args.db, out, args.run, meta)), "->", out)
     elif args.cmd == "report":
         from . import report
         from .store import Store
         if not report.llm_available():
             # the key lives only in the terminal window where it was set, so a new window has none
-            raise SystemExit('No LLM key found in this window. Set it first, e.g.  $env:GROQ_API_KEY = "your key"')
+            raise SystemExit('No LLM key found. Put GROQ_API_KEY=your key in a file called .env in the project folder.')
         store = Store(args.db)
         try:
             findings = store.findings(args.run)

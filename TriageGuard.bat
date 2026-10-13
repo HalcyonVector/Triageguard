@@ -13,11 +13,7 @@ if not exist "%PY%" (
 )
 
 where git >nul 2>nul && (
-  git pull --ff-only || (
-    echo.
-    echo Could not update the code. Usually a file was changed locally: run "git status" to see which.
-    pause
-  )
+  "%PY%" -m triageguard update || pause
 )
 
 rem Optional: put GROQ_API_KEY=... in a file called .env here for the LLM reports
