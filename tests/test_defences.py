@@ -293,7 +293,7 @@ def test_weak_public_key_counts_as_medium():
     from triageguard import report
     pub = {"ref": "F1", "module": "rsa", "kind": "rsa_key", "severity": "critical",
            "title": "RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size"}
-    priv = dict(pub, ref="F2", title=pub["title"].replace("DER SPKI", "PEM"))
+    priv = dict(pub, ref="F2", title=pub["title"].replace("DER SPKI", "PEM private"))
     assert report.finding_mass(pub) == report.SEV_MASS["medium"]
     assert report.finding_mass(priv) == report.SEV_MASS["critical"]
     assert report.key_strength([pub]) == 0  # read from the title when data is missing
@@ -323,3 +323,26 @@ def test_keyscan_targets_pick_ransomware():
     vol = {"processes": [{"PID": 4, "ImageFileName": "System"}, {"PID": 1940, "ImageFileName": "tasksche.exe"}],
            "cmdlines": [{"PID": 2020, "Process": "x.exe", "Args": r'"C:\Users\bob\Desktop\x.exe" -go'}]}
     assert memory.keyscan_targets(vol) == [(1940, "tasksche.exe"), (2020, "x.exe")]
+
+
+def test_tor_onion_keys_are_one_finding(tmp_path):
+    from cryptography.hazmat.primitives import serialization
+    from cryptography.hazmat.primitives.asymmetric import rsa
+    from triageguard import crypto
+    parts = []
+    for _ in range(12):
+        pem = rsa.generate_private_key(65537, 1024).public_key().public_bytes(
+            serialization.Encoding.PEM, serialization.PublicFormat.PKCS1)
+        parts.append(b"onion-key\n" + pem + b"ntor-onion-key abc\n")
+    f = tmp_path / "mem.bin"
+    f.write_bytes(b"\0" * 64 + b"".join(parts))
+    r = crypto.analyse(f)
+    assert r["tor_keys"]["count"] == 12 and r["rsa_keys"] == []
+
+
+def test_prompt_lists_only_shown_ids():
+    from triageguard import defences
+    many = [{"ref": f"F{i}", "module": "rsa", "kind": "rsa_key", "severity": "low", "data": {},
+             "title": f"RSA-1024 key e=65537 (PEM public), strength 62/100 number {i}"} for i in range(1, 6001)]
+    prompt = defences.defended_prompt(many)[1]["content"]
+    assert len(prompt) < 16_000 and "F6000" not in prompt

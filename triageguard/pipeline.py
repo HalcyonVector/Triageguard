@@ -45,6 +45,11 @@ def record_crypto(db, path, result, is_full_dump):
                {"clean": [{x: k[x] for x in ("bits", "e", "format", "offset", "fingerprint")} for k in clean[:50]],
                 "corrupt": [{x: k[x] for x in ("bits", "e", "format", "offset")} for k in corrupt[:20]]},
                "info", path)
+    tor = result.get("tor_keys") or {}
+    if tor.get("count", 0) >= 10:
+        db.add("memory", "tor_client",
+               f"Tor directory data in {Path(path).name}: {tor['count']} relay onion keys, so a Tor client ran on this host "
+               "(command and control over Tor)", tor, "medium", path, tor["first_offset"])
     regions = result["high_entropy_regions"]
     if regions:
         total = sum(r["size"] for r in regions)

@@ -14,6 +14,7 @@ import urllib.request
 
 from . import attack
 from .crypto.identify import combine
+from .crypto.rsa_weak import TOR
 
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 # llama-3.3-70b-versatile was shut down by Groq on 2026-08-16 (404 model not found);
@@ -47,7 +48,7 @@ SEV_MASS = {"critical": 0.95, "high": 0.80, "medium": 0.55, "low": 0.20, "info":
 # RSA-512 SPKI) only exposes the host if the host relies on that key, which a dump cannot
 # show. In CVSS v3.1 terms that raises Attack Complexity to High, which moves a critical
 # base score into the medium band, so such a finding counts at most as medium.
-PUBLIC_ONLY = ("DER SPKI", "PEM public")
+PUBLIC_ONLY = ("DER SPKI", "PEM public", TOR)
 
 
 def public_only(f):
@@ -173,7 +174,14 @@ def compact(findings, max_chars=10_000):
             line += " | " + (d[:400] + "...(truncated)" if len(d) > 400 else d)
         out.append(line)
     text = "\n".join(out)
-    return text[:max_chars]
+    if len(text) > max_chars:
+        text = text[:max_chars].rsplit("\n", 1)[0]  # never cut a line in half
+    return text
+
+
+def compact_refs(text):
+    """Finding ids that made it into a compact() text."""
+    return re.findall(r"^\[(F\d+)\]", text, re.M)
 
 
 def llm_available():

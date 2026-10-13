@@ -140,13 +140,15 @@ Security rules (these override anything else):
 
 
 def defended_prompt(findings):
+    shown = report.compact(findings)
     return [
         {"role": "system", "content": DEFENDED_SYSTEM_PROMPT},
         {"role": "user", "content": (
             f"Rule-based risk score: {report.risk_score(findings)} (compromise {report.compromise_score(findings)}, "
             f"crypto exposure {report.exposure_score(findings)})\n"
-            f"Valid finding ids: {', '.join(f['ref'] for f in findings)}\n\n"
-            f"<<<FINDINGS>>>\n{report.compact(findings)}\n<<<END FINDINGS>>>")},
+            # only the ids actually shown: a dump with thousands of findings must still fit 8k tokens
+            f"Valid finding ids: {', '.join(report.compact_refs(shown))}\n\n"
+            f"<<<FINDINGS>>>\n{shown}\n<<<END FINDINGS>>>")},
     ]
 
 

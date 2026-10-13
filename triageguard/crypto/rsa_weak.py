@@ -20,6 +20,7 @@ from cryptography.hazmat.primitives.serialization import load_der_public_key, lo
 CAPI_HDR = re.compile(rb"[\x06\x07]\x02\x00\x00(?:\x00\xa4|\x00\x24)\x00\x00(RSA[12])")
 RSA_OID = bytes.fromhex("06092a864886f70d010101")
 STANDARD_E = {3, 5, 17, 257, 65537}
+TOR = "Tor onion-key"
 PEM_RE = re.compile(rb"-----BEGIN (RSA PRIVATE KEY|PUBLIC KEY|RSA PUBLIC KEY|PRIVATE KEY)-----(.+?)-----END \1-----", re.S)
 
 
@@ -102,7 +103,11 @@ def _pem(data, source):
                 nums = load_pem_private_key(m.group(0), password=None).public_key().public_numbers()
             else:
                 nums = load_der_public_key(body).public_numbers()
-            keys.append(_key(nums.n, nums.e, source, m.start(), "PEM"))
+            if data[max(0, m.start() - 16):m.start()].rstrip().endswith((b"onion-key", b"signing-key")):
+                fmt = TOR  # a relay key from a Tor directory document, not a key this host owns
+            else:
+                fmt = "PEM private" if b"PRIVATE" in m.group(1) else "PEM public"
+            keys.append(_key(nums.n, nums.e, source, m.start(), fmt))
         except Exception:
             continue
     return keys

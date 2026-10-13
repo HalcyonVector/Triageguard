@@ -20,6 +20,7 @@ TECHNIQUES = {
     "T1552": ("Unsecured Credentials", "Credential Access"),
     "T1528": ("Steal Application Access Token", "Credential Access"),
     "T1573": ("Encrypted Channel", "Command and Control"),
+    "T1090.003": ("Proxy: Multi-hop Proxy", "Command and Control"),
     "T1562.001": ("Impair Defenses: Disable or Modify Tools", "Defense Evasion"),
     "AML.T0051": ("LLM Prompt Injection (MITRE ATLAS)", "ML Attack"),
 }
@@ -42,6 +43,7 @@ RULES = [
     ("credentials", "Bearer token", None, ["T1528", "T1552"]),
     ("credentials", None, None, ["T1552"]),
     ("network", "pcap_summary", r"TLS", ["T1573"]),
+    ("memory", "tor_client", None, ["T1090.003"]),
     ("defence", "prompt_injection", None, ["AML.T0051"]),
 ]
 
