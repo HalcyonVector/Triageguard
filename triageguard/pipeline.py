@@ -107,8 +107,10 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
         hits = key_recovery.recover(keys, data)
         for h in hits:
             db.add("rsa", "key_recovered",
-                   f"RSA-{h['bits']} private key of {name} (PID {pid}) rebuilt from a prime left in its memory at "
-                   f"{h['prime_offset']}: files encrypted under this key can be decrypted",
+                   f"RSA-{h['bits']} private key of {name} (PID {pid}) recovered from "
+                   + ("a CryptoAPI private key blob still in its memory" if h["where"] == "private key blob"
+                      else "a prime left in its memory")
+                   + f" at {h['prime_offset']}: data encrypted under this key can be decrypted",
                    h, "info", pdump, h["prime_offset"])
         if not hits:
             db.add("rsa", "key_recovery", f"No RSA prime found in {name} (PID {pid}) for its {len(keys)} RSA key(s)",

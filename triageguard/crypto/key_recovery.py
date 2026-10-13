@@ -79,6 +79,10 @@ def recover(keys, data, align=ALIGN, min_bits=1024):
             d = pow(e, -1, (p - 1) * (q - 1))
             if pow(pow(2, e, n), d, n) != 2:
                 continue
+            key_off = int(str(k.get("offset", "-1")), 16) if str(k.get("offset", "")).startswith("0x") else -1
+            # a PRIVATEKEYBLOB ("RSA2") stores prime1 right after its 20-byte header and the modulus
+            in_blob = k.get("format") == "CAPI blob" and offset - key_off == 20 + (n.bit_length() + 7) // 8
             found.append({"bits": n.bit_length(), "e": e, "fingerprint": k.get("fingerprint"), "key_offset": k.get("offset"),
-                          "prime_offset": hex(offset), "byte_order": order, "format": k.get("format")})
+                          "prime_offset": hex(offset), "byte_order": order, "format": k.get("format"),
+                          "where": "private key blob" if in_blob else "loose prime"})
     return found
