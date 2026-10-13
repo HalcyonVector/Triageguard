@@ -54,12 +54,19 @@ def find_factors(moduli, data, align=ALIGN):
     return found
 
 
+# Keys a program generated or loaded itself sit in CryptoAPI/CNG blobs (or a PEM private
+# key). Certificates (DER SPKI) and Tor relay keys belong to someone else, so their primes
+# were never on this host; testing them only makes every remainder far more expensive.
+LOCAL_FORMATS = ("CAPI blob", "CNG blob", "PEM private")
+
+
 def recover(keys, data, align=ALIGN, min_bits=1024):
-    """Try every key of at least min_bits against data. Returns one result per key whose
-    private key could be rebuilt; d is checked by a round trip, never stored."""
+    """Try every locally generated key of at least min_bits against data. Returns one
+    result per key whose private key could be rebuilt; d is checked by a round trip,
+    never stored."""
     by_size = {}
     for k in keys:
-        if k["n"].bit_length() >= min_bits:
+        if k["n"].bit_length() >= min_bits and k.get("format", "CAPI blob") in LOCAL_FORMATS:
             by_size.setdefault((k["n"].bit_length() + 15) // 16, {}).setdefault(k["n"], k)
     found = []
     for group in by_size.values():
