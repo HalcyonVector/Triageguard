@@ -1,0 +1,12 @@
+{
+ "title": "Windows 7 (WannaCry)",
+ "os": "Windows 7",
+ "source": "wannacry.elf",
+ "size": "1.0 GB",
+ "pcap": "",
+ "order": 5,
+ "findings": 94,
+ "risk": 95,
+ "compromise": 91,
+ "exposure": 95
+}
