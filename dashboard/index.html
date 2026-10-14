@@ -13,7 +13,7 @@
   --bg: #070b14; --bg2: #0c1222; --glow1: rgba(79,209,192,0.16); --glow2: rgba(122,108,240,0.16); --glow3: rgba(255,92,116,0.10);
   --panel: rgba(17,24,39,0.72); --panel2: rgba(255,255,255,0.06); --line: rgba(148,163,196,0.16); --line2: rgba(148,163,196,0.08);
   --text: #e3e8f3; --muted: #9aa5bf; --faint: #7a86a3;
-  --accent: #4fd1c0; --accent2: #8fa3f5; --warn: #e8c25a; --bad: #ff5c74;
+  --accent: #4fd1c0; --accent2: #8fa3f5; --warn: #e8c25a; --bad: #ff5c74; --good: #5fd38d;
   --critical: #ff5c74; --high: #ff9a4d; --medium: #e8c25a; --low: #5fa3ea; --info: #7d8aa7;
   --compromise: #ff6b81; --exposure: #f2b33d; --ink-on-accent: #04110f;
   --sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
@@ -247,6 +247,11 @@ dialog::backdrop { background: rgba(3,6,12,.6); backdrop-filter: blur(3px); }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
 .check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
 .err { color: var(--bad); font-size: 13.5px; }
+.keypill { margin-top: 10px; font: 600 12px var(--mono); color: var(--good); background: color-mix(in srgb, var(--good) 12%, transparent); border: 1px solid color-mix(in srgb, var(--good) 40%, transparent); border-radius: 8px; padding: 5px 9px; }
+.keycall { margin-top: 14px; border-color: color-mix(in srgb, var(--good) 45%, var(--line)); }
+.keycall h3 { color: var(--good); }
+.keycall p { color: var(--muted); font-size: 13.5px; margin: 6px 0 8px; max-width: 80ch; }
+.keycall ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 13.5px; }
 .warnbox { display: grid; gap: 4px; border: 1px solid var(--exposure); border-left-width: 3px; border-radius: 10px; padding: 10px 12px; font-size: 13px; color: var(--muted); }
 .warnbox b { color: var(--exposure); font-size: 13.5px; }
 .warnbox code { font: 12px var(--mono); color: var(--text); }
@@ -436,7 +441,7 @@ function renderBoard() {
     <div class="card kpis">
       <div class="kpi"><div class="k">Dumps analysed</div><div class="v">${D.dumps.length}</div><div class="s">${D.dumps.filter((d) => d.meta.pcap).length} with a network capture</div></div>
       <div class="kpi"><div class="k">Findings</div><div class="v">${all.length}</div><div class="s">${all.filter((f) => ["critical", "high"].includes(f.severity)).length} critical or high</div></div>
-      <div class="kpi"><div class="k">RSA keys checked</div><div class="v">${rsa.length}</div><div class="s" style="color:${broken ? "var(--bad)" : "inherit"}">${broken} broken</div></div>
+      <div class="kpi"><div class="k">RSA keys checked</div><div class="v">${rsa.length}</div><div class="s"><span style="color:${broken ? "var(--bad)" : "inherit"}">${broken} broken</span>${recovered(all).length ? ` · <span style="color:var(--good)">${recovered(all).length} private keys recovered</span>` : ""}</div></div>
       <div class="kpi"><div class="k">ATT&amp;CK techniques</div><div class="v">${techs.size}</div><div class="s">${[...techs].slice(0, 3).join(" · ")}${techs.size > 3 ? " …" : ""}</div></div>
       <div class="kpi"><div class="k">LLM attacks unflagged</div><div class="v">${last ? `${last.stats.unflagged}/${last.stats.n}` : "n/a"}</div><div class="s">${last ? `plain report: ${last.stats.asr_base}/${last.stats.n} succeeded` : ""}</div></div>
     </div>
@@ -446,6 +451,7 @@ function renderBoard() {
         <div class="hd"><div><h3>${esc(d.meta.title || d.id)}</h3><div class="m">${esc(d.meta.os || "")}${d.meta.size ? " · " + esc(d.meta.size) : ""}</div></div>
           <div style="text-align:right"><div class="score" style="color:${sevVar(d.scores.band)}">${d.scores.risk}</div><span class="band sev-${d.scores.band}">${d.scores.band}</span></div></div>
         ${ceBars(d.scores)}
+        ${recovered(d.findings).length ? `<div class="keypill">${keyIcon}${recovered(d.findings).length} RSA private key${recovered(d.findings).length > 1 ? "s" : ""} recovered from memory</div>` : ""}
         <div class="kv"><span>${d.findings.length} findings</span><span>${d.findings.filter((f) => ["critical", "high"].includes(f.severity)).length} critical or high</span></div>
       </button>`).join("")}</div>
     <div class="split" style="margin-top:22px">
@@ -596,6 +602,8 @@ function fusionSvg(d) {
   s += `<line x1="0" y1="${height - 1}" x2="${W}" y2="${height - 1}" stroke="${line}"/>`;
   return s + "</svg>";
 }
+const recovered = (fs) => fs.filter((f) => f.kind === "key_recovered");
+const keyIcon = `<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></svg>`;
 function renderSummary() {
   const d = dump(), sc = d.scores, fs = d.findings, chk = d.llm_check;
   const hits = fs.filter((f) => ["critical", "high", "medium"].includes(f.severity))
@@ -621,6 +629,9 @@ function renderSummary() {
         : `<div class="num" style="color:var(--faint)">n/a</div><div class="lab">no LLM report saved yet</div>`}</div>
       <div class="card stat"><div class="label">Source</div><div class="lab" style="margin-top:4px;color:var(--text)">${esc(d.meta.source || "unknown")}</div></div>
     </div>
+    ${recovered(fs).length ? `<div class="card keycall"><h3>${keyIcon}Private keys recovered from memory</h3>
+      <p>Data encrypted under these keys can be decrypted without the attacker's help. Windows 7's CryptoAPI leaves a key's primes (or the whole private key blob) in the process that generated it, the flaw wannakey and WanaKiwi used against WannaCry in 2017.</p>
+      <ul>${recovered(fs).map((f) => `<li>${cite(f.ref)} ${esc(f.title.replace(/: data encrypted.*$/, ""))}</li>`).join("")}</ul></div>` : ""}
     <h2>What to act on</h2>
     <div class="card tablewrap"><table>
       <tr><th>Ref</th><th>Severity</th><th>Finding</th><th>ATT&amp;CK</th></tr>
