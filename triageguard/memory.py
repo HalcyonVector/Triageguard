@@ -37,6 +37,9 @@ PLUGINS_LINUX = [
 LINUX_COLUMNS = {"COMM": "ImageFileName", "ARGS": "Args", "Destination Addr": "ForeignAddr",
                  "Source Addr": "LocalAddr", "Process Name": "Owner"}
 TIMEOUT = 1800
+# linux.sockstat walks every open file of every task and ran past 30 minutes on a 4 GB
+# desktop image with Firefox open; give up sooner and report the network table as skipped
+PLUGIN_TIMEOUT = {"linux.sockstat": 600}
 # Offline symbol tables (ISF JSON) for networks that block the Microsoft symbol
 # server, e.g. JPCERTCC/Windows-Symbol-Tables. Point this at the folder.
 ROOT = Path(__file__).resolve().parents[1]
@@ -72,7 +75,7 @@ def run_plugin(dump, plugin, extra=(), outdir=None):
     if outdir:
         cmd += ["-o", str(outdir)]
     cmd += [plugin, *extra]
-    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=TIMEOUT)
+    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=PLUGIN_TIMEOUT.get(plugin, TIMEOUT))
     if proc.returncode != 0:
         raise RuntimeError(proc.stderr.strip().splitlines()[-1] if proc.stderr.strip() else f"exit {proc.returncode}")
     return json.loads(proc.stdout or "[]")
@@ -142,12 +145,20 @@ JIT_PROCESSES = {"msmpeng.exe", "msedge.exe", "msedgewebview2.exe", "chrome.exe"
 SHELLS = {"cmd.exe", "powershell.exe", "pwsh.exe"}
 SHELL_PARENTS = {"explorer.exe", "cmd.exe", "powershell.exe", "pwsh.exe", "conhost.exe", "windowsterminal.exe", "wt.exe"}
 LINUX_JIT = {"java", "node", "chrome", "firefox", "dotnet", "qemu-system-x86", "Xorg", "gnome-shell"}
+# Firefox content processes rename themselves, and the GNOME desktop runs its JavaScript in
+# gjs (SpiderMonkey); Linux cuts names to 15 characters, so these match as prefixes
+LINUX_JIT_PREFIXES = ("Isolated Web Co", "Isolated Servic", "Web Content", "WebExtensions", "Privileged Cont",
+                      "RDD Process", "Socket Process", "Utility Process", "Forked Child", "gjs", "gnome-terminal",
+                      "chromium", "thunderbird")
 LINUX_SHELLS = {"sh", "bash", "dash", "zsh", "ksh", "busybox"}
 # a shell whose parent is a network service is the classic web shell or exploited daemon
 SERVICE_PARENTS = {"apache2", "httpd", "nginx", "php-fpm", "php", "mysqld", "postgres", "java", "tomcat", "node", "python3", "perl"}
 LINUX_TMP_RE = re.compile(r"^(?:\S*/)?(?:/tmp|/dev/shm|/var/tmp|/run/user/\d+)/")
+LINUX_USER_DIRS_RE = re.compile(r"^(?:/home/[^/]+|/root|~)/(?:Downloads|Desktop)/")
 BASH_RE = re.compile(r"(curl|wget)[^|;]*\|\s*(ba)?sh|base64\s+-d[^|;]*\|\s*(ba)?sh|nc(at)?\s.*-e\s|/dev/tcp/|chmod\s+\+x\s+/(tmp|dev/shm)|"
-                     r"openssl\s+enc|gpg\s+(-c|--symmetric)|shred\s|history\s+-c|crontab\s", re.I)
+                     r"openssl\s+enc|gpg\s+(-c|--symmetric)|shred\s|history\s+-c|crontab\s|"
+                     # running a binary the user just downloaded, as root (no package manager vouches for it)
+                     r"sudo\s+(?:-\S+\s+)*\./\S+|chmod\s+\S+\s+\S*\.(?:elf|bin|run)\b", re.I)
 CMDLINE_RE = re.compile(r"encrypt|decrypt|ransom|\.locked|vssadmin|shadowcopy|bcdedit|wbadmin|cipher(\.exe)?\s+/w", re.I)
 USER_DIRS_RE = re.compile(r"\\Users\\[^\\]+\\(Desktop|Downloads|AppData\\Local\\Temp)\\", re.I)
 
@@ -187,7 +198,7 @@ def suspicious_processes(results):
                 sev, why = "critical", "contains a PE header (MZ), likely injected DLL/EXE"
             elif head.startswith(b"\x7fELF"):
                 sev, why = "critical", "contains an ELF header, likely a loaded-from-memory binary"
-            elif name.lower() in JIT_PROCESSES or name in LINUX_JIT:
+            elif name.lower() in JIT_PROCESSES or name in LINUX_JIT or name.startswith(LINUX_JIT_PREFIXES):
                 sev, why = "low", "known JIT process, RWX private memory is expected"
             elif not head[:16].strip(b"\x00"):
                 # shellcode starts executing at the region base; a zeroed head is a data/thunk block
@@ -240,7 +251,7 @@ def suspicious_processes(results):
             elif LINUX_TMP_RE.search(args.split(" ")[0]):
                 flags.append({"pid": r.get("PID"), "process": r.get("Process"), "severity": "medium", "cmdline": args[:500],
                               "reason": f"runs from a world-writable temp folder: {args[:200]}"})
-            elif USER_DIRS_RE.search(args.split('" ')[0]):
+            elif USER_DIRS_RE.search(args.split('" ')[0]) or LINUX_USER_DIRS_RE.search(args.split(" ")[0]):
                 flags.append({"pid": r.get("PID"), "process": r.get("Process"), "severity": "low", "cmdline": args[:500],
                               "reason": f"runs from a user-writable folder: {args[:200]}"})
     return flags
@@ -264,7 +275,7 @@ def keyscan_targets(results):
             continue
         args = str(r.get("Args") or "")
         if CMDLINE_RE.search(args) or RANSOM_NAMES.search(args) or USER_DIRS_RE.search(args.split('" ')[0]) \
-                or LINUX_TMP_RE.search(args.split(" ")[0]):
+                or LINUX_TMP_RE.search(args.split(" ")[0]) or LINUX_USER_DIRS_RE.search(args.split(" ")[0]):
             pids.setdefault(r.get("PID"), str(r.get("Process")))
     return list(pids.items())[:MAX_KEYSCAN]
 

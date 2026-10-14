@@ -485,3 +485,18 @@ def test_dashboard_replace_existing(tmp_path, monkeypatch):
     job, err = dashboard.start_job({"dump": str(img), "name": "taken", "replace": True}, tmp_path)
     assert err is None and "--clean" in started[0][1][1][1]
     dashboard.JOBS.clear()
+
+
+def test_linux_browser_jit_is_low_and_downloaded_binary_run_as_root_is_flagged():
+    from triageguard import memory
+    code = {"Hexdump": "55 48 89 e5 41 57 41 56 41 55 41 54 53 48 83 ec 28 48 89 7d"}
+    res = {"_os": "linux",
+           "injected": [{"PID": 3640, "Process": "Isolated Web Co", "Start": 1, "Protection": "rwx", **code},
+                        {"PID": 2254, "Process": "gjs", "Start": 2, "Protection": "rwx", **code}],
+           "bash": [{"PID": 4453, "Process": "bash", "Command": "chmod 755 youtube_downloader.elf "},
+                    {"PID": 4453, "Process": "bash", "Command": "sudo ./youtube_downloader.elf "},
+                    {"PID": 4453, "Process": "bash", "Command": "sudo apt update"}]}
+    flags = memory.suspicious_processes(res)
+    assert {f["process"]: f["severity"] for f in flags if "region" in f["reason"]} == {"Isolated Web Co": "low", "gjs": "low"}
+    bash = [f for f in flags if f["reason"].startswith("bash history")]
+    assert [f["severity"] for f in bash] == ["medium", "medium"]

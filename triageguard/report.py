@@ -178,10 +178,11 @@ def key_strength(findings):
     return min(scores) if scores else None
 
 
-def compact(findings, max_chars=10_000):
+def compact(findings, max_chars=7_000):
     """Trim findings to fit the free tier: one Groq request may not exceed 8k tokens,
     and the defended retry sends the findings plus the first answer, so keep this
-    around 3k tokens (JSON and hex run at roughly 3 characters per token)."""
+    under 3k tokens (JSON and hex run at roughly 2 to 3 characters per token;
+    10k characters of hex-heavy rows came to 8.2k tokens on the Linux image)."""
     out = []
     # most severe first, so truncation drops info rows rather than the incident
     order = ["critical", "high", "medium", "low", "info"]
