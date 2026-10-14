@@ -13,6 +13,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 # (label, plugin names to try in order, extra args). Newer vol3 releases moved
@@ -137,6 +138,7 @@ def extract(dump, outdir):
         return {label: {"skipped": "volatility3 not installed"} for label, _, _ in PLUGINS}, dumped
     outdir = Path(outdir)
     outdir.mkdir(parents=True, exist_ok=True)
+    print("      detecting the operating system ...", flush=True)
     os_name = detect_os(dump)
     if os_name is None:
         reason = ("no Windows or Linux kernel found (not a supported image, or symbols missing: Windows symbols "
@@ -146,11 +148,15 @@ def extract(dump, outdir):
     for label, names, extra in PLUGINS if os_name == "windows" else PLUGINS_LINUX:
         err = None
         for name in names:
+            start = time.time()
+            print(f"      {name} ...", end=" ", flush=True)  # a 4 GB image can sit in one plugin for minutes
             try:
                 results[label] = run_plugin(dump, name, extra, outdir if "--dump" in extra else None)
+                print(f"{time.time() - start:.0f}s", flush=True)
                 if results[label] or label != "network":
                     break
             except Exception as e:  # wrong plugin name, unsupported OS profile, timeout...
+                print(f"failed after {time.time() - start:.0f}s", flush=True)
                 err = str(e)
         else:
             if not isinstance(results.get(label), list):  # keep an empty-but-valid result
