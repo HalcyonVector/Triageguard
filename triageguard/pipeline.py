@@ -95,6 +95,9 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
             continue
         if isinstance(rows, dict) and "skipped" in rows:
             log(f"      {label}: skipped ({rows['skipped']})")
+            # kept as a finding so `triageguard check` and the report can say what is missing
+            db.add("memory", "skipped", f"{label}: skipped ({str(rows['skipped'])[:200]})",
+                   {"stage": label, "reason": str(rows["skipped"])}, "info", dump)
             continue
         keep = rows[:200]
         if label == "network":  # every connection to a public address, which campaign linking compares

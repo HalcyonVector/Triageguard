@@ -163,7 +163,10 @@ its risk score, because a reasoning model can spend its output budget thinking; 
 `TRIAGEGUARD_REASONING_EFFORT=low` gave a complete report. Flagged reports carry a "Validation notes" section
 at the bottom. Regenerate one with your own key:
 `python -m triageguard report ..\data\w10.db --out results\dumps\win10\report_llm.md`.
-New dump: `analyze` it, then `python -m triageguard export <db> <name> --title ... --os ...`.
+New dump: `.\add_dump.ps1 -Name <name> -Title ... -Url <archive or image>` (or `-Image <file>`; Linux adds
+`-SymbolsUrl <ISF zip>`). It resumes downloads, reuses unpacked files and cached Volatility output, runs
+`triageguard check` (stops before export when no process list was read, warns about skipped plugins and noisy
+detectors), then exports and writes the LLM report.
 
 Lessons from the extra dumps: Windows Defender on the analysis machine blocks reading extracted malware
 regions from the infected Win10 image, so the pipeline records "blocked by antivirus" as a finding and

@@ -500,3 +500,49 @@ def test_linux_browser_jit_is_low_and_downloaded_binary_run_as_root_is_flagged()
     assert {f["process"]: f["severity"] for f in flags if "region" in f["reason"]} == {"Isolated Web Co": "low", "gjs": "low"}
     bash = [f for f in flags if f["reason"].startswith("bash history")]
     assert [f["severity"] for f in bash] == ["medium", "medium"]
+
+
+def test_volatility_output_is_cached_next_to_the_image(tmp_path, monkeypatch):
+    from triageguard import memory
+    img = tmp_path / "x.vmem"
+    img.write_bytes(b"\0" * 64)
+    calls = []
+
+    class P:
+        returncode, stdout, stderr = 0, '[{"PID": 1}]', ""
+
+    monkeypatch.setattr(memory, "_vol", lambda: "vol")
+    monkeypatch.setattr(memory.subprocess, "run", lambda *a, **k: calls.append(a) or P())
+    assert memory.run_plugin(img, "linux.pslist") == [{"PID": 1}]
+    assert memory.run_plugin(img, "linux.pslist") == [{"PID": 1}]
+    assert len(calls) == 1
+    memory.run_plugin(img, "linux.malware.malfind", ["--dump"], tmp_path)  # writes files: never cached
+    memory.run_plugin(img, "linux.malware.malfind", ["--dump"], tmp_path)
+    assert len(calls) == 3
+
+
+def test_llm_prompt_shrinks_when_the_api_says_too_large(monkeypatch):
+    from triageguard import report
+    sizes = []
+
+    def fake(findings):
+        sizes.append(report.PROMPT_CHARS)
+        if len(sizes) < 3:
+            raise report.PromptTooLarge("HTTP 413")
+        return "ok"
+
+    monkeypatch.setattr(report, "llm_report", fake)
+    monkeypatch.setattr(report, "llm_available", lambda: True)
+    assert report.generate([], True, defended=False) == ("ok", "llm")
+    assert sizes == list(report.PROMPT_STEPS) and report.PROMPT_CHARS == report.PROMPT_STEPS[0]
+
+
+def test_health_check_flags_missing_stages_and_noisy_detectors():
+    from triageguard import health
+    f = [{"kind": "processes", "severity": "info", "data": {}},
+         {"kind": "skipped", "severity": "info", "data": {"stage": "network", "reason": "timed out after 600 seconds"}}]
+    f += [{"kind": "suspicious_process", "severity": "high", "data": {"process": "Web Content"}}] * 11
+    msgs = health.check(f)
+    assert ("warn", "network missing: timed out after 600 seconds") in msgs
+    assert any("11 high injected-code alerts, mostly Web Content x11" in m for _, m in msgs)
+    assert health.check([])[0][0] == "error"

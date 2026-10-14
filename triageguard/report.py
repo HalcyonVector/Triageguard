@@ -178,7 +178,16 @@ def key_strength(findings):
     return min(scores) if scores else None
 
 
-def compact(findings, max_chars=7_000):
+# characters of findings sent to the LLM; generate() lowers it when the API says too large
+PROMPT_CHARS = 7_000
+PROMPT_STEPS = (7_000, 4_500, 3_000)
+
+
+class PromptTooLarge(RuntimeError):
+    pass
+
+
+def compact(findings, max_chars=None):
     """Trim findings to fit the free tier: one Groq request may not exceed 8k tokens,
     and the defended retry sends the findings plus the first answer, so keep this
     under 3k tokens (JSON and hex run at roughly 2 to 3 characters per token;
@@ -195,6 +204,7 @@ def compact(findings, max_chars=7_000):
             line += " | " + (d[:400] + "...(truncated)" if len(d) > 400 else d)
         out.append(line)
     text = "\n".join(out)
+    max_chars = max_chars or PROMPT_CHARS
     if len(text) > max_chars:
         text = text[:max_chars].rsplit("\n", 1)[0]  # never cut a line in half
     return text
@@ -243,7 +253,8 @@ def chat(messages, model=DEFAULT_MODEL, temperature=0.2):
                 print(f"      rate limited, waiting {wait:.0f}s (retry {attempt + 1}/{MAX_RETRIES})", flush=True)
                 time.sleep(wait + 1)
                 continue
-            raise RuntimeError(f"LLM request failed: HTTP {e.code} from {url} (model {model}): {detail}") from None
+            err = PromptTooLarge if e.code == 413 else RuntimeError
+            raise err(f"LLM request failed: HTTP {e.code} from {url} (model {model}): {detail}") from None
 
 
 def _retry_after(err, detail):
@@ -313,15 +324,26 @@ def rule_report(findings):
 
 
 def generate(findings, use_llm=True, defended=True):
+    global PROMPT_CHARS
     if use_llm:
         try:
-            if defended:
-                from .defences import defended_report
-                text = defended_report(findings)
-            else:
-                text = llm_report(findings)
+            # a busy dump can still exceed the free tier's 8k tokens per request; send less and retry
+            for i, PROMPT_CHARS in enumerate(PROMPT_STEPS):
+                try:
+                    if defended:
+                        from .defences import defended_report
+                        text = defended_report(findings)
+                    else:
+                        text = llm_report(findings)
+                    break
+                except PromptTooLarge:
+                    if i == len(PROMPT_STEPS) - 1:
+                        raise
+                    print(f"      prompt too large for the API, retrying with {PROMPT_STEPS[i + 1]} characters of findings", flush=True)
             if text:
                 return text, "llm-defended" if defended else "llm"
         except Exception as e:
             print(f"[report] LLM call failed ({e}); falling back to rule-based report")
+        finally:
+            PROMPT_CHARS = PROMPT_STEPS[0]
     return rule_report(findings), "rules"

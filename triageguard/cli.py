@@ -88,6 +88,10 @@ def main(argv=None):
     b.add_argument("--trials", type=int, default=5)
     b.add_argument("--out", default="results/benchmark")
 
+    ck = sub.add_parser("check", help="sanity-check an analysed dump: missing stages, noisy detectors")
+    ck.add_argument("db")
+    ck.add_argument("--run", type=int, default=0, help="run id (default: the latest)")
+
     sub.add_parser("update", help="pull the latest code, first dropping local changes that are only line endings")
 
     g = sub.add_parser("report", help="(re)generate the LLM report for an analysed dump from its database")
@@ -117,6 +121,13 @@ def main(argv=None):
     elif args.cmd == "benchmark":
         from . import benchmark
         print(json.dumps(benchmark.run(args.trials, args.out), indent=1))
+    elif args.cmd == "check":
+        from . import health
+        from .store import Store
+        store = Store(args.db)
+        run = args.run or store.db.execute("select max(id) from runs").fetchone()[0]
+        print(f"check of {args.db} run {run}:")
+        raise SystemExit(health.print_check(store.findings(run)))
     elif args.cmd == "update":
         raise SystemExit(update())
     elif args.cmd == "dashboard":

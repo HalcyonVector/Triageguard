@@ -68,7 +68,25 @@ def _vol():
     return None
 
 
+def _cache_file(dump, plugin, extra):
+    """Where a plugin's output for this exact image is kept: next to the image, named by its
+    size and modification time, so a re-run after a code change skips Volatility."""
+    p = Path(dump)
+    st = p.stat()
+    tag = re.sub(r"[^\w.-]+", "_", " ".join([plugin, *extra]))
+    return p.parent / ".triageguard_cache" / f"{p.name}.{st.st_size}.{int(st.st_mtime)}" / f"{tag}.json"
+
+
 def run_plugin(dump, plugin, extra=(), outdir=None):
+    # plugins that write files (--dump) are not cached: their files live in the output folder
+    cache = None
+    if "--dump" not in extra and os.environ.get("TRIAGEGUARD_NO_CACHE") != "1":
+        try:
+            cache = _cache_file(dump, plugin, extra)
+            if cache.is_file():
+                return json.loads(cache.read_text(encoding="utf-8"))
+        except OSError:
+            cache = None
     cmd = [_vol(), "-q", "-r", "json", "-f", str(dump)]
     if SYMBOLS:
         cmd += ["-s", SYMBOLS]
@@ -78,7 +96,14 @@ def run_plugin(dump, plugin, extra=(), outdir=None):
     proc = subprocess.run(cmd, capture_output=True, text=True, timeout=PLUGIN_TIMEOUT.get(plugin, TIMEOUT))
     if proc.returncode != 0:
         raise RuntimeError(proc.stderr.strip().splitlines()[-1] if proc.stderr.strip() else f"exit {proc.returncode}")
-    return json.loads(proc.stdout or "[]")
+    rows = json.loads(proc.stdout or "[]")
+    if cache:
+        try:
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            cache.write_text(proc.stdout or "[]", encoding="utf-8")
+        except OSError:
+            pass
+    return rows
 
 
 def _linux_rows(rows):

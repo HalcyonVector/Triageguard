@@ -314,8 +314,11 @@ def defended_run(findings, model=report.DEFAULT_MODEL, retries=1):
         messages += [{"role": "assistant", "content": text},
                      {"role": "user", "content": "Your report failed validation:\n- " + "\n- ".join(result["problems"])
                       + "\nRewrite the full report fixing every point."}]
-        text = report.chat(messages, model)
-        result = validate(text, clean)
+        try:
+            retry = report.chat(messages, model)
+        except report.PromptTooLarge:
+            break  # findings plus the first answer do not fit; keep the first answer, flagged below
+        text, result = retry, validate(retry, clean)
     return {"body": text, "validation": result, "findings": clean}
 
 
