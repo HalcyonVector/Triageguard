@@ -4,10 +4,12 @@ from pathlib import Path
 
 from . import credentials, memory, network, report, static
 from . import crypto
-from .crypto import key_recovery, rsa_weak
+from .crypto import aes_keyfind, key_recovery, rsa_weak
 from .store import Store
 
 SEV_ORDER = ["info", "low", "medium", "high", "critical"]
+# one finding per distinct AES key up to this many; the rest are summed into one line
+MAX_AES_FINDINGS = 10
 
 
 def _worst(sevs):
@@ -57,6 +59,29 @@ def record_crypto(db, path, result, is_full_dump):
                {"regions": regions[:20]}, "info", path, regions[0]["start"])
 
 
+def record_aes_keys(db, keys):
+    """One finding per distinct AES key. A key found in several processes is mapped from a
+    shared image (a library's built-in test key, for example), not a key one program made."""
+    own = [k for k in keys.values() if len(k["procs"]) == 1]
+    for k in own[:MAX_AES_FINDINGS]:
+        (pid, p), = k["procs"].items()
+        db.add("crypto", "aes_key",
+               f"AES-{k['bits']} key of {p['name']} (PID {pid}) recovered from its expanded key schedule at {p['offset']}"
+               + (f" ({p['copies']} copies)" if p["copies"] > 1 else "") + f", key id {k['key_id']}: data encrypted under this key can be decrypted",
+               {"bits": k["bits"], "layout": k["layout"], "key_id": k["key_id"], "pid": pid, "process": p["name"], "copies": p["copies"]},
+               "info", p["file"], p["offset"])
+    if len(own) > MAX_AES_FINDINGS:
+        db.add("crypto", "aes_key", f"{len(own) - MAX_AES_FINDINGS} more AES key(s) recovered from key schedules",
+               {"keys": [k["key_id"] for k in own[MAX_AES_FINDINGS:]]}, "info")
+    for k in keys.values():
+        if len(k["procs"]) > 1:
+            names = ", ".join(f"{p['name']} ({pid})" for pid, p in k["procs"].items())
+            db.add("crypto", "aes_shared",
+                   f"AES-{k['bits']} key schedule identical in {len(k['procs'])} processes ({names}), key id {k['key_id']}: "
+                   "mapped from a shared library, so likely a built-in constant rather than a key the malware made",
+                   {"bits": k["bits"], "key_id": k["key_id"], "pids": list(k["procs"])}, "info")
+
+
 def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", use_llm=True, defended=True, memory_stage=True, log=print):
     workdir = Path(workdir)
     workdir.mkdir(parents=True, exist_ok=True)
@@ -96,6 +121,7 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
         if b not in blocked:
             record_crypto(db, b, crypto.analyse(b), is_full_dump=False)
 
+    aes_keys = {}
     for pid, name in memory.keyscan_targets(vol) if memory_stage else []:
         log(f"      key recovery: dumping {name} (PID {pid})")
         pdump = memory.dump_process(dump, pid, workdir / "procs")
@@ -112,9 +138,15 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
                       else "a prime left in its memory")
                    + f" at {h['prime_offset']}: data encrypted under this key can be decrypted",
                    h, "info", pdump, h["prime_offset"])
+        for k in aes_keyfind.find_keys(data):
+            k.pop("key")  # never stored: the fingerprint is enough to tell keys apart
+            e = aes_keys.setdefault(k["key_id"], {**k, "procs": {}})
+            e["procs"].setdefault(pid, {"name": name, "offset": k["offset"], "file": pdump, "copies": 0})["copies"] += 1
         if not hits:
             db.add("rsa", "key_recovery", f"No RSA prime found in {name} (PID {pid}) for its {len(keys)} RSA key(s)",
                    {"pid": pid, "keys": len(keys)}, "info", pdump)
+
+    record_aes_keys(db, aes_keys)
 
     log("[4/6] Credential scan")
     for c in credentials.scan(dump):

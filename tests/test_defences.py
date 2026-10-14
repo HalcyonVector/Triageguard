@@ -318,6 +318,52 @@ def test_key_recovery_finds_leftover_prime():
         assert hit and hit[0]["prime_offset"] == hex(200_000) and hit[0]["byte_order"] == order
 
 
+def test_aes_key_schedules_are_found():
+    import os
+    from triageguard.crypto import aes_keyfind as a
+    # FIPS 197 appendix A: last round keys of the AES-128 and AES-256 examples
+    assert a.expand(bytes.fromhex("2b7e151628aed2a6abf7158809cf4f3c"))[-16:].hex() == "d014f9a8c9ee2589e13f0cc8b6630ca6"
+    assert a.expand(bytes.fromhex("603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4"))[-16:].hex() == "fe4890d1e6188d0b046df344706c631e"
+    k128, k256, kswap = os.urandom(16), os.urandom(32), os.urandom(16)
+    data = bytearray(os.urandom(512 * 1024))
+    data[1000:9000] = bytes(8000)  # zero pages must not match
+    data[20_001:20_177] = a.expand(k128)
+    data[300_000:300_240] = a.expand(k256)
+    data[400_000:400_176] = a._swap(a.expand(kswap))  # OpenSSL-style u32 round keys
+    data[100_000:100_176] = a.expand(os.urandom(16))[:-1] + b"\x00"  # damaged schedule
+    hits = {h["offset"]: h for h in a.find_keys(bytes(data))}
+    assert set(hits) == {hex(20_001), hex(300_000), hex(400_000)}
+    assert hits[hex(20_001)]["key"] == k128 and hits[hex(300_000)]["bits"] == 256
+    assert hits[hex(400_000)]["layout"] == "word-swapped" and hits[hex(400_000)]["key"] == kswap
+
+
+def test_pipeline_reports_aes_keys_without_key_bytes(tmp_path, monkeypatch):
+    import json
+    import os
+    from triageguard import memory, pipeline
+    from triageguard.crypto import aes_keyfind
+    key = os.urandom(16)
+    proc = tmp_path / "pid.816.dmp"
+    proc.write_bytes(os.urandom(4096) + aes_keyfind.expand(key) * 2 + os.urandom(4096))
+    dump = tmp_path / "mem.raw"
+    dump.write_bytes(os.urandom(8192))
+    monkeypatch.setattr(memory, "extract", lambda d, out: ({"processes": []}, []))
+    shared = tmp_path / "pid.900.dmp"  # same DLL key in two processes, plus nothing else
+    lib = aes_keyfind.expand(os.urandom(16))
+    shared.write_bytes(os.urandom(4096) + lib + os.urandom(4096))
+    proc.write_bytes(proc.read_bytes() + lib)
+    monkeypatch.setattr(memory, "keyscan_targets", lambda vol: [(816, "@WanaDecryptor@.exe"), (900, "tasksche.exe")])
+    monkeypatch.setattr(memory, "dump_process", lambda d, pid, out: proc if pid == 816 else shared)
+    db = tmp_path / "t.db"
+    pipeline.run(dump, db_path=db, workdir=tmp_path / "out", use_llm=False, log=lambda *a: None)
+    from triageguard.store import Store
+    found = [f for f in Store(db).findings(1) if f["kind"] == "aes_key"]
+    assert len(found) == 1 and "(2 copies)" in found[0]["title"] and found[0]["title"].startswith("AES-128 key of @WanaDecryptor@.exe")
+    assert key.hex() not in json.dumps(found)
+    both = [f for f in Store(db).findings(1) if f["kind"] == "aes_shared"]
+    assert len(both) == 1 and "identical in 2 processes" in both[0]["title"]
+
+
 def test_keyscan_targets_pick_ransomware():
     from triageguard import memory
     vol = {"processes": [{"PID": 4, "ImageFileName": "System"}, {"PID": 1940, "ImageFileName": "tasksche.exe"}],

@@ -448,7 +448,7 @@ function renderBoard() {
     <div class="card kpis">
       <div class="kpi"><div class="k">Dumps analysed</div><div class="v">${D.dumps.length}</div><div class="s">${D.dumps.filter((d) => d.meta.pcap).length} with a network capture</div></div>
       <div class="kpi"><div class="k">Findings</div><div class="v">${all.length}</div><div class="s">${all.filter((f) => ["critical", "high"].includes(f.severity)).length} critical or high</div></div>
-      <div class="kpi"><div class="k">RSA keys checked</div><div class="v">${rsa.length}</div><div class="s"><span style="color:${broken ? "var(--bad)" : "inherit"}">${broken} broken</span>${recovered(all).length ? ` · <span style="color:var(--good)">${recovered(all).length} private keys recovered</span>` : ""}</div></div>
+      <div class="kpi"><div class="k">RSA keys checked</div><div class="v">${rsa.length}</div><div class="s"><span style="color:${broken ? "var(--bad)" : "inherit"}">${broken} broken</span>${recovered(all).length ? ` · <span style="color:var(--good)">${recovered(all).length} keys recovered</span>` : ""}</div></div>
       <div class="kpi"><div class="k">ATT&amp;CK techniques</div><div class="v">${techs.size}</div><div class="s">${[...techs].slice(0, 3).join(" · ")}${techs.size > 3 ? " …" : ""}</div></div>
       <div class="kpi"><div class="k">LLM attacks unflagged</div><div class="v">${last ? `${last.stats.unflagged}/${last.stats.n}` : "n/a"}</div><div class="s">${last ? `plain report: ${last.stats.asr_base}/${last.stats.n} succeeded` : ""}</div></div>
     </div>
@@ -458,7 +458,7 @@ function renderBoard() {
         <div class="hd"><div><h3>${esc(d.meta.title || d.id)}</h3><div class="m">${esc(d.meta.os || "")}${d.meta.size ? " · " + esc(d.meta.size) : ""}</div></div>
           <div style="text-align:right"><div class="score" style="color:${sevVar(d.scores.band)}">${d.scores.risk}</div><span class="band sev-${d.scores.band}">${d.scores.band}</span></div></div>
         ${ceBars(d.scores)}
-        ${recovered(d.findings).length ? `<div class="keypill">${keyIcon}${recovered(d.findings).length} RSA private key${recovered(d.findings).length > 1 ? "s" : ""} recovered from memory</div>` : ""}
+        ${recovered(d.findings).length ? `<div class="keypill">${keyIcon}${recovered(d.findings).length} key${recovered(d.findings).length > 1 ? "s" : ""} recovered from memory</div>` : ""}
         <div class="kv"><span>${d.findings.length} findings</span><span>${d.findings.filter((f) => ["critical", "high"].includes(f.severity)).length} critical or high</span></div>
       </button>`).join("")}</div>
     <div class="split" style="margin-top:22px">
@@ -609,7 +609,7 @@ function fusionSvg(d) {
   s += `<line x1="0" y1="${height - 1}" x2="${W}" y2="${height - 1}" stroke="${line}"/>`;
   return s + "</svg>";
 }
-const recovered = (fs) => fs.filter((f) => f.kind === "key_recovered");
+const recovered = (fs) => fs.filter((f) => f.kind === "key_recovered" || (f.kind === "aes_key" && /^AES-/.test(f.title)));
 const keyIcon = `<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></svg>`;
 function renderSummary() {
   const d = dump(), sc = d.scores, fs = d.findings, chk = d.llm_check;
@@ -636,8 +636,8 @@ function renderSummary() {
         : `<div class="num" style="color:var(--faint)">n/a</div><div class="lab">no LLM report saved yet</div>`}</div>
       <div class="card stat"><div class="label">Source</div><div class="lab" style="margin-top:4px;color:var(--text)">${esc(d.meta.source || "unknown")}</div></div>
     </div>
-    ${recovered(fs).length ? `<div class="card keycall"><h3>${keyIcon}Private keys recovered from memory</h3>
-      <p>Data encrypted under these keys can be decrypted without the attacker's help. Windows 7's CryptoAPI leaves a key's primes (or the whole private key blob) in the process that generated it, the flaw wannakey and WanaKiwi used against WannaCry in 2017.</p>
+    ${recovered(fs).length ? `<div class="card keycall"><h3>${keyIcon}Keys recovered from memory</h3>
+      <p>Data encrypted under these keys can be decrypted without the attacker's help. RSA keys come from primes (or a whole private key blob) that Windows 7's CryptoAPI leaves in the process that generated them, the flaw wannakey and WanaKiwi used against WannaCry in 2017. AES keys come from their expanded key schedules, found the way Halderman et al. (2008) found disk keys in RAM; only a fingerprint of each AES key is kept.</p>
       <ul>${recovered(fs).map((f) => `<li>${cite(f.ref)} ${esc(f.title.replace(/: data encrypted.*$/, ""))}</li>`).join("")}</ul></div>` : ""}
     <h2>What to act on</h2>
     <div class="card tablewrap"><table>
