@@ -1,0 +1,47 @@
+[
+ {
+  "type": "process",
+  "value": "coreupdater.ex",
+  "label": "process coreupdater.ex"
+ },
+ {
+  "type": "pattern",
+  "value": "pe-in:spoolsv.exe",
+  "label": "PE injected into spoolsv.exe"
+ },
+ {
+  "type": "code",
+  "value": "5621e89c66afe6e0dcaf7cedc6a6c1b2ab26b083ab573598919d43547dd6f09a",
+  "label": "same code (5621e89c66af)"
+ },
+ {
+  "type": "code",
+  "value": "21131e6441e112aae4aa9e9b182178a4f1f10cbb8a10277563bf7bd8b62e8f41",
+  "label": "same code (21131e6441e1)"
+ },
+ {
+  "type": "code",
+  "value": "c795ba519cfef5921818891bca79e1782aff85a097c49f998e899b939f73425d",
+  "label": "same code (c795ba519cfe)"
+ },
+ {
+  "type": "code",
+  "value": "78a28fede6182752abc5d4b79f2b803b5a6ff22393c7abca0e985bb60d598ed8",
+  "label": "same code (78a28fede618)"
+ },
+ {
+  "type": "code",
+  "value": "c80e1477f73c2ced0084dbdc063bf948eac2af4c3eabd1c3a5c0bc06becf9ebe",
+  "label": "same code (c80e1477f73c)"
+ },
+ {
+  "type": "code",
+  "value": "2a3b75131c22c861276392a03929072db89596dfe551f65154c420a70d37de55",
+  "label": "same code (2a3b75131c22)"
+ },
+ {
+  "type": "code",
+  "value": "56643b9585736dd671858f36ac76bfb1152169d27b82acae7b84f0c99cacaa1f",
+  "label": "same code (56643b958573)"
+ }
+]

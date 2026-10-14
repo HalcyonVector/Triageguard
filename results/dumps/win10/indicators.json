@@ -1,0 +1,127 @@
+[
+ {
+  "type": "process",
+  "value": "coreupdater.ex",
+  "label": "process coreupdater.ex"
+ },
+ {
+  "type": "ip",
+  "value": "72.21.91.29",
+  "label": "connection to 72.21.91.29"
+ },
+ {
+  "type": "ip",
+  "value": "52.242.211.89",
+  "label": "connection to 52.242.211.89"
+ },
+ {
+  "type": "ip",
+  "value": "23.57.32.143",
+  "label": "connection to 23.57.32.143"
+ },
+ {
+  "type": "ip",
+  "value": "23.47.52.90",
+  "label": "connection to 23.47.52.90"
+ },
+ {
+  "type": "ip",
+  "value": "13.107.42.254",
+  "label": "connection to 13.107.42.254"
+ },
+ {
+  "type": "ip",
+  "value": "131.253.33.254",
+  "label": "connection to 131.253.33.254"
+ },
+ {
+  "type": "ip",
+  "value": "13.78.149.173",
+  "label": "connection to 13.78.149.173"
+ },
+ {
+  "type": "ip",
+  "value": "13.107.21.200",
+  "label": "connection to 13.107.21.200"
+ },
+ {
+  "type": "ip",
+  "value": "13.107.246.254",
+  "label": "connection to 13.107.246.254"
+ },
+ {
+  "type": "ip",
+  "value": "13.107.49.254",
+  "label": "connection to 13.107.49.254"
+ },
+ {
+  "type": "ip",
+  "value": "204.79.197.200",
+  "label": "connection to 204.79.197.200"
+ },
+ {
+  "type": "ip",
+  "value": "104.92.247.90",
+  "label": "connection to 104.92.247.90"
+ },
+ {
+  "type": "ip",
+  "value": "203.78.103.109",
+  "label": "connection to 203.78.103.109"
+ },
+ {
+  "type": "ip",
+  "value": "13.107.42.14",
+  "label": "connection to 13.107.42.14"
+ },
+ {
+  "type": "ip",
+  "value": "52.167.250.154",
+  "label": "connection to 52.167.250.154"
+ },
+ {
+  "type": "ip",
+  "value": "204.79.197.222",
+  "label": "connection to 204.79.197.222"
+ },
+ {
+  "type": "pattern",
+  "value": "pe-in:spoolsv.exe",
+  "label": "PE injected into spoolsv.exe"
+ },
+ {
+  "type": "pattern",
+  "value": "pe-in:powershell.exe",
+  "label": "PE injected into powershell.exe"
+ },
+ {
+  "type": "code",
+  "value": "2977abc8a5d4922476817ddddfad88131e3b78894ddc976a3a7306f6bd2a3a66",
+  "label": "same code (2977abc8a5d4)"
+ },
+ {
+  "type": "code",
+  "value": "e913e64ec86a65ae357593a8c7d1ed3d6ec877ad1f8b729779c758229322ac92",
+  "label": "same code (e913e64ec86a)"
+ },
+ {
+  "type": "code",
+  "value": "f1a59497f00181d38d99b5ac6c127032a0a9e5d795f467253e10d9072cdde7e6",
+  "label": "same code (f1a59497f001)"
+ },
+ {
+  "type": "code",
+  "value": "b5d0f0e62eb8c553fdd4cee4d25e7d2ea9fa90cfc83c2726655340036e0a49da",
+  "label": "same code (b5d0f0e62eb8)"
+ },
+ {
+  "type": "code",
+  "value": "d9ad4a04e8f6b1f437bfa7d4f6a7eb46b8c7e18debb608ed900f3f0fae31183c",
+  "label": "same code (d9ad4a04e8f6)"
+ },
+ {
+  "type": "code",
+  "value": "23fb76b8b17aed1a6acf3c582a01077433afd3054c1982b2734b611c2a9ce553",
+  "label": "same code (23fb76b8b17a)"
+ }
+]

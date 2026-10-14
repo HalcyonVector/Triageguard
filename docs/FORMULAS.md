@@ -20,6 +20,8 @@ the source it rests on, and what is our own choice because no standard covers it
 | OTP secret | flag under 128 bits | RFC 4226 section 4 (128 required, 160 recommended) | none |
 | JWT | `alg=none` high, HS* noted | RFC 8725 (JWT best current practice) | severities |
 | Weak TLS | SSL 3.0, TLS 1.0/1.1, RC4, DES/3DES, NULL/export, static RSA, CBC | RFC 7568, RFC 8996, RFC 7465, NIST SP 800-52 Rev. 2 | none |
+| AES key found | 16 or 32 bytes whose FIPS 197 KeyExpansion equals the next 176 or 240 bytes exactly | FIPS 197 section 5.2; search method of Halderman et al. 2008 (aeskeyfind) | exact match only (no bit-error tolerance, since process dumps are not decayed RAM) |
+| Campaign link | `sum over shared indicators w_type * ln((N + 1) / df)`, linked at 2.5 | inverse document frequency (Spärck Jones 1972); known-normal process baseline from the SANS Hunt Evil poster | type weights (process, code, key 3; IP 2; injection pattern 1) and the 2.5 threshold |
 | Attack success rate | successes / trials, 95% Wilson interval | Wilson 1927 | none |
 | Defence effect | two-sided Fisher exact test, baseline vs defended | Fisher 1922 | none |
 | Citation rate | cited claim lines / claim lines, pass at 90% | our objective O6 | the 90% bar |

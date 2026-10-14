@@ -253,6 +253,13 @@ dialog::backdrop { background: rgba(3,6,12,.6); backdrop-filter: blur(3px); }
 .check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
 .err { color: var(--bad); font-size: 13.5px; }
 .keypill { margin-top: 10px; font: 600 12px var(--mono); color: var(--good); background: color-mix(in srgb, var(--good) 12%, transparent); border: 1px solid color-mix(in srgb, var(--good) 40%, transparent); border-radius: 8px; padding: 5px 9px; }
+.linkpill { margin-top: 10px; font: 600 12px var(--mono); color: var(--accent2); background: color-mix(in srgb, var(--accent2) 12%, transparent); border: 1px solid color-mix(in srgb, var(--accent2) 40%, transparent); border-radius: 8px; padding: 5px 9px; }
+.camp + .camp { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+.camphd { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; color: var(--accent2); }
+.camphd b { color: var(--text); }
+.campscore { margin-left: auto; font: 700 18px var(--mono); color: var(--accent2); }
+.camp ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 3px; font-size: 13.5px; }
+.camp li .mono { color: var(--muted); margin-right: 6px; font-size: 12px; }
 .keycall { margin-top: 14px; border-color: color-mix(in srgb, var(--good) 45%, var(--line)); }
 .keycall h3 { color: var(--good); }
 .keycall p { color: var(--muted); font-size: 13.5px; margin: 6px 0 8px; max-width: 80ch; }
@@ -436,6 +443,24 @@ function cipherRows() {
   }));
   return [Object.keys(names).sort((a, b) => names[b] - names[a]).slice(0, 7), per];
 }
+/* ---------- Campaigns: dumps linked by shared attacker evidence ---------- */
+const linkIcon = `<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>`;
+const title = (id) => { const d = D.dumps.find((x) => x.id === id); return d ? (d.meta.title || id) : id; };
+function linkedTo(id) {
+  const c = ((D.campaigns || {}).campaigns || []).find((g) => g.includes(id));
+  return c ? c.filter((x) => x !== id) : [];
+}
+function campaignHtml() {
+  const C = D.campaigns || {pairs: [], campaigns: []}, linked = C.pairs.filter((p) => p.linked);
+  const intro = `Dumps are linked when the attacker evidence they share adds up to ${C.threshold || 2.5} or more. Each shared indicator counts by type (process 3, code 3, key 3, IP 2, pattern 1) times its rarity ln((N+1)/df) across the ${D.dumps.length} dumps, so what every Windows host has counts for almost nothing.`;
+  return `<h2>Campaigns</h2>
+    <div class="card campcard"><p class="muted" style="margin:0 0 12px;max-width:80ch;font-size:13.5px">${intro}</p>
+    ${linked.length ? linked.map((p) => `<div class="camp"><div class="camphd">${linkIcon}<b>${esc(title(p.a))}</b><span class="muted"> and </span><b>${esc(title(p.b))}</b><span class="campscore">${p.score.toFixed(1)}</span></div>
+      <ul>${p.shared.map((x) => `<li><span class="mono">${x.weight.toFixed(1)}</span> ${esc(x.label)}</li>`).join("")}</ul></div>`).join("")
+      : '<p class="muted">No two dumps share enough attacker evidence to be linked.</p>'}
+    ${C.pairs.filter((p) => !p.linked).length ? `<p class="muted" style="margin:10px 0 0;font-size:12.5px">${C.pairs.filter((p) => !p.linked).length} other pair(s) share some evidence but stay under the threshold.</p>` : ""}
+    </div>`;
+}
 function renderBoard() {
   const last = D.rounds[D.rounds.length - 1];
   const all = D.dumps.flatMap((d) => d.findings.map((f) => ({...f, dump: d})));
@@ -459,8 +484,10 @@ function renderBoard() {
           <div style="text-align:right"><div class="score" style="color:${sevVar(d.scores.band)}">${d.scores.risk}</div><span class="band sev-${d.scores.band}">${d.scores.band}</span></div></div>
         ${ceBars(d.scores)}
         ${recovered(d.findings).length ? `<div class="keypill">${keyIcon}${recovered(d.findings).length} key${recovered(d.findings).length > 1 ? "s" : ""} recovered from memory</div>` : ""}
+        ${linkedTo(d.id).length ? `<div class="linkpill">${linkIcon}Same intrusion as ${linkedTo(d.id).map((x) => esc(title(x))).join(", ")}</div>` : ""}
         <div class="kv"><span>${d.findings.length} findings</span><span>${d.findings.filter((f) => ["critical", "high"].includes(f.severity)).length} critical or high</span></div>
       </button>`).join("")}</div>
+    ${campaignHtml()}
     <div class="split" style="margin-top:22px">
       <div class="card"><h3>Most serious findings</h3><div class="toplist">${serious.map((f) => `
         <button class="topitem" type="button" data-open="${f.dump.id}|${f.ref}"><span class="chip sev-${f.severity}">${f.severity}</span><span class="t">${esc(f.title)}</span>

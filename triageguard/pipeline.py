@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from . import credentials, memory, network, report, static
+from . import campaign, credentials, memory, network, report, static
 from . import crypto
 from .crypto import aes_keyfind, key_recovery, rsa_weak
 from .store import Store
@@ -94,7 +94,10 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
         if isinstance(rows, dict) and "skipped" in rows:
             log(f"      {label}: skipped ({rows['skipped']})")
             continue
-        db.add("memory", label, f"{label}: {len(rows)} rows", {"rows": rows[:200]}, "info", dump)
+        keep = rows[:200]
+        if label == "network":  # every connection to a public address, which campaign linking compares
+            keep += [r for r in rows[200:] if isinstance(r, dict) and campaign.public_ip(r.get("ForeignAddr"))]
+        db.add("memory", label, f"{label}: {len(rows)} rows", {"rows": keep}, "info", dump)
     for flag in memory.suspicious_processes(vol):
         db.add("memory", "suspicious_process", f"PID {flag['pid']} {flag['process']}: {flag['reason']}", flag, flag["severity"], dump, flag["pid"])
 

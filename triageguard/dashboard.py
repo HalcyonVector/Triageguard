@@ -23,7 +23,7 @@ import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from . import attack, memory, report
+from . import attack, campaign, memory, report
 from .store import Store
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -51,6 +51,7 @@ def export_dump(db_path, out_dir, run_id=1, meta=None):
     slim = [{k: f[k] for k in LIST_FIELDS} for f in full]
     (out / "findings.json").write_text(json.dumps(slim, indent=1), encoding="utf-8")
     (out / "report_rules.md").write_text(report.rule_report(full), encoding="utf-8")
+    (out / "indicators.json").write_text(json.dumps(campaign.indicators(full), indent=1), encoding="utf-8")
     info = dict(meta or {})
     info.update({"findings": len(full), "risk": report.risk_score(full), "compromise": report.compromise_score(full),
                  "exposure": report.exposure_score(full)})
@@ -163,7 +164,7 @@ def load(results_dir):
         if rows:
             rounds.append({"name": name, "note": note, "rows": rows, "stats": round_stats(rows)})
     return {"dumps": dumps, "rounds": rounds, "redteam": rounds[-1]["rows"] if rounds else [],
-            "techniques": {k: list(v) for k, v in attack.TECHNIQUES.items()}}
+            "techniques": {k: list(v) for k, v in attack.TECHNIQUES.items()}, "campaigns": campaign.load(results)}
 
 
 # ------------------------------------------------------------- analyse-a-dump jobs

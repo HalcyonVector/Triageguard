@@ -1,0 +1,82 @@
+[
+ {
+  "type": "process",
+  "value": "ed01ebfbc9eb5b",
+  "label": "process ed01ebfbc9eb5b"
+ },
+ {
+  "type": "process",
+  "value": "@wanadecryptor",
+  "label": "process @WanaDecryptor"
+ },
+ {
+  "type": "process",
+  "value": "taskhsvc.exe",
+  "label": "process taskhsvc.exe"
+ },
+ {
+  "type": "ip",
+  "value": "20.83.81.164",
+  "label": "connection to 20.83.81.164"
+ },
+ {
+  "type": "ip",
+  "value": "193.218.118.160",
+  "label": "connection to 193.218.118.160"
+ },
+ {
+  "type": "ip",
+  "value": "130.89.149.57",
+  "label": "connection to 130.89.149.57"
+ },
+ {
+  "type": "ip",
+  "value": "195.201.62.239",
+  "label": "connection to 195.201.62.239"
+ },
+ {
+  "type": "ip",
+  "value": "86.59.21.38",
+  "label": "connection to 86.59.21.38"
+ },
+ {
+  "type": "ip",
+  "value": "171.25.193.78",
+  "label": "connection to 171.25.193.78"
+ },
+ {
+  "type": "ip",
+  "value": "212.230.153.72",
+  "label": "connection to 212.230.153.72"
+ },
+ {
+  "type": "code",
+  "value": "71aaa58cd9d95cfb27ec85e43d5c05719a1f51fbebf26346a040b9e16ae015dd",
+  "label": "same code (71aaa58cd9d9)"
+ },
+ {
+  "type": "code",
+  "value": "ab2b3e2edc30f38ec2331f796364bd9cedd685b22adfe8aaf9be60c4241cf600",
+  "label": "same code (ab2b3e2edc30)"
+ },
+ {
+  "type": "code",
+  "value": "3164c1cee133d15096993b39a18438944b6f6f53c2ec5474339a38a81e31a3da",
+  "label": "same code (3164c1cee133)"
+ },
+ {
+  "type": "pattern",
+  "value": "tor",
+  "label": "Tor client"
+ },
+ {
+  "type": "key",
+  "value": "d56283908fe5946b",
+  "label": "same RSA private key (d56283908fe5)"
+ },
+ {
+  "type": "key",
+  "value": "992742855101f24a",
+  "label": "same RSA private key (992742855101)"
+ }
+]

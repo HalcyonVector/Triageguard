@@ -364,6 +364,22 @@ def test_pipeline_reports_aes_keys_without_key_bytes(tmp_path, monkeypatch):
     assert len(both) == 1 and "identical in 2 processes" in both[0]["title"]
 
 
+def test_campaign_links_only_rare_shared_evidence():
+    from triageguard import campaign
+    def proc(*names):
+        return {"kind": "processes", "data": {"rows": [{"ImageFileName": n} for n in names]}}
+    net = {"kind": "network", "data": {"rows": [{"ForeignAddr": "10.0.0.5"}, {"ForeignAddr": "194.61.24.102"}]}}
+    inds = {"dc": campaign.indicators([proc("lsass.exe", "FTK Imager.exe", "coreupdater.ex"), net]),
+            "desk": campaign.indicators([proc("svchost.exe", "FTK Imager.exe", "coreupdater.exe"[:14]), net]),
+            "other": campaign.indicators([proc("svchost.exe", "FTK Imager.exe", "evil.exe")]),
+            "clean": campaign.indicators([proc("svchost.exe")])}
+    assert {x["value"] for x in inds["dc"]} == {"coreupdater.ex", "194.61.24.102"}  # private IP, baseline and tools dropped
+    r = campaign.link(inds)
+    assert r["campaigns"] == [["dc", "desk"]]
+    top = r["pairs"][0]
+    assert top["linked"] and [x["type"] for x in top["shared"]] == ["process", "ip"]
+
+
 def test_keyscan_targets_pick_ransomware():
     from triageguard import memory
     vol = {"processes": [{"PID": 4, "ImageFileName": "System"}, {"PID": 1940, "ImageFileName": "tasksche.exe"}],
