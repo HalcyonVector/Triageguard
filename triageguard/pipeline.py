@@ -91,6 +91,8 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
     log("[1/6] Volatility3 extraction")
     vol, dumped = memory.extract(dump, workdir / "malfind") if memory_stage else ({}, [])
     for label, rows in vol.items():
+        if label.startswith("_"):
+            continue
         if isinstance(rows, dict) and "skipped" in rows:
             log(f"      {label}: skipped ({rows['skipped']})")
             continue
@@ -127,7 +129,7 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
     aes_keys = {}
     for pid, name in memory.keyscan_targets(vol) if memory_stage else []:
         log(f"      key recovery: dumping {name} (PID {pid})")
-        pdump = memory.dump_process(dump, pid, workdir / "procs")
+        pdump = memory.dump_process(dump, pid, workdir / "procs", vol.get("_os", "windows"))
         if not pdump:
             continue
         with open(pdump, "rb") as f:

@@ -12,3 +12,6 @@ redteam_results/
 
 # Office lock files
 ~$*
+
+# Volatility symbol tables (ISF) for Linux images; large and kernel-specific
+symbols/

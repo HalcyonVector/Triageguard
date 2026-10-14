@@ -43,10 +43,30 @@ vmicsvc.exe mscorsvw.exe EMET_Service.exe EMET_Agent.exe VSSVC.exe wbengine.exe 
 """.split()}
 
 
+# Linux: kernel threads and the daemons and desktop of a stock Ubuntu/Debian/RHEL install,
+# matched as name prefixes (kworker/0:1, gsd-power, systemd-journal, ...)
+LINUX_KNOWN = tuple("""
+kworker ksoftirqd migration rcu_ cpuhp idle_inject kthreadd irq/ watchdog scsi_ jbd2 ext4- kswapd khugepaged
+oom_reaper kcompactd kblockd ata_sff md edac devfreq kdevtmpfs netns writeback kintegrityd kauditd khungtaskd
+ksmd crypto kthrotld acpi_thermal ipv6_addrconf zswap card mm_percpu ttm vmw_ psimon pool_workqueue charger_manager
+init systemd (sd-pam) sshd sh bash dash zsh cron atd rsyslogd dbus polkitd agetty login sudo su snapd snap
+networkmanager networkd-dispat udisksd modemmanager accounts-daemon avahi-daemon cupsd cups-browsed gdm gnome-
+gsd- xorg xwayland pulseaudio pipewire wireplumber gvfs at-spi ibus- tracker- evolution- vmtoolsd vgauthservice
+containerd dockerd multipathd irqbalance thermald unattended-upgr packagekitd upowerd colord whoopsie kerneloops
+rtkit-daemon switcheroo-cont power-profiles- wpa_supplicant fwupd update-notifier nautilus xdg- dconf-service
+goa- gjs mutter-x11-fram ssh-agent gpg-agent less vim nano top ps journalctl avml lime insmod
+""".split())
+# names that come numbered or suffixed (kworker/0:1, systemd-journal, gsd-power); the rest match exactly
+LINUX_FAMILIES = tuple(k for k in LINUX_KNOWN if k[-1] in "-_/" or k in (
+    "kworker", "ksoftirqd", "migration", "cpuhp", "idle_inject", "watchdog", "jbd2", "kswapd", "kcompactd",
+    "kblockd", "card", "systemd", "dbus", "gdm", "pipewire", "gvfs", "at-spi", "networkmanager"))
+
+
 def _known(name):
-    # Volatility cuts image names to 14 characters, so compare on that prefix too
+    # Volatility cuts image names to 14 characters (Linux to 15), so compare on that prefix too
     n = name.lower()
-    return n in KNOWN_GOOD or any(k.startswith(n) for k in KNOWN_GOOD if len(n) >= 14)
+    return (n in KNOWN_GOOD or any(k.startswith(n) for k in KNOWN_GOOD if len(n) >= 14)
+            or n in LINUX_KNOWN or n.startswith(LINUX_FAMILIES))
 
 
 def public_ip(addr):

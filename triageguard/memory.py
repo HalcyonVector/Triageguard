@@ -1,7 +1,9 @@
 """Volatility3 wrapper. Runs plugins via the `vol` CLI and returns parsed JSON.
 
-If Volatility3 is not installed, or the dump is not a recognisable Windows
-image, each plugin is reported as skipped and the rest of the pipeline still
+Windows images get the windows.* plugins; when no Windows kernel is found the
+linux.* set is tried, and its rows are renamed to the Windows column names so every
+later stage reads one shape. If Volatility3 is not installed, or the dump is neither,
+each plugin is reported as skipped and the rest of the pipeline still
 runs (crypto and credential scans work on raw bytes).
 """
 
@@ -24,13 +26,22 @@ PLUGINS = [
     ("injected", ["windows.malware.malfind", "windows.malfind"], ["--dump"]),
     ("usb", ["windows.registry.printkey"], ["--key", r"ControlSet001\Enum\USBSTOR"]),
 ]
+# Linux: the same five questions. Rows are renamed by LINUX_COLUMNS below.
+PLUGINS_LINUX = [
+    ("processes", ["linux.pslist"], []),
+    ("cmdlines", ["linux.psaux"], []),
+    ("network", ["linux.sockstat"], []),
+    ("injected", ["linux.malware.malfind", "linux.malfind"], ["--dump-regions"]),
+    ("bash", ["linux.bash"], []),
+]
+LINUX_COLUMNS = {"COMM": "ImageFileName", "ARGS": "Args", "Destination Addr": "ForeignAddr",
+                 "Source Addr": "LocalAddr", "Process Name": "Owner"}
 TIMEOUT = 1800
 # Offline symbol tables (ISF JSON) for networks that block the Microsoft symbol
 # server, e.g. JPCERTCC/Windows-Symbol-Tables. Point this at the folder.
-SYMBOLS = os.environ.get("TRIAGEGUARD_VOL_SYMBOLS")
-
-
 ROOT = Path(__file__).resolve().parents[1]
+# A Linux image needs the ISF of its exact kernel; unzip it into <project>/symbols/linux/
+SYMBOLS = os.environ.get("TRIAGEGUARD_VOL_SYMBOLS") or (str(ROOT / "symbols") if (ROOT / "symbols").is_dir() else None)
 
 
 def venv_python():
@@ -67,14 +78,44 @@ def run_plugin(dump, plugin, extra=(), outdir=None):
     return json.loads(proc.stdout or "[]")
 
 
+def _linux_rows(rows):
+    if not isinstance(rows, list):
+        return rows
+    out = []
+    for r in rows:
+        r = {LINUX_COLUMNS.get(k, k): v for k, v in r.items()} if isinstance(r, dict) else r
+        if isinstance(r, dict) and "COMM" not in r and "ImageFileName" in r and "Process" not in r:
+            r["Process"] = r["ImageFileName"]
+        out.append(r)
+    return out
+
+
+def detect_os(dump):
+    """'windows', 'linux' or None, by which kernel Volatility can find."""
+    for os_name, plugin in (("windows", "windows.info"), ("linux", "linux.pslist")):
+        try:
+            run_plugin(dump, plugin)
+            return os_name
+        except Exception:
+            continue
+    return None
+
+
 def extract(dump, outdir):
-    """Run all plugins. Returns {label: rows or {"skipped": reason}} and dumped region files."""
+    """Run all plugins. Returns {label: rows or {"skipped": reason}} and dumped region
+    files; results["_os"] says which plugin set ran."""
     results, dumped = {}, []
     if not _vol():
         return {label: {"skipped": "volatility3 not installed"} for label, _, _ in PLUGINS}, dumped
     outdir = Path(outdir)
     outdir.mkdir(parents=True, exist_ok=True)
-    for label, names, extra in PLUGINS:
+    os_name = detect_os(dump)
+    if os_name is None:
+        reason = ("no Windows or Linux kernel found (not a supported image, or symbols missing: Windows symbols "
+                  "download automatically, a Linux image needs its kernel's ISF in symbols/linux/)")
+        return {lbl: {"skipped": reason} for lbl, _, _ in PLUGINS}, dumped
+    results["_os"] = os_name
+    for label, names, extra in PLUGINS if os_name == "windows" else PLUGINS_LINUX:
         err = None
         for name in names:
             try:
@@ -84,12 +125,12 @@ def extract(dump, outdir):
             except Exception as e:  # wrong plugin name, unsupported OS profile, timeout...
                 err = str(e)
         else:
-            if "kernel.symbol_table_name" in (err or ""):
-                # no Windows kernel found: every other plugin will fail the same way, so stop here
-                reason = "no Windows kernel found (not a Windows image, or symbols could not be downloaded; see TRIAGEGUARD_VOL_SYMBOLS)"
-                return {lbl: {"skipped": reason} for lbl, _, _ in PLUGINS}, dumped
             if not isinstance(results.get(label), list):  # keep an empty-but-valid result
                 results[label] = {"skipped": err}
+    if os_name == "linux":
+        for label in results:
+            if label != "_os":
+                results[label] = _linux_rows(results[label])
     # malfind --dump writes one .dmp per injected region; these go to crypto/static analysis
     dumped = sorted(outdir.glob("*.dmp"))
     return results, dumped
@@ -100,6 +141,13 @@ def extract(dump, outdir):
 JIT_PROCESSES = {"msmpeng.exe", "msedge.exe", "msedgewebview2.exe", "chrome.exe", "firefox.exe", "mpdefendercoreservice.exe"}
 SHELLS = {"cmd.exe", "powershell.exe", "pwsh.exe"}
 SHELL_PARENTS = {"explorer.exe", "cmd.exe", "powershell.exe", "pwsh.exe", "conhost.exe", "windowsterminal.exe", "wt.exe"}
+LINUX_JIT = {"java", "node", "chrome", "firefox", "dotnet", "qemu-system-x86", "Xorg", "gnome-shell"}
+LINUX_SHELLS = {"sh", "bash", "dash", "zsh", "ksh", "busybox"}
+# a shell whose parent is a network service is the classic web shell or exploited daemon
+SERVICE_PARENTS = {"apache2", "httpd", "nginx", "php-fpm", "php", "mysqld", "postgres", "java", "tomcat", "node", "python3", "perl"}
+LINUX_TMP_RE = re.compile(r"^(?:\S*/)?(?:/tmp|/dev/shm|/var/tmp|/run/user/\d+)/")
+BASH_RE = re.compile(r"(curl|wget)[^|;]*\|\s*(ba)?sh|base64\s+-d[^|;]*\|\s*(ba)?sh|nc(at)?\s.*-e\s|/dev/tcp/|chmod\s+\+x\s+/(tmp|dev/shm)|"
+                     r"openssl\s+enc|gpg\s+(-c|--symmetric)|shred\s|history\s+-c|crontab\s", re.I)
 CMDLINE_RE = re.compile(r"encrypt|decrypt|ransom|\.locked|vssadmin|shadowcopy|bcdedit|wbadmin|cipher(\.exe)?\s+/w", re.I)
 USER_DIRS_RE = re.compile(r"\\Users\\[^\\]+\\(Desktop|Downloads|AppData\\Local\\Temp)\\", re.I)
 
@@ -137,7 +185,9 @@ def suspicious_processes(results):
             name = str(row.get("Process"))
             if head.startswith(b"MZ"):
                 sev, why = "critical", "contains a PE header (MZ), likely injected DLL/EXE"
-            elif name.lower() in JIT_PROCESSES:
+            elif head.startswith(b"\x7fELF"):
+                sev, why = "critical", "contains an ELF header, likely a loaded-from-memory binary"
+            elif name.lower() in JIT_PROCESSES or name in LINUX_JIT:
                 sev, why = "low", "known JIT process, RWX private memory is expected"
             elif not head[:16].strip(b"\x00"):
                 # shellcode starts executing at the region base; a zeroed head is a data/thunk block
@@ -147,7 +197,7 @@ def suspicious_processes(results):
             else:
                 sev, why = "high", "executable private memory with code unique to this process"
             entry = by_pid.setdefault((row.get("PID"), name), {"regions": [], "sev": [], "why": {}})
-            entry["regions"].append(f"{_hex(row.get('Start VPN'))} {row.get('Protection')}")
+            entry["regions"].append(f"{_hex(row.get('Start VPN', row.get('Start')))} {row.get('Protection')}")
             entry["sev"].append(sev)
             entry["why"][why] = entry["why"].get(why, 0) + 1
         order = ["info", "low", "medium", "high", "critical"]
@@ -169,12 +219,27 @@ def suspicious_processes(results):
                 if parent and parent not in SHELL_PARENTS:
                     flags.append({"pid": p.get("PID"), "process": p.get("ImageFileName"), "severity": "medium",
                                   "reason": f"shell started by {parent} (PID {p.get('PPID')}), not by a user session or another shell"})
+    if isinstance(procs, list) and results.get("_os") == "linux":
+        names = {p.get("PID"): str(p.get("ImageFileName", "")) for p in procs}
+        for p in procs:
+            parent = names.get(p.get("PPID"), "")
+            if str(p.get("ImageFileName", "")) in LINUX_SHELLS and parent in SERVICE_PARENTS:
+                flags.append({"pid": p.get("PID"), "process": p.get("ImageFileName"), "severity": "high",
+                              "reason": f"shell started by the network service {parent} (PID {p.get('PPID')}), likely a web shell or exploited daemon"})
+    for r in results.get("bash") if isinstance(results.get("bash"), list) else []:
+        cmd = str(r.get("Command") or "")
+        if m := BASH_RE.search(cmd):
+            flags.append({"pid": r.get("PID"), "process": r.get("Process"), "severity": "medium", "cmdline": cmd[:500],
+                          "reason": f"bash history: '{m.group(0).strip()}' in {cmd[:200]}"})
     if isinstance(cmdlines, list):
         for r in cmdlines:
             args = str(r.get("Args") or "")
             if m := CMDLINE_RE.search(args):
                 flags.append({"pid": r.get("PID"), "process": r.get("Process"), "severity": "medium", "cmdline": args[:500],
                               "reason": f"command line mentions '{m.group(0)}': {args[:200]}"})
+            elif LINUX_TMP_RE.search(args.split(" ")[0]):
+                flags.append({"pid": r.get("PID"), "process": r.get("Process"), "severity": "medium", "cmdline": args[:500],
+                              "reason": f"runs from a world-writable temp folder: {args[:200]}"})
             elif USER_DIRS_RE.search(args.split('" ')[0]):
                 flags.append({"pid": r.get("PID"), "process": r.get("Process"), "severity": "low", "cmdline": args[:500],
                               "reason": f"runs from a user-writable folder: {args[:200]}"})
@@ -198,18 +263,32 @@ def keyscan_targets(results):
         if not isinstance(r, dict):
             continue
         args = str(r.get("Args") or "")
-        if CMDLINE_RE.search(args) or RANSOM_NAMES.search(args) or USER_DIRS_RE.search(args.split('" ')[0]):
+        if CMDLINE_RE.search(args) or RANSOM_NAMES.search(args) or USER_DIRS_RE.search(args.split('" ')[0]) \
+                or LINUX_TMP_RE.search(args.split(" ")[0]):
             pids.setdefault(r.get("PID"), str(r.get("Process")))
     return list(pids.items())[:MAX_KEYSCAN]
 
 
-def dump_process(dump, pid, outdir):
-    """Write the whole address space of one process (windows.memmap --dump); returns the file or None."""
+def dump_process(dump, pid, outdir, os_name="windows"):
+    """Write the whole address space of one process to pid.<pid>.dmp; returns the file or None.
+    Windows: windows.memmap --dump. Linux: linux.proc.Maps --dump writes one file per
+    mapping, joined here in address order."""
     outdir = Path(outdir)
     outdir.mkdir(parents=True, exist_ok=True)
+    plugin = "linux.proc.Maps" if os_name == "linux" else "windows.memmap"
     try:
-        run_plugin(dump, "windows.memmap", ["--pid", str(pid), "--dump"], outdir)
+        run_plugin(dump, plugin, ["--pid", str(pid), "--dump"], outdir)
     except Exception:
         return None
+    if os_name == "linux":
+        parts = sorted(outdir.glob(f"pid.{pid}.vma.*.dmp"), key=lambda f: int(f.name.split(".vma.")[1].split("-")[0], 16))
+        if not parts:
+            return None
+        whole = outdir / f"pid.{pid}.dmp"
+        with open(whole, "wb") as out:
+            for part in parts:
+                out.write(part.read_bytes())
+                part.unlink()
+        return whole
     files = sorted(outdir.glob(f"pid.{pid}.dmp"))
     return files[0] if files else None
