@@ -150,7 +150,8 @@ def load(results_dir):
             "findings": findings,
             # recomputed from the findings, so an old meta.json can't show stale scores
             "scores": {"risk": risk, "band": report.risk_band(risk), "compromise": report.compromise_score(findings),
-                       "exposure": report.exposure_score(findings), "reliability": report.EXPOSURE_RELIABILITY},
+                       "exposure": report.exposure_score(findings), "reliability": report.EXPOSURE_RELIABILITY,
+                       "range": report.score_range(findings)},
             "breakdown": report.risk_breakdown(findings),
             "matrix": attack.matrix(findings),
             "report_llm": llm,
@@ -164,7 +165,8 @@ def load(results_dir):
         if rows:
             rounds.append({"name": name, "note": note, "rows": rows, "stats": round_stats(rows)})
     return {"dumps": dumps, "rounds": rounds, "redteam": rounds[-1]["rows"] if rounds else [],
-            "techniques": {k: list(v) for k, v in attack.TECHNIQUES.items()}, "campaigns": campaign.load(results)}
+            "techniques": {k: list(v) for k, v in attack.TECHNIQUES.items()}, "campaigns": campaign.load(results),
+            "benchmark": json.loads(_read(results / "benchmark" / "summary.json") or "null")}
 
 
 # ------------------------------------------------------------- analyse-a-dump jobs

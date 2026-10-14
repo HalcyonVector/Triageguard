@@ -22,6 +22,7 @@ the source it rests on, and what is our own choice because no standard covers it
 | Weak TLS | SSL 3.0, TLS 1.0/1.1, RC4, DES/3DES, NULL/export, static RSA, CBC | RFC 7568, RFC 8996, RFC 7465, NIST SP 800-52 Rev. 2 | none |
 | AES key found | 16 or 32 bytes whose FIPS 197 KeyExpansion equals the next 176 or 240 bytes exactly | FIPS 197 section 5.2; search method of Halderman et al. 2008 (aeskeyfind) | exact match only (no bit-error tolerance, since process dumps are not decayed RAM) |
 | Campaign link | `sum over shared indicators w_type * ln((N + 1) / df)`, linked at 2.5 | inverse document frequency (Spärck Jones 1972); known-normal process baseline from the SANS Hunt Evil poster | type weights (process, code, key 3; IP 2; injection pattern 1) and the 2.5 threshold |
+| Score range | the same fusion with every finding at the bottom (critical 0.90, high 0.70, medium 0.40, low 0.01) and then the top (1.00, 0.89, 0.69, 0.39) of its band | CVSS v3.1 band edges; interval-valued masses bound a monotone combination exactly (Denoeux 1999, IJAR 20) | none |
 | Attack success rate | successes / trials, 95% Wilson interval | Wilson 1927 | none |
 | Defence effect | two-sided Fisher exact test, baseline vs defended | Fisher 1922 | none |
 | Citation rate | cited claim lines / claim lines, pass at 90% | our objective O6 | the 90% bar |

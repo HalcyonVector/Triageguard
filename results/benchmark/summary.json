@@ -1,0 +1,29 @@
+{
+ "trials": 5,
+ "python": "3.13.16",
+ "cipher_id_recall": {
+  "hit": 30,
+  "n": 35
+ },
+ "cipher_id_control_flags": {
+  "hit": 5,
+  "n": 5
+ },
+ "aes_live_recall": {
+  "hit": 10,
+  "n": 10
+ },
+ "aes_freed_found": {
+  "hit": 0,
+  "n": 5
+ },
+ "aes_control_false_keys": 0,
+ "rsa_live_recovered": {
+  "hit": 5,
+  "n": 5
+ },
+ "rsa_freed_recovered": {
+  "hit": 0,
+  "n": 5
+ }
+}

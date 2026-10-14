@@ -335,6 +335,15 @@ def test_aes_key_schedules_are_found():
     assert set(hits) == {hex(20_001), hex(300_000), hex(400_000)}
     assert hits[hex(20_001)]["key"] == k128 and hits[hex(300_000)]["bits"] == 256
     assert hits[hex(400_000)]["layout"] == "word-swapped" and hits[hex(400_000)]["key"] == kswap
+    # 1 key in 256 has a schedule byte that XORs to zero right after the 12-byte run
+    while True:
+        k = os.urandom(16)
+        s = a.expand(k)
+        if s[32] ^ s[16] ^ s[28] == 0:
+            break
+    buf = bytearray(os.urandom(4096))
+    buf[1000:1176] = s
+    assert [h["key"] for h in a.find_keys(bytes(buf))] == [k]
 
 
 def test_pipeline_reports_aes_keys_without_key_bytes(tmp_path, monkeypatch):
@@ -378,6 +387,25 @@ def test_campaign_links_only_rare_shared_evidence():
     assert r["campaigns"] == [["dc", "desk"]]
     top = r["pairs"][0]
     assert top["linked"] and [x["type"] for x in top["shared"]] == ["process", "ip"]
+
+
+def test_ground_truth_reads_back_a_live_aes_key():
+    import pytest
+    from pathlib import Path
+    if not Path("/proc/self/mem").exists():
+        pytest.skip("reads /proc/<pid>/mem, Linux only")
+    from triageguard import benchmark
+    row = benchmark.run_case("aes128_live", 1)
+    assert row["aes_key_found"] and row["used_cipher_found"]
+
+
+def test_score_range_brackets_the_score():
+    from triageguard import report
+    fs = [{"ref": "F1", "module": "memory", "kind": "suspicious_process", "severity": "medium", "title": "x", "data": {}},
+          {"ref": "F2", "module": "rsa", "kind": "rsa_key", "severity": "critical", "title": "RSA-512 key e=65537 (CAPI blob)", "data": {}}]
+    r = report.score_range(fs)
+    assert r["low"]["risk"] <= report.risk_score(fs) <= r["high"]["risk"]
+    assert (r["low"]["compromise"], r["high"]["compromise"]) == (40, 69)
 
 
 def test_keyscan_targets_pick_ransomware():

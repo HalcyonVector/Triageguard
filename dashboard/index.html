@@ -253,6 +253,15 @@ dialog::backdrop { background: rgba(3,6,12,.6); backdrop-filter: blur(3px); }
 .check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
 .err { color: var(--bad); font-size: 13.5px; }
 .keypill { margin-top: 10px; font: 600 12px var(--mono); color: var(--good); background: color-mix(in srgb, var(--good) 12%, transparent); border: 1px solid color-mix(in srgb, var(--good) 40%, transparent); border-radius: 8px; padding: 5px 9px; }
+.rng { margin-top: 6px; font-size: 11.5px; color: var(--muted); }
+.rangebar { margin-top: 14px; }
+.rbar { position: relative; height: 10px; border-radius: 5px; background: var(--panel2); }
+.rbar .tick { position: absolute; top: -3px; bottom: -3px; width: 1px; background: var(--line); }
+.rbar .rspan { position: absolute; top: 0; bottom: 0; border-radius: 5px; background: color-mix(in srgb, var(--accent2) 45%, transparent); }
+.rbar .rdot { position: absolute; top: 50%; width: 12px; height: 12px; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 0 2px var(--bg2); }
+.rlab { position: relative; height: 16px; font-size: 10.5px; color: var(--faint); margin-top: 4px; }
+.rlab span { position: absolute; transform: translateX(-50%); }
+.rlab span:first-child { transform: none; }
 .linkpill { margin-top: 10px; font: 600 12px var(--mono); color: var(--accent2); background: color-mix(in srgb, var(--accent2) 12%, transparent); border: 1px solid color-mix(in srgb, var(--accent2) 40%, transparent); border-radius: 8px; padding: 5px 9px; }
 .camp + .camp { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
 .camphd { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; color: var(--accent2); }
@@ -481,7 +490,7 @@ function renderBoard() {
     <div class="grid g3">${D.dumps.map((d) => `
       <button class="card dumpcard ${d.id === dump().id ? "sel" : ""}" data-dump="${d.id}" type="button">
         <div class="hd"><div><h3>${esc(d.meta.title || d.id)}</h3><div class="m">${esc(d.meta.os || "")}${d.meta.size ? " · " + esc(d.meta.size) : ""}</div></div>
-          <div style="text-align:right"><div class="score" style="color:${sevVar(d.scores.band)}">${d.scores.risk}</div><span class="band sev-${d.scores.band}">${d.scores.band}</span></div></div>
+          <div style="text-align:right"><div class="score" style="color:${sevVar(d.scores.band)}">${d.scores.risk}</div><span class="band sev-${d.scores.band}">${d.scores.band}</span>${rangeTxt(d.scores)}</div></div>
         ${ceBars(d.scores)}
         ${recovered(d.findings).length ? `<div class="keypill">${keyIcon}${recovered(d.findings).length} key${recovered(d.findings).length > 1 ? "s" : ""} recovered from memory</div>` : ""}
         ${linkedTo(d.id).length ? `<div class="linkpill">${linkIcon}Same intrusion as ${linkedTo(d.id).map((x) => esc(title(x))).join(", ")}</div>` : ""}
@@ -636,6 +645,14 @@ function fusionSvg(d) {
   s += `<line x1="0" y1="${height - 1}" x2="${W}" y2="${height - 1}" stroke="${line}"/>`;
   return s + "</svg>";
 }
+const risk_band_name = (s) => s >= 90 ? "critical" : s >= 70 ? "high" : s >= 40 ? "medium" : s > 0 ? "low" : "none";
+const rangeTxt = (sc) => sc.range ? `<div class="rng mono" title="score with every finding at the bottom, then the top of its CVSS band">${sc.range.low.risk} to ${sc.range.high.risk}</div>` : "";
+function rangeBar(sc) {
+  const lo = sc.range.low.risk, hi = sc.range.high.risk;
+  const ticks = [40, 70, 90].map((x) => `<i class="tick" style="left:${x}%"></i>`).join("");
+  return `<div class="rbar">${ticks}<span class="rspan" style="left:${lo}%;width:${Math.max(hi - lo, 1)}%"></span><span class="rdot" style="left:${sc.risk}%;background:${sevVar(sc.band)}"></span></div>
+    <div class="rlab mono"><span>0</span><span style="left:40%">40</span><span style="left:70%">70</span><span style="left:90%">90</span><span style="right:0;left:auto;transform:none">100</span></div>`;
+}
 const recovered = (fs) => fs.filter((f) => f.kind === "key_recovered" || (f.kind === "aes_key" && /^AES-/.test(f.title)));
 const keyIcon = `<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></svg>`;
 function renderSummary() {
@@ -652,6 +669,7 @@ function renderSummary() {
         <div class="formula">overall = 1 − (1 − C)(1 − ${sc.reliability}·E) · each source counts once (its strongest finding), sources combine by Dempster's rule</div></div>
       <div class="card"><h3>Verdict</h3>
         <div class="verdict"><div class="big" style="color:${sevVar(sc.band)}">${sc.risk}</div><div><span class="band sev-${sc.band}">${sc.band}</span><div class="why">${why}</div></div></div>
+        ${sc.range ? `<div class="rangebar">${rangeBar(sc)}<div class="muted" style="font-size:12.5px;margin-top:6px">Range ${sc.range.low.risk} to ${sc.range.high.risk}: every finding taken at the bottom, then the top of its CVSS band (interval masses, Denoeux 1999). ${risk_band_name(sc.range.low.risk) === risk_band_name(sc.range.high.risk) ? "The band holds either way." : `The band could be ${risk_band_name(sc.range.low.risk)} or ${risk_band_name(sc.range.high.risk)}.`}</div></div>` : ""}
         <div style="margin-top:16px">${ceBars(sc)}</div>
         <div style="margin-top:16px">${sevBar(fs)}<div class="legend">${SEV.map((k) => `<span><i style="background:var(--${k})"></i>${k} ${counts[k]}</span>`).join("")}</div></div>
       </div>
@@ -915,9 +933,9 @@ function renderRedteam() {
 
 /* ---------- Progress ---------- */
 const WORKSTREAMS = [
-  ["Pipeline", [["Memory (Volatility 3)", 1], ["Static analysis", 1], ["Crypto module", 1], ["Credentials", 1], ["Network (pcap)", 1], ["Evidence fusion and ATT&CK mapping", 1], ["Analyse a dump from the dashboard", 1], ["Later: Linux and macOS memory", 0]]],
+  ["Pipeline", [["Memory (Volatility 3)", 1], ["Static analysis", 1], ["Crypto module", 1], ["Credentials", 1], ["Network (pcap)", 1], ["Evidence fusion and ATT&CK mapping", 1], ["Analyse a dump from the dashboard", 1], ["RSA key recovery (WannaCry flaw)", 1], ["AES key schedule search", 1], ["Campaign linking across dumps", 1], ["Score ranges (belief to plausibility)", 0]]],
   ["Grounded scoring", [["Cipher confidence: Dempster-Shafer", 1], ["RSA strength: NIST SP 800-57", 1], ["Risk: compromise + exposure, fused", 1], ["Every formula sourced (FORMULAS.md)", 1]]],
-  ["Evaluation", [["Windows 11, 10 and 7 dumps", 1], ["Red team round 1 (78 reports)", 1], ["Red team round 2 (186 reports, adaptive)", 1], ["More public dumps", 0], ["Ground-truth crypto test (own VM)", 0]]],
+  ["Evaluation", [["Windows 11, 10, 7, Server and WannaCry dumps", 1], ["Red team round 1 (78 reports)", 1], ["Red team round 2 (186 reports, adaptive)", 1], ["More public dumps", 1], ["Ground-truth crypto test", 1], ["Linux and macOS dumps", 0]]],
   ["Write-up", [["Literature survey", 1], ["README and demo script", 1], ["Dashboard v2", 1], ["Final report and PQC paragraph", 0]]],
 ];
 const TIMELINE = [
@@ -927,10 +945,30 @@ const TIMELINE = [
   ["Every score grounded in a source", "Dempster-Shafer confidence, NIST key strength, CVSS bands, evidence fusion", "done"],
   ["ATT&CK mapping", "Findings mapped to MITRE ATT&CK, prompt injection to ATLAS", "done"],
   ["Red team round 2", "15 attacks incl. adaptive ones; 2/90 to 0/90, 0 unflagged, citations 37% to 67%", "done"],
-  ["More public dumps", "A Windows Server image and one with ransomware or crypto activity", "next"],
-  ["Ground-truth crypto test", "Own VM with keys we generate, to measure what is found and what is missed", "todo"],
+  ["More public dumps", "Windows Server DC (same case as Win10) and a WannaCry Win7 image", "done"],
+  ["Key recovery", "4 RSA-2048 private keys rebuilt from WannaCry memory; AES key schedule search", "done"],
+  ["Campaign linking", "Dumps from the same intrusion joined by rare shared evidence", "done"],
+  ["Ground-truth crypto test", "Processes with known ciphers and synthetic keys, every detector scored", "done"],
+  ["Linux and macOS dumps", "Volatility 3 symbol tables per kernel, public images", "next"],
   ["Final report", "Method, results and limits written up before submission", "todo"],
 ];
+function benchHtml() {
+  const B = D.benchmark;
+  if (!B) return "";
+  const r = (x) => `${x.hit}/${x.n}`;
+  const rows = [
+    ["Cipher in use is identified", r(B.cipher_id_recall), "All misses are X25519, whose OpenSSL code has no constant we look for. Every OpenSSL process also lights up ciphers it never used: constants say what a process can do, not what it did."],
+    ["Control process flagged", r(B.cipher_id_control_flags), "ChaCha20's constant is inside the Python interpreter itself, so even a process with no crypto library shows it"],
+    ["Live AES key read back", r(B.aes_live_recall), "AES-128-CTR and AES-256-GCM contexts, key found by its schedule"],
+    ["AES key after the context is freed", r(B.aes_freed_found), "OpenSSL wipes the schedule when it frees the context"],
+    ["False AES keys in the control processes", String(B.aes_control_false_keys), "each holds 8 MB of random bytes and no crypto library"],
+    ["RSA private key from primes, key in use", r(B.rsa_live_recovered), "OpenSSL keeps p and q as 64-bit limbs; rebuilt from the public key alone"],
+    ["RSA private key after the key is freed", r(B.rsa_freed_recovered), "OpenSSL clears the primes on free, unlike Windows 7 CryptoAPI in the WannaCry dump"],
+  ];
+  return `<h2>Ground-truth test</h2>
+    <div class="card tablewrap"><p class="muted" style="margin:0 0 10px;font-size:13.5px;max-width:80ch">Processes we start ourselves with a known cipher and a fresh synthetic key, ${B.trials} trials each, read from memory and run through the same detectors. Run it again with <code>python -m triageguard benchmark</code> (Linux or WSL).</p>
+    <table><tr><th>Check</th><th>Result</th><th>What it shows</th></tr>${rows.map((x) => `<tr><td>${x[0]}</td><td class="mono" style="white-space:nowrap">${x[1]}</td><td class="muted" style="font-size:13px">${x[2]}</td></tr>`).join("")}</table></div>`;
+}
 function renderRoadmap() {
   const all = WORKSTREAMS.flatMap((w) => w[1]), done = all.filter((x) => x[1]).length, p = Math.round(done / all.length * 100);
   const last = D.rounds[D.rounds.length - 1];
@@ -939,12 +977,13 @@ function renderRoadmap() {
       <div class="card rowflex">${ring(p, p + "%")}<div><div class="label">Overall</div><div class="muted">${done} of ${all.length} tasks done</div></div></div>
       <div class="card stat"><div class="label">Public dumps</div><div class="num">${D.dumps.length}</div><div class="lab">${D.dumps.map((d) => esc(d.meta.title || d.id)).join(", ")}</div></div>
       <div class="card stat"><div class="label">LLM reports measured</div><div class="num">${D.rounds.reduce((s, r) => s + r.stats.reports, 0)}</div><div class="lab">${last ? `latest: ${last.stats.asr_base}/${last.stats.n} → ${last.stats.asr_def}/${last.stats.n}` : ""}</div></div>
-      <div class="card stat"><div class="label">Automated tests</div><div class="num">39</div><div class="lab">all passing</div></div>
+      <div class="card stat"><div class="label">Automated tests</div><div class="num">51</div><div class="lab">all passing</div></div>
     </div>
     <h2>Workstreams</h2>
     <div class="grid g2">${WORKSTREAMS.map(([name, items]) => { const d = items.filter((x) => x[1]).length, q = Math.round(d / items.length * 100);
       return `<div class="card ws"><div class="rowflex">${ring(q, q + "%", q === 100 ? "var(--accent)" : "var(--accent2)")}<div><h3 style="margin:0">${name}</h3><span class="muted" style="font-size:13px">${d} of ${items.length} done</span></div></div>
         <ul>${items.map((x) => `<li class="${x[1] ? "done" : "todo"}"><em>${x[1] ? "✓" : "○"}</em>${esc(x[0])}</li>`).join("")}</ul></div>`; }).join("")}</div>
+    ${benchHtml()}
     <h2>Timeline</h2>
     <div class="card"><div class="timeline">${TIMELINE.map((t) => `<div class="tl ${t[2]}"><b>${esc(t[0])} ${t[2] === "next" ? '<span class="tag" style="color:var(--accent2)">next</span>' : t[2] === "todo" ? '<span class="tag flag">to do</span>' : ""}</b><span>${esc(t[1])}</span></div>`).join("")}</div></div>
     <p class="note">Constraints: public datasets and synthetic keys and tokens only, no live malware execution, no real credentials.</p>`;

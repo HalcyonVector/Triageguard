@@ -80,15 +80,21 @@ def find_keys(data, sizes=(128, 256)):
             chunk = bytes(data[start:start + CHUNK + size])
             z = _xor_shifted(chunk, keylen, lead)
             for m in run.finditer(z):
-                i = start + m.end() - 12
-                if i in seen or i >= start + CHUNK:
-                    continue
-                hit = _check(data, i, bits)
-                if hit:
-                    seen.add(i)
-                    key, layout = hit
-                    found.append({"bits": bits, "offset": hex(i), "layout": layout, "key": key,
-                                  "key_id": _fingerprint(key)})
+                # a neighbouring byte can XOR to zero by chance (1 in 256) and stretch the
+                # run, so try every start that leaves 12 zeros; long runs are zero-filled
+                # memory, where no key can be, so only their last start is tried
+                ends = range(m.end() - 12, m.start() - 1, -1) if m.end() - m.start() <= 64 else [m.end() - 12]
+                for j in ends:
+                    i = start + j
+                    if i in seen or i >= start + CHUNK:
+                        continue
+                    hit = _check(data, i, bits)
+                    if hit:
+                        seen.add(i)
+                        key, layout = hit
+                        found.append({"bits": bits, "offset": hex(i), "layout": layout, "key": key,
+                                      "key_id": _fingerprint(key)})
+                        break
     return found
 
 

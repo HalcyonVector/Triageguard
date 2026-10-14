@@ -41,6 +41,11 @@ Key size | Exponent | Strength | Issue | Finding, with only the 0-100 number in 
 # None 0.0, Low 0.1-3.9, Medium 4.0-6.9, High 7.0-8.9, Critical 9.0-10.0. A finding of a
 # given severity counts as the middle of its band, on a 0-1 scale.
 SEV_MASS = {"critical": 0.95, "high": 0.80, "medium": 0.55, "low": 0.20, "info": 0.0}
+# The band edges, for the score range: taking every finding at the bottom, then at the
+# top of its band gives interval-valued masses, and because the fusion is monotone in
+# each mass the two results bound the score exactly (Denoeux, "Reasoning with imprecise
+# belief structures", IJAR 20, 1999).
+SEV_RANGE = {"critical": (0.90, 1.00), "high": (0.70, 0.89), "medium": (0.40, 0.69), "low": (0.01, 0.39), "info": (0.0, 0.0)}
 
 
 # Key formats that hold only a public key. A weak public key in memory (typically a
@@ -59,13 +64,16 @@ def public_only(f):
     return f.get("kind") == "rsa_key" and fmt in PUBLIC_ONLY
 
 
-def finding_mass(f):
+def finding_mass(f, bound=None):
     """Mass one finding commits to "this host is compromised or exposed": its CVSS band
     midpoint, scaled by the detector's own confidence when it has one (cipher ID), and
     capped at medium for a weak key seen only as a public key."""
-    m = SEV_MASS.get(f["severity"], 0.0)
+    if bound is None:
+        m, cap = SEV_MASS.get(f["severity"], 0.0), SEV_MASS["medium"]
+    else:
+        m, cap = SEV_RANGE.get(f["severity"], (0.0, 0.0))[bound], SEV_RANGE["medium"][bound]
     if public_only(f):
-        m = min(m, SEV_MASS["medium"])
+        m = min(m, cap)
     conf = (f.get("data") or {}).get("confidence")
     if isinstance(conf, (int, float)):
         m *= conf / 100
@@ -82,7 +90,7 @@ def hypothesis(f):
     return "compromise" if f.get("module") in COMPROMISE else "exposure"
 
 
-def risk_breakdown(findings, hyp=None):
+def risk_breakdown(findings, hyp=None, bound=None):
     """One row per evidence source (module/kind), strongest finding first.
 
     Findings from one detector are not independent (37 certificates from one
@@ -96,7 +104,7 @@ def risk_breakdown(findings, hyp=None):
         if hyp and hypothesis(f) != hyp:
             continue
         key = f"{f.get('module', '?')}/{f.get('kind', '?')}"
-        m = finding_mass(f)
+        m = finding_mass(f, bound)
         row = src.setdefault(key, {"source": key, "hypothesis": hypothesis(f), "mass": 0.0, "ref": None, "count": 0})
         row["count"] += 1
         if m > row["mass"]:
@@ -104,8 +112,8 @@ def risk_breakdown(findings, hyp=None):
     return sorted((r for r in src.values() if r["mass"] > 0), key=lambda r: -r["mass"])
 
 
-def _fused(findings, hyp):
-    return min(99, round(100 * combine(r["mass"] for r in risk_breakdown(findings, hyp))))
+def _fused(findings, hyp, bound=None):
+    return min(99, round(100 * combine(r["mass"] for r in risk_breakdown(findings, hyp, bound))))
 
 
 def compromise_score(findings):
@@ -138,6 +146,18 @@ def risk_score(findings):
     mistaken for proof of an attack."""
     c, e = compromise_score(findings) / 100, exposure_score(findings) / 100
     return min(99, round(100 * (1 - (1 - c) * (1 - EXPOSURE_RELIABILITY * e))))
+
+
+def score_range(findings):
+    """(low, high) of compromise, exposure and overall risk with every finding taken at
+    the bottom and then the top of its CVSS band, so a reader sees how much of a score
+    rests on where in a band a finding sits."""
+    out = {}
+    for name, bound in (("low", 0), ("high", 1)):
+        c, e = _fused(findings, "compromise", bound), _fused(findings, "exposure", bound)
+        out[name] = {"compromise": c, "exposure": e,
+                     "risk": min(99, round(100 * (1 - (1 - c / 100) * (1 - EXPOSURE_RELIABILITY * e / 100))))}
+    return out
 
 
 def risk_band(score):

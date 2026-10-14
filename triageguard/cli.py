@@ -84,6 +84,10 @@ def main(argv=None):
     e.add_argument("--pcap", default="")
     e.add_argument("--order", type=int, default=99, help="position in the dashboard")
     e.add_argument("--clean", action="store_true", help="drop an older LLM report for this name first")
+    b = sub.add_parser("benchmark", help="ground-truth test: processes with known ciphers and synthetic keys (Linux/WSL)")
+    b.add_argument("--trials", type=int, default=5)
+    b.add_argument("--out", default="results/benchmark")
+
     sub.add_parser("update", help="pull the latest code, first dropping local changes that are only line endings")
 
     g = sub.add_parser("report", help="(re)generate the LLM report for an analysed dump from its database")
@@ -110,6 +114,9 @@ def main(argv=None):
     elif args.cmd == "rescore-results":
         from . import dashboard
         print(json.dumps(dashboard.rescore(args.results)))
+    elif args.cmd == "benchmark":
+        from . import benchmark
+        print(json.dumps(benchmark.run(args.trials, args.out), indent=1))
     elif args.cmd == "update":
         raise SystemExit(update())
     elif args.cmd == "dashboard":
