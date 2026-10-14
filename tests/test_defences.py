@@ -546,3 +546,41 @@ def test_health_check_flags_missing_stages_and_noisy_detectors():
     assert ("warn", "network missing: timed out after 600 seconds") in msgs
     assert any("11 high injected-code alerts, mostly Web Content x11" in m for _, m in msgs)
     assert health.check([])[0][0] == "error"
+
+
+def test_linux_typosquat_cron_job_and_program_run_from_current_folder():
+    from triageguard import memory
+    procs = [{"PID": 859, "PPID": 1, "ImageFileName": "cron"}, {"PID": 6420, "PPID": 859, "ImageFileName": "cron"},
+             {"PID": 6421, "PPID": 6420, "ImageFileName": "sh"}, {"PID": 6422, "PPID": 6421, "ImageFileName": "nettstat"},
+             {"PID": 29, "PPID": 2, "ImageFileName": "kauditd"}, {"PID": 1833, "PPID": 1, "ImageFileName": "ibus-daemon"},
+             {"PID": 4910, "PPID": 4909, "ImageFileName": "youtube_downloa"}]
+    cmds = [{"PID": 4910, "Process": "youtube_downloa", "Args": "./youtube_downloader.elf"}]
+    res = {"_os": "linux", "processes": procs, "cmdlines": cmds}
+    flags = memory.suspicious_processes(res)
+    by = {(f["pid"], f["severity"]): f["reason"] for f in flags}
+    assert "imitates the system program 'netstat'" in by[(6422, "high")]
+    assert "started by cron" in by[(6422, "medium")]
+    assert "current folder" in by[(4910, "medium")]
+    assert not any(f["pid"] in (29, 1833) for f in flags)  # real kernel thread and IBus daemon
+    assert {p for p, _ in memory.keyscan_targets(res)} == {6422, 4910}
+
+
+def test_plugin_timeout_is_cached_so_reruns_do_not_wait_again(tmp_path, monkeypatch):
+    import subprocess
+    from triageguard import memory
+    img = tmp_path / "x.vmem"
+    img.write_bytes(b"\0" * 64)
+    calls = []
+
+    def slow(*a, **k):
+        calls.append(a)
+        raise subprocess.TimeoutExpired(a, 600)
+
+    monkeypatch.setattr(memory, "_vol", lambda: "vol")
+    monkeypatch.setattr(memory.subprocess, "run", slow)
+    for _ in range(2):
+        try:
+            memory.run_plugin(img, "linux.sockstat")
+        except RuntimeError as e:
+            assert "timed out after 10 minutes" in str(e)
+    assert len(calls) == 1

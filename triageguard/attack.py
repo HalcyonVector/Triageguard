@@ -27,6 +27,9 @@ TECHNIQUES = {
     "T1105": ("Ingress Tool Transfer", "Command and Control"),
     "T1620": ("Reflective Code Loading", "Defense Evasion"),
     "T1070.003": ("Indicator Removal: Clear Command History", "Defense Evasion"),
+    "T1036.005": ("Masquerading: Match Legitimate Name or Location", "Defense Evasion"),
+    "T1053.003": ("Scheduled Task/Job: Cron", "Persistence"),
+    "T1548.003": ("Abuse Elevation Control Mechanism: Sudo", "Privilege Escalation"),
     "AML.T0051": ("LLM Prompt Injection (MITRE ATLAS)", "ML Attack"),
 }
 
@@ -44,6 +47,10 @@ RULES = [
     ("memory", "suspicious_process", r"bash history", ["T1059.004"]),
     ("memory", "suspicious_process", r"bash history: '(curl|wget)", ["T1105"]),
     ("memory", "suspicious_process", r"history\s+-c", ["T1070.003"]),
+    ("memory", "suspicious_process", r"imitates the system program", ["T1036.005"]),
+    ("memory", "suspicious_process", r"started by cron", ["T1053.003"]),
+    ("memory", "suspicious_process", r"as root through sudo|sudo\s+\./", ["T1548.003", "T1204.002"]),
+    ("memory", "suspicious_process", r"current folder", ["T1204.002"]),
     ("static", "binary", r"yara \[[^\]]", ["T1486"]),
     ("static", "binary", r"packed|entropy 7\.[2-9]", ["T1027.002"]),
     ("static", "blocked", None, ["T1204.002"]),

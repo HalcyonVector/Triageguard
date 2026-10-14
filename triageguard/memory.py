@@ -81,11 +81,15 @@ def _cache_file(dump, plugin, extra):
 def run_plugin(dump, plugin, extra=(), outdir=None):
     # plugins that write files (--dump) are not cached: their files live in the output folder
     cache = None
-    if "--dump" not in extra and os.environ.get("TRIAGEGUARD_NO_CACHE") != "1":
+    if not any(str(a).startswith("--dump") for a in extra) and os.environ.get("TRIAGEGUARD_NO_CACHE") != "1":
         try:
             cache = _cache_file(dump, plugin, extra)
             if cache.is_file():
-                return json.loads(cache.read_text(encoding="utf-8"))
+                rows = json.loads(cache.read_text(encoding="utf-8"))
+                if isinstance(rows, dict) and "__failed__" in rows:
+                    # a plugin that timed out once times out again; -Fresh / TRIAGEGUARD_NO_CACHE=1 retries it
+                    raise RuntimeError(rows["__failed__"] + " (cached; run with -Fresh to try again)")
+                return rows
         except OSError:
             cache = None
     cmd = [_vol(), "-q", "-r", "json", "-f", str(dump)]
@@ -94,7 +98,18 @@ def run_plugin(dump, plugin, extra=(), outdir=None):
     if outdir:
         cmd += ["-o", str(outdir)]
     cmd += [plugin, *extra]
-    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=PLUGIN_TIMEOUT.get(plugin, TIMEOUT))
+    limit = PLUGIN_TIMEOUT.get(plugin, TIMEOUT)
+    try:
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=limit)
+    except subprocess.TimeoutExpired:
+        msg = f"{plugin} timed out after {limit // 60} minutes"
+        if cache:
+            try:
+                cache.parent.mkdir(parents=True, exist_ok=True)
+                cache.write_text(json.dumps({"__failed__": msg}), encoding="utf-8")
+            except OSError:
+                pass
+        raise RuntimeError(msg) from None
     if proc.returncode != 0:
         raise RuntimeError(proc.stderr.strip().splitlines()[-1] if proc.stderr.strip() else f"exit {proc.returncode}")
     rows = json.loads(proc.stdout or "[]")
@@ -186,6 +201,35 @@ LINUX_SHELLS = {"sh", "bash", "dash", "zsh", "ksh", "busybox"}
 SERVICE_PARENTS = {"apache2", "httpd", "nginx", "php-fpm", "php", "mysqld", "postgres", "java", "tomcat", "node", "python3", "perl"}
 LINUX_TMP_RE = re.compile(r"^(?:\S*/)?(?:/tmp|/dev/shm|/var/tmp|/run/user/\d+)/")
 LINUX_USER_DIRS_RE = re.compile(r"^(?:/home/[^/]+|/root|~)/(?:Downloads|Desktop)/")
+# programs malware likes to impersonate with a one-letter change ("nettstat", "sshd-", "kworkerr")
+SYSTEM_TOOLS = {"netstat", "sshd", "cron", "crond", "systemd", "rsyslogd", "syslogd", "dbus-daemon", "kworker",
+                "kthreadd", "ksoftirqd", "agetty", "udevd", "auditd", "polkitd", "ifconfig", "iptables", "lsof",
+                "ps", "top", "htop", "sudo", "passwd", "login", "bash", "dash", "python3", "perl", "apache2", "nginx",
+                "httpd", "mysqld", "postgres", "dockerd", "containerd", "snapd", "NetworkManager", "gnome-shell",
+                "Xorg", "pulseaudio", "pipewire", "firefox", "chrome", "atd", "anacron", "smbd", "named", "dhclient"}
+CRON_NAMES = {"cron", "crond", "CRON", "anacron", "atd"}
+
+
+def _one_edit(a, b):
+    """True if a and b differ by exactly one inserted, deleted, replaced or swapped character."""
+    if a == b or abs(len(a) - len(b)) > 1:
+        return False
+    if len(a) == len(b):
+        diff = [i for i in range(len(a)) if a[i] != b[i]]
+        return len(diff) == 1 or (len(diff) == 2 and diff[1] == diff[0] + 1
+                                  and a[diff[0]] == b[diff[1]] and a[diff[1]] == b[diff[0]])
+    short, long_ = sorted((a, b), key=len)
+    return any(long_[:i] + long_[i + 1:] == short for i in range(len(long_)))
+
+
+def imitated_tool(name):
+    """The system program a process name imitates, or None. Short names are skipped: "ps"
+    and "ls" are one edit away from far too many real programs."""
+    from .campaign import _known  # stock Linux names: kauditd, ibus-daemon and snap are real, not imitations
+    n = name.strip()
+    if len(n) < 4 or n in SYSTEM_TOOLS or _known(n):
+        return None
+    return next((t for t in sorted(SYSTEM_TOOLS) if len(t) >= 4 and _one_edit(n, t)), None)
 BASH_RE = re.compile(r"(curl|wget)[^|;]*\|\s*(ba)?sh|base64\s+-d[^|;]*\|\s*(ba)?sh|nc(at)?\s.*-e\s|/dev/tcp/|chmod\s+\+x\s+/(tmp|dev/shm)|"
                      r"openssl\s+enc|gpg\s+(-c|--symmetric)|shred\s|history\s+-c|crontab\s|"
                      # running a binary the user just downloaded, as root (no package manager vouches for it)
@@ -268,6 +312,21 @@ def suspicious_processes(results):
             if str(p.get("ImageFileName", "")) in LINUX_SHELLS and parent in SERVICE_PARENTS:
                 flags.append({"pid": p.get("PID"), "process": p.get("ImageFileName"), "severity": "high",
                               "reason": f"shell started by the network service {parent} (PID {p.get('PPID')}), likely a web shell or exploited daemon"})
+    if isinstance(procs, list) and results.get("_os") == "linux":
+        by_pid = {p.get("PID"): p for p in procs if isinstance(p, dict)}
+        for p in procs:
+            name = str(p.get("ImageFileName", ""))
+            if tool := imitated_tool(name):
+                flags.append({"pid": p.get("PID"), "process": name, "severity": "high",
+                              "reason": f"name '{name}' imitates the system program '{tool}' (one letter different)"})
+            # walk up a few parents: cron -> sh -c -> program
+            chain, q = [], by_pid.get(p.get("PPID"))
+            while q is not None and len(chain) < 3:
+                chain.append(str(q.get("ImageFileName", "")))
+                q = by_pid.get(q.get("PPID")) if q.get("PPID") != q.get("PID") else None
+            if name not in LINUX_SHELLS and name not in CRON_NAMES and any(c in CRON_NAMES for c in chain):
+                flags.append({"pid": p.get("PID"), "process": name, "severity": "medium",
+                              "reason": f"started by cron ({' <- '.join([name, *chain])}): a scheduled job, a common way to keep malware running"})
     for r in results.get("bash") if isinstance(results.get("bash"), list) else []:
         cmd = str(r.get("Command") or "")
         if m := BASH_RE.search(cmd):
@@ -279,6 +338,10 @@ def suspicious_processes(results):
             if m := CMDLINE_RE.search(args):
                 flags.append({"pid": r.get("PID"), "process": r.get("Process"), "severity": "medium", "cmdline": args[:500],
                               "reason": f"command line mentions '{m.group(0)}': {args[:200]}"})
+            elif args.startswith("./") or re.match(r"sudo\s+(?:-\S+\s+)*\./", args):
+                flags.append({"pid": r.get("PID"), "process": r.get("Process"), "severity": "medium", "cmdline": args[:500],
+                              "reason": f"runs a program from the current folder{' as root through sudo' if args.startswith('sudo') else ''}"
+                                        f", not an installed one: {args[:200]}"})
             elif LINUX_TMP_RE.search(args.split(" ")[0]):
                 flags.append({"pid": r.get("PID"), "process": r.get("Process"), "severity": "medium", "cmdline": args[:500],
                               "reason": f"runs from a world-writable temp folder: {args[:200]}"})
@@ -299,14 +362,16 @@ def keyscan_targets(results):
     command lines and programs started from user folders, at most MAX_KEYSCAN."""
     pids = {}
     for p in results.get("processes") or []:
-        if isinstance(p, dict) and RANSOM_NAMES.search(str(p.get("ImageFileName", ""))):
+        if isinstance(p, dict) and (RANSOM_NAMES.search(str(p.get("ImageFileName", "")))
+                                    or (results.get("_os") == "linux" and imitated_tool(str(p.get("ImageFileName", ""))))):
             pids[p.get("PID")] = str(p.get("ImageFileName"))
     for r in results.get("cmdlines") or []:
         if not isinstance(r, dict):
             continue
         args = str(r.get("Args") or "")
         if CMDLINE_RE.search(args) or RANSOM_NAMES.search(args) or USER_DIRS_RE.search(args.split('" ')[0]) \
-                or LINUX_TMP_RE.search(args.split(" ")[0]) or LINUX_USER_DIRS_RE.search(args.split(" ")[0]):
+                or LINUX_TMP_RE.search(args.split(" ")[0]) or LINUX_USER_DIRS_RE.search(args.split(" ")[0]) \
+                or (args.startswith("./") and results.get("_os") == "linux"):
             pids.setdefault(r.get("PID"), str(r.get("Process")))
     return list(pids.items())[:MAX_KEYSCAN]
 
