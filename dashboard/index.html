@@ -202,6 +202,11 @@ a.cite { color: var(--accent); font-family: var(--mono); font-size: .92em; text-
 .cmat { border-collapse: separate; border-spacing: 0 2px; }
 .cmat td, .cmat th { border: 0; padding: 6px 8px; text-align: center; }
 .cmat td:first-child, .cmat th:first-child { text-align: left; }
+/* one row per dump, so the table grows down; past ~9 dumps it scrolls with the header pinned */
+.cscroll { max-height: 400px; overflow-y: auto; }
+.cmat thead th { position: sticky; top: 0; background: var(--bg2); border-bottom: 1px solid var(--line); z-index: 1; font-size: 10.5px; white-space: nowrap; }
+.cscroll .cmat td, .cscroll .cmat th { padding: 6px 5px; }
+.cdump { display: inline-block; max-width: 15ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; font-size: 13px; }
 .dot { display: inline-block; border-radius: 50%; vertical-align: middle; }
 
 /* pipeline diagram: top-down flow */
@@ -419,6 +424,8 @@ function pipelineHtml(d) {
       <span><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--exposure);margin-right:6px"></i>feeds the crypto exposure score</span>
       <span>"found" counts are for ${name}.</span></div>`;
 }
+// short column labels so every cipher fits; the full name is in the tooltip
+const CSHORT = {"ECC P-256": "P-256", "ECC secp256k1": "k1", "Curve25519": "25519", "ChaCha20/Salsa20": "ChaCha", "AES-GCM": "GCM", "DES/3DES": "DES"};
 function cipherRows() {
   const names = {}, per = {};
   D.dumps.forEach((d) => d.findings.filter((f) => f.kind === "algorithm").forEach((f) => {
@@ -458,9 +465,9 @@ function renderBoard() {
       <div class="card"><h3>Most serious findings</h3><div class="toplist">${serious.map((f) => `
         <button class="topitem" type="button" data-open="${f.dump.id}|${f.ref}"><span class="chip sev-${f.severity}">${f.severity}</span><span class="t">${esc(f.title)}</span>
           <span class="d">${esc(f.dump.meta.title || f.dump.id)} · ${f.ref}${(f.attack || []).length ? " · " + f.attack.join(" ") : ""}</span></button>`).join("") || '<p class="muted">Nothing above low severity.</p>'}</div></div>
-      <div class="card"><h3>Ciphers found in memory</h3><div class="tablewrap"><table class="cmat"><tr><th></th>${D.dumps.map((d) => `<th class="mono" style="font-size:10.5px" title="${esc(d.meta.title || d.id)}">${esc((d.meta.title || d.id).replace(/\s*\(.*\)/, "").replace("Windows ", "Win"))}</th>`).join("")}</tr>
-        ${ciphers.map((c) => `<tr><td style="font-size:13px">${esc(c)}</td>${D.dumps.map((d) => { const x = per[d.id + "|" + c];
-          return `<td>${x ? `<span class="dot" title="${x.conf}% · ${x.impl ? "implemented" : "only referenced"} · ${x.ref}" style="width:${8 + x.conf / 12}px;height:${8 + x.conf / 12}px;${x.impl ? "background:var(--accent)" : "border:2px solid var(--accent2)"}"></span>` : '<span class="muted">·</span>'}</td>`; }).join("")}</tr>`).join("")}
+      <div class="card"><h3>Ciphers found in memory</h3><div class="tablewrap cscroll"><table class="cmat"><thead><tr><th></th>${ciphers.map((c) => `<th class="mono" title="${esc(c)}">${esc(CSHORT[c] || c)}</th>`).join("")}</tr></thead>
+        <tbody>${D.dumps.map((d) => `<tr><td title="${esc(d.meta.title || d.id)}"><span class="cdump">${esc(d.meta.title || d.id)}</span></td>${ciphers.map((c) => { const x = per[d.id + "|" + c];
+          return `<td>${x ? `<span class="dot" title="${esc(c)} · ${x.conf}% · ${x.impl ? "implemented" : "only referenced"} · ${x.ref}" style="width:${8 + x.conf / 12}px;height:${8 + x.conf / 12}px;${x.impl ? "background:var(--accent)" : "border:2px solid var(--accent2)"}"></span>` : '<span class="muted">·</span>'}</td>`; }).join("")}</tr>`).join("")}</tbody>
       </table></div><div class="legend"><span><i style="background:var(--accent);border-radius:50%"></i>implemented (constants in memory)</span><span><i style="border:2px solid var(--accent2);border-radius:50%"></i>only referenced</span></div></div>
     </div>
     <h2>How TriageGuard works</h2>
