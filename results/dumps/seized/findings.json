@@ -1,0 +1,164 @@
+[
+ {
+  "ref": "F1",
+  "module": "memory",
+  "kind": "processes",
+  "title": "processes: 220 rows",
+  "severity": "info",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F2",
+  "module": "memory",
+  "kind": "cmdlines",
+  "title": "cmdlines: 220 rows",
+  "severity": "info",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F3",
+  "module": "memory",
+  "kind": "skipped",
+  "title": "network: skipped (ValueError: Symbol type not in symbol_table_name1 SymbolTable: inet6_ifaddr)",
+  "severity": "info",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F4",
+  "module": "memory",
+  "kind": "injected",
+  "title": "injected: 1 rows",
+  "severity": "info",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F5",
+  "module": "memory",
+  "kind": "bash",
+  "title": "bash: 0 rows",
+  "severity": "info",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F6",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 3636 anacron: 1 RWX/injected region(s): 1 x region starts with zero bytes, no code at the region base",
+  "severity": "low",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": "3636"
+ },
+ {
+  "ref": "F7",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 2886 python: name 'python' imitates the system program 'python3' (one letter different)",
+  "severity": "high",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": "2886"
+ },
+ {
+  "ref": "F8",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES identified (94.2%, implementation constants) in dump.mem",
+  "severity": "info",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": "0x3bbf5500"
+ },
+ {
+  "ref": "F9",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "RSA identified (91.0%, implementation constants) in dump.mem",
+  "severity": "info",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": "0x7050f7"
+ },
+ {
+  "ref": "F10",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ChaCha20/Salsa20 identified (89.2%, implementation constants) in dump.mem",
+  "severity": "info",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": "0x1ce972c0"
+ },
+ {
+  "ref": "F11",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES-GCM identified (76.0%, implementation constants) in dump.mem",
+  "severity": "info",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": "0x330420a0"
+ },
+ {
+  "ref": "F12",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "3DES identified (50.0%, API/string references only) in dump.mem",
+  "severity": "info",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": "0x2cd0b0d"
+ },
+ {
+  "ref": "F13",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "Curve25519 identified (40.0%, API/string references only) in dump.mem",
+  "severity": "info",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": "0x1293918e"
+ },
+ {
+  "ref": "F14",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=43147 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": "0x93d9e48"
+ },
+ {
+  "ref": "F15",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": "0x9480a23"
+ },
+ {
+  "ref": "F16",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": "0x9b90d09"
+ },
+ {
+  "ref": "F17",
+  "module": "rsa",
+  "kind": "rsa_summary",
+  "title": "118 RSA keys with no weaknesses and 1 corrupt key-like structures in dump.mem",
+  "severity": "info",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F18",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "200 high-entropy regions (2269184 bytes) in dump.mem",
+  "severity": "info",
+  "source": "..\\data\\Seized\\temp_extract_dir\\dump.mem",
+  "location": "0x7000"
+ }
+]

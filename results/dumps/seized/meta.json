@@ -1,0 +1,12 @@
+{
+ "title": "CentOS 7.7 (Seized intrusion)",
+ "os": "CentOS 7.7.1908, kernel 3.10.0-1062.el7 x64",
+ "source": "CyberDefenders Seized lab",
+ "size": "1.0 GB",
+ "pcap": "",
+ "order": 8,
+ "findings": 18,
+ "risk": 82,
+ "compromise": 80,
+ "exposure": 20
+}
