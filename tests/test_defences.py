@@ -516,9 +516,32 @@ def test_volatility_output_is_cached_next_to_the_image(tmp_path, monkeypatch):
     assert memory.run_plugin(img, "linux.pslist") == [{"PID": 1}]
     assert memory.run_plugin(img, "linux.pslist") == [{"PID": 1}]
     assert len(calls) == 1
-    memory.run_plugin(img, "linux.malware.malfind", ["--dump"], tmp_path)  # writes files: never cached
-    memory.run_plugin(img, "linux.malware.malfind", ["--dump"], tmp_path)
+    memory.run_plugin(img, "linux.proc.Maps", ["--pid", "7", "--dump"], tmp_path)  # whole-process dumps: never cached
+    memory.run_plugin(img, "linux.proc.Maps", ["--pid", "7", "--dump"], tmp_path)
     assert len(calls) == 3
+
+
+def test_files_a_cached_plugin_wrote_come_back_on_a_cache_hit(tmp_path, monkeypatch):
+    from pathlib import Path
+    from triageguard import memory
+    img = tmp_path / "x.vmem"
+    img.write_bytes(b"\0" * 64)
+    out1, out2 = tmp_path / "run1", tmp_path / "run2"
+    out1.mkdir()
+
+    class P:
+        returncode, stdout, stderr = 0, "[]", ""
+
+    def run(cmd, **k):
+        (Path(cmd[cmd.index("-o") + 1]) / "pid.1.vad.0x1000.dmp").write_bytes(b"MZ")
+        return P()
+
+    monkeypatch.setattr(memory, "_vol", lambda: "vol")
+    monkeypatch.setattr(memory.subprocess, "run", run)
+    memory.run_plugin(img, "windows.malfind", ["--dump"], out1)
+    monkeypatch.setattr(memory.subprocess, "run", lambda *a, **k: 1 / 0)  # must not run again
+    memory.run_plugin(img, "windows.malfind", ["--dump"], out2)
+    assert (out2 / "pid.1.vad.0x1000.dmp").read_bytes() == b"MZ"
 
 
 def test_llm_prompt_shrinks_when_the_api_says_too_large(monkeypatch):

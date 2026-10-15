@@ -79,9 +79,11 @@ def _cache_file(dump, plugin, extra):
 
 
 def run_plugin(dump, plugin, extra=(), outdir=None):
-    # plugins that write files (--dump) are not cached: their files live in the output folder
+    # every plugin's output is cached next to the image, except whole-process dumps (--pid):
+    # those are hundreds of MB each and cheap to redo for the few processes that need them.
+    # Files a plugin writes (malfind --dump-regions) are cached too and copied back on a hit.
     cache = None
-    if not any(str(a).startswith("--dump") for a in extra) and os.environ.get("TRIAGEGUARD_NO_CACHE") != "1":
+    if "--pid" not in extra and os.environ.get("TRIAGEGUARD_NO_CACHE") != "1":
         try:
             cache = _cache_file(dump, plugin, extra)
             if cache.is_file():
@@ -89,9 +91,16 @@ def run_plugin(dump, plugin, extra=(), outdir=None):
                 if isinstance(rows, dict) and "__failed__" in rows:
                     # a plugin that timed out once times out again; -Fresh / TRIAGEGUARD_NO_CACHE=1 retries it
                     raise RuntimeError(rows["__failed__"] + " (cached; run with -Fresh to try again)")
+                files = cache.with_suffix(".files")
+                if outdir and files.is_dir():
+                    Path(outdir).mkdir(parents=True, exist_ok=True)
+                    for f in files.iterdir():
+                        if not (Path(outdir) / f.name).exists():
+                            shutil.copy2(f, Path(outdir) / f.name)
                 return rows
         except OSError:
             cache = None
+    before = set(Path(outdir).iterdir()) if outdir and Path(outdir).is_dir() else set()
     cmd = [_vol(), "-q", "-r", "json", "-f", str(dump)]
     if SYMBOLS:
         cmd += ["-s", SYMBOLS]
@@ -116,7 +125,13 @@ def run_plugin(dump, plugin, extra=(), outdir=None):
     if cache:
         try:
             cache.parent.mkdir(parents=True, exist_ok=True)
-            cache.write_text(proc.stdout or "[]", encoding="utf-8")
+            if outdir and Path(outdir).is_dir():
+                files = cache.with_suffix(".files")
+                files.mkdir(exist_ok=True)
+                for f in set(Path(outdir).iterdir()) - before:
+                    if f.is_file():
+                        shutil.copy2(f, files / f.name)
+            cache.write_text(proc.stdout or "[]", encoding="utf-8")  # last, so a half-written cache is never used
         except OSError:
             pass
     return rows
