@@ -202,15 +202,47 @@ def build_isf(dwarf_text, sysmap_text, banner_b64=None):
         if name not in enums or len(consts) > len(enums[name]["constants"]):
             enums[name] = {"size": size, "base": base, "constants": consts}
 
+    # Volatility 3 needs a type on any symbol a plugin dereferences (e.g.
+    # object_from_symbol("init_task")). dwarf2json attaches those by matching
+    # System.map names to DWARF DW_TAG_variable DIEs; do the same here.
+    var_types = {}
+    for die in dies.values():
+        if die.tag != "DW_TAG_variable":
+            continue
+        name = die.attrs.get("DW_AT_name")
+        if not name or "DW_AT_type" not in die.attrs:
+            continue
+        var_types.setdefault(name, resolve(ref_offset(die.attrs["DW_AT_type"])))
+
+    # Reduced vol2 DWARFs often omit the big kernel globals (init_task and
+    # friends) as named variables, yet vol3's linux plugins require them typed.
+    # Their types are stable across kernels, so fall back to them by name.
+    ESSENTIAL = {
+        "init_task": ("struct", "task_struct"),
+        "init_nsproxy": ("struct", "nsproxy"),
+        "init_fs": ("struct", "fs_struct"),
+        "init_files": ("struct", "files_struct"),
+        "init_mm": ("struct", "mm_struct"),
+        "init_net": ("struct", "net"),
+    }
+
     symbols = {}
     for line in sysmap_text.splitlines():
         parts = line.split()
         if len(parts) < 3:
             continue
         try:
-            symbols[parts[2]] = {"address": int(parts[0], 16)}
+            sym = {"address": int(parts[0], 16)}
         except ValueError:
             continue
+        name = parts[2]
+        if name in var_types:
+            sym["type"] = var_types[name]
+        elif name in ESSENTIAL:
+            kind, tname = ESSENTIAL[name]
+            if tname in user_types:
+                sym["type"] = {"kind": kind, "name": tname}
+        symbols[name] = sym
     if banner_b64 and "linux_banner" in symbols:
         symbols["linux_banner"]["constant_data"] = banner_b64
 
