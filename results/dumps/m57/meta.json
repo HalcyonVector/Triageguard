@@ -1,0 +1,12 @@
+{
+ "title": "Windows XP (M57 insider case)",
+ "os": "Windows XP SP3 x86",
+ "source": "NPS digitalcorpora M57-Patents scenario",
+ "size": "2.0 GB",
+ "pcap": "",
+ "order": 7,
+ "findings": 116,
+ "risk": 86,
+ "compromise": 80,
+ "exposure": 55
+}

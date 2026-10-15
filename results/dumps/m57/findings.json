@@ -1,0 +1,1046 @@
+[
+ {
+  "ref": "F1",
+  "module": "memory",
+  "kind": "processes",
+  "title": "processes: 26 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": ""
+ },
+ {
+  "ref": "F2",
+  "module": "memory",
+  "kind": "cmdlines",
+  "title": "cmdlines: 26 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": ""
+ },
+ {
+  "ref": "F3",
+  "module": "memory",
+  "kind": "skipped",
+  "title": "network: skipped (NotImplementedError: This version of Windows is not supported: 5.1 15.2600!)",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": ""
+ },
+ {
+  "ref": "F4",
+  "module": "memory",
+  "kind": "injected",
+  "title": "injected: 13 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": ""
+ },
+ {
+  "ref": "F5",
+  "module": "memory",
+  "kind": "usb",
+  "title": "usb: 16 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": ""
+ },
+ {
+  "ref": "F6",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 924 csrss.exe: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process",
+  "severity": "high",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "924"
+ },
+ {
+  "ref": "F7",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 948 winlogon.exe: 10 RWX/injected region(s): 2 x executable private memory with code unique to this process; 8 x region starts with zero bytes, no code at the region base",
+  "severity": "high",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "948"
+ },
+ {
+  "ref": "F8",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 1004 lsass.exe: 1 RWX/injected region(s): 1 x region starts with zero bytes, no code at the region base",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "1004"
+ },
+ {
+  "ref": "F9",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 3088 soffice.bin: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process",
+  "severity": "high",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "3088"
+ },
+ {
+  "ref": "F10",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1004.vad.0x280000-0x347fff.dmp: entropy 0.051, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\m57\\out\\malfind\\pid.1004.vad.0x280000-0x347fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F11",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3088.vad.0x29a0000-0x29a0fff.dmp: entropy 0.954, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\m57\\out\\malfind\\pid.3088.vad.0x29a0000-0x29a0fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F12",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.924.vad.0x7f6f0000-0x7f7effff.dmp: entropy 0.138, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\m57\\out\\malfind\\pid.924.vad.0x7f6f0000-0x7f7effff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F13",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.948.vad.0x12c40000-0x12c43fff.dmp: entropy 7.059, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\m57\\out\\malfind\\pid.948.vad.0x12c40000-0x12c43fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F14",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.948.vad.0x18240000-0x18243fff.dmp: entropy 7.175, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\m57\\out\\malfind\\pid.948.vad.0x18240000-0x18243fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F15",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.948.vad.0x22e70000-0x22e73fff.dmp: entropy 1.766, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\m57\\out\\malfind\\pid.948.vad.0x22e70000-0x22e73fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F16",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.948.vad.0x4f250000-0x4f253fff.dmp: entropy 5.352, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\m57\\out\\malfind\\pid.948.vad.0x4f250000-0x4f253fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F17",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.948.vad.0x52820000-0x52823fff.dmp: entropy 4.885, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\m57\\out\\malfind\\pid.948.vad.0x52820000-0x52823fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F18",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.948.vad.0x5c0000-0x5dffff.dmp: entropy 0.433, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\m57\\out\\malfind\\pid.948.vad.0x5c0000-0x5dffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F19",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.948.vad.0x6d690000-0x6d693fff.dmp: entropy 3.333, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\m57\\out\\malfind\\pid.948.vad.0x6d690000-0x6d693fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F20",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.948.vad.0x741a0000-0x741a3fff.dmp: entropy 6.889, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\m57\\out\\malfind\\pid.948.vad.0x741a0000-0x741a3fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F21",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.948.vad.0x7add0000-0x7add3fff.dmp: entropy 2.317, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\m57\\out\\malfind\\pid.948.vad.0x7add0000-0x7add3fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F22",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.948.vad.0x7f6f0000-0x7f7effff.dmp: entropy 0.049, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\m57\\out\\malfind\\pid.948.vad.0x7f6f0000-0x7f7effff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F23",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES identified (98.8%, implementation constants) in charlie-2009-12-11.mddramimage",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x9e6f970"
+ },
+ {
+  "ref": "F24",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "RSA identified (92.8%, implementation constants) in charlie-2009-12-11.mddramimage",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0xec52b2"
+ },
+ {
+  "ref": "F25",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "generic identified (65.7%, API/string references only) in charlie-2009-12-11.mddramimage",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0xd3d2c74"
+ },
+ {
+  "ref": "F26",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "DES identified (60.0%, implementation constants) in charlie-2009-12-11.mddramimage",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x9e61b30"
+ },
+ {
+  "ref": "F27",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "3DES identified (60.0%, API/string references only) in charlie-2009-12-11.mddramimage",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x9f39f04"
+ },
+ {
+  "ref": "F28",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC P-256 identified (40.0%, API/string references only) in charlie-2009-12-11.mddramimage",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x9f3b368"
+ },
+ {
+  "ref": "F29",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC secp256k1 identified (40.0%, API/string references only) in charlie-2009-12-11.mddramimage",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x9f39b68"
+ },
+ {
+  "ref": "F30",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0xd35b0b0"
+ },
+ {
+  "ref": "F31",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0xd6aed58"
+ },
+ {
+  "ref": "F32",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x1841fda8"
+ },
+ {
+  "ref": "F33",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x190ab088"
+ },
+ {
+  "ref": "F34",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x52d0b678"
+ },
+ {
+  "ref": "F35",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0xec52ad"
+ },
+ {
+  "ref": "F36",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0xbb1721e"
+ },
+ {
+  "ref": "F37",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0xbb17edc"
+ },
+ {
+  "ref": "F38",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0xbd4d93f"
+ },
+ {
+  "ref": "F39",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0xd4cae0c"
+ },
+ {
+  "ref": "F40",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0xd4cb363"
+ },
+ {
+  "ref": "F41",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x1043a9c0"
+ },
+ {
+  "ref": "F42",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15ac9b76"
+ },
+ {
+  "ref": "F43",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15ad6ae2"
+ },
+ {
+  "ref": "F44",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15ad7920"
+ },
+ {
+  "ref": "F45",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15ad7fbb"
+ },
+ {
+  "ref": "F46",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15ad884c"
+ },
+ {
+  "ref": "F47",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15adb047"
+ },
+ {
+  "ref": "F48",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15adb2ab"
+ },
+ {
+  "ref": "F49",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15adc04e"
+ },
+ {
+  "ref": "F50",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15adc396"
+ },
+ {
+  "ref": "F51",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15adc9ee"
+ },
+ {
+  "ref": "F52",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15add009"
+ },
+ {
+  "ref": "F53",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15add47f"
+ },
+ {
+  "ref": "F54",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15adf201"
+ },
+ {
+  "ref": "F55",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15ae4ef9"
+ },
+ {
+  "ref": "F56",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15af205c"
+ },
+ {
+  "ref": "F57",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15af2ccb"
+ },
+ {
+  "ref": "F58",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15ba0044"
+ },
+ {
+  "ref": "F59",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x15e8f131"
+ },
+ {
+  "ref": "F60",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1536 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x163c4f80"
+ },
+ {
+  "ref": "F61",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23769229"
+ },
+ {
+  "ref": "F62",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23ee46df"
+ },
+ {
+  "ref": "F63",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23ee4a58"
+ },
+ {
+  "ref": "F64",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23eeedbb"
+ },
+ {
+  "ref": "F65",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23eefd7b"
+ },
+ {
+  "ref": "F66",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23ef423c"
+ },
+ {
+  "ref": "F67",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23ef46ec"
+ },
+ {
+  "ref": "F68",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23ef4a81"
+ },
+ {
+  "ref": "F69",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23ef52d1"
+ },
+ {
+  "ref": "F70",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23ef5658"
+ },
+ {
+  "ref": "F71",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23ef5924"
+ },
+ {
+  "ref": "F72",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1000 key e=65537 (DER SPKI), strength 62/100 (79.1-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23ef5d47"
+ },
+ {
+  "ref": "F73",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23ef65db"
+ },
+ {
+  "ref": "F74",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23ef7772"
+ },
+ {
+  "ref": "F75",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23ef7adf"
+ },
+ {
+  "ref": "F76",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23ef91d9"
+ },
+ {
+  "ref": "F77",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23efc230"
+ },
+ {
+  "ref": "F78",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23efc6c6"
+ },
+ {
+  "ref": "F79",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23efce49"
+ },
+ {
+  "ref": "F80",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23efd2c8"
+ },
+ {
+  "ref": "F81",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23efe1ea"
+ },
+ {
+  "ref": "F82",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23eff59a"
+ },
+ {
+  "ref": "F83",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f025a0"
+ },
+ {
+  "ref": "F84",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2046 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f02c4c"
+ },
+ {
+  "ref": "F85",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f051ba"
+ },
+ {
+  "ref": "F86",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f06940"
+ },
+ {
+  "ref": "F87",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f06cec"
+ },
+ {
+  "ref": "F88",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f085a3"
+ },
+ {
+  "ref": "F89",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f092a8"
+ },
+ {
+  "ref": "F90",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f09ab8"
+ },
+ {
+  "ref": "F91",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f0a743"
+ },
+ {
+  "ref": "F92",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f0b7f9"
+ },
+ {
+  "ref": "F93",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f0be18"
+ },
+ {
+  "ref": "F94",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2046 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f0c5f6"
+ },
+ {
+  "ref": "F95",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f0e5b8"
+ },
+ {
+  "ref": "F96",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f0ea3a"
+ },
+ {
+  "ref": "F97",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f0f6d6"
+ },
+ {
+  "ref": "F98",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f0fb18"
+ },
+ {
+  "ref": "F99",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f122a1"
+ },
+ {
+  "ref": "F100",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f222ac"
+ },
+ {
+  "ref": "F101",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f232be"
+ },
+ {
+  "ref": "F102",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x23f23bd2"
+ },
+ {
+  "ref": "F103",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x24000bd0"
+ },
+ {
+  "ref": "F104",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x24010def"
+ },
+ {
+  "ref": "F105",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x2401dbe2"
+ },
+ {
+  "ref": "F106",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x24120308"
+ },
+ {
+  "ref": "F107",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x2a78e69a"
+ },
+ {
+  "ref": "F108",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x5467829d"
+ },
+ {
+  "ref": "F109",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x7825298e"
+ },
+ {
+  "ref": "F110",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size",
+  "severity": "critical",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x784e3dd8"
+ },
+ {
+  "ref": "F111",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (PEM public), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x109a8160"
+ },
+ {
+  "ref": "F112",
+  "module": "rsa",
+  "kind": "rsa_summary",
+  "title": "112 RSA keys with no weaknesses and 2 corrupt key-like structures in charlie-2009-12-11.mddramimage",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": ""
+ },
+ {
+  "ref": "F113",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "200 high-entropy regions (11202560 bytes) in charlie-2009-12-11.mddramimage",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
+  "location": "0x9bc1000"
+ },
+ {
+  "ref": "F114",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "1 high-entropy regions (8192 bytes) in pid.948.vad.0x12c40000-0x12c43fff.dmp",
+  "severity": "info",
+  "source": "..\\data\\m57\\out\\malfind\\pid.948.vad.0x12c40000-0x12c43fff.dmp",
+  "location": "0x2000"
+ },
+ {
+  "ref": "F115",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "1 high-entropy regions (4096 bytes) in pid.948.vad.0x18240000-0x18243fff.dmp",
+  "severity": "info",
+  "source": "..\\data\\m57\\out\\malfind\\pid.948.vad.0x18240000-0x18243fff.dmp",
+  "location": "0x3000"
+ },
+ {
+  "ref": "F116",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "1 high-entropy regions (4096 bytes) in pid.948.vad.0x741a0000-0x741a3fff.dmp",
+  "severity": "info",
+  "source": "..\\data\\m57\\out\\malfind\\pid.948.vad.0x741a0000-0x741a3fff.dmp",
+  "location": "0x2000"
+ }
+]

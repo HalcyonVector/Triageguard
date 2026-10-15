@@ -1,0 +1,92 @@
+[
+ {
+  "type": "process",
+  "value": "avgwdsvc.exe",
+  "label": "process avgwdsvc.exe"
+ },
+ {
+  "type": "process",
+  "value": "jqs.exe",
+  "label": "process jqs.exe"
+ },
+ {
+  "type": "process",
+  "value": "hkcmd.exe",
+  "label": "process hkcmd.exe"
+ },
+ {
+  "type": "process",
+  "value": "jusched.exe",
+  "label": "process jusched.exe"
+ },
+ {
+  "type": "process",
+  "value": "alg.exe",
+  "label": "process alg.exe"
+ },
+ {
+  "type": "process",
+  "value": "soffice.exe",
+  "label": "process soffice.exe"
+ },
+ {
+  "type": "process",
+  "value": "soffice.bin",
+  "label": "process soffice.bin"
+ },
+ {
+  "type": "process",
+  "value": "avgfws9.exe",
+  "label": "process avgfws9.exe"
+ },
+ {
+  "type": "process",
+  "value": "thunderbird.exe",
+  "label": "process thunderbird.exe"
+ },
+ {
+  "type": "process",
+  "value": "mdd_1.3.exe",
+  "label": "process mdd_1.3.exe"
+ },
+ {
+  "type": "code",
+  "value": "5e51ce076a27a71ba91a4c2f267f2f266a9c5fdbdad6c0d34ffe27f8e5d7fc57",
+  "label": "same code (5e51ce076a27)"
+ },
+ {
+  "type": "code",
+  "value": "b173c0277edf8e2bb2a7ae638bfa89431e6c140bd4114b7b6cc26d9948ff3c4e",
+  "label": "same code (b173c0277edf)"
+ },
+ {
+  "type": "code",
+  "value": "c2480385a0373d108a9b44234e98589e52716444803a864c9cc882ea0bb15a26",
+  "label": "same code (c2480385a037)"
+ },
+ {
+  "type": "code",
+  "value": "1cd0e4cb53e88977fb4099d9263d8b2d19caf0b5d1a923940343563e1f6b04cb",
+  "label": "same code (1cd0e4cb53e8)"
+ },
+ {
+  "type": "code",
+  "value": "a5b908991f7dee88f70ab08a125402f7a2f213b32db7153bd74d513806d5454b",
+  "label": "same code (a5b908991f7d)"
+ },
+ {
+  "type": "code",
+  "value": "aa2c34740178211f5677a3d0191e42734839e6c6abe217cc2f5c071184f33d21",
+  "label": "same code (aa2c34740178)"
+ },
+ {
+  "type": "code",
+  "value": "f859825fc8a1dddadcd4d0b63867a9735665ad681cb480b7698033902c33204f",
+  "label": "same code (f859825fc8a1)"
+ },
+ {
+  "type": "code",
+  "value": "51393d62683226beda0f0566a2900b5decce9b8ffbfd5288ec8ee8f6f5e7694a",
+  "label": "same code (51393d626832)"
+ }
+]
