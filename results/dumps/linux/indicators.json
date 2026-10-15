@@ -1,0 +1,77 @@
+[
+ {
+  "type": "process",
+  "value": "slub_flushwq",
+  "label": "process slub_flushwq"
+ },
+ {
+  "type": "process",
+  "value": "mm_percpu_wq",
+  "label": "process mm_percpu_wq"
+ },
+ {
+  "type": "process",
+  "value": "inet_frag_wq",
+  "label": "process inet_frag_wq"
+ },
+ {
+  "type": "process",
+  "value": "blkcg_punt_bio",
+  "label": "process blkcg_punt_bio"
+ },
+ {
+  "type": "process",
+  "value": "tpm_dev_wq",
+  "label": "process tpm_dev_wq"
+ },
+ {
+  "type": "process",
+  "value": "md_bitmap",
+  "label": "process md_bitmap"
+ },
+ {
+  "type": "process",
+  "value": "edac-poller",
+  "label": "process edac-poller"
+ },
+ {
+  "type": "process",
+  "value": "devfreq_wq",
+  "label": "process devfreq_wq"
+ },
+ {
+  "type": "process",
+  "value": "ecryptfs-kthrea",
+  "label": "process ecryptfs-kthrea"
+ },
+ {
+  "type": "process",
+  "value": "acpi_thermal_pm",
+  "label": "process acpi_thermal_pm"
+ },
+ {
+  "type": "process",
+  "value": "mld",
+  "label": "process mld"
+ },
+ {
+  "type": "process",
+  "value": "kstrp",
+  "label": "process kstrp"
+ },
+ {
+  "type": "process",
+  "value": "vmware-vmblock-",
+  "label": "process vmware-vmblock-"
+ },
+ {
+  "type": "process",
+  "value": "cryptd",
+  "label": "process cryptd"
+ },
+ {
+  "type": "process",
+  "value": "acpid",
+  "label": "process acpid"
+ }
+]

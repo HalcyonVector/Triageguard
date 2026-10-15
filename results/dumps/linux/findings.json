@@ -1,0 +1,884 @@
+[
+ {
+  "ref": "F1",
+  "module": "memory",
+  "kind": "processes",
+  "title": "processes: 344 rows",
+  "severity": "info",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F2",
+  "module": "memory",
+  "kind": "cmdlines",
+  "title": "cmdlines: 344 rows",
+  "severity": "info",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F3",
+  "module": "memory",
+  "kind": "skipped",
+  "title": "network: skipped (linux.sockstat timed out after 10 minutes)",
+  "severity": "info",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F4",
+  "module": "memory",
+  "kind": "injected",
+  "title": "injected: 162 rows",
+  "severity": "info",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F5",
+  "module": "memory",
+  "kind": "bash",
+  "title": "bash: 28 rows",
+  "severity": "info",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F6",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 880 networkd-dispat: 1 RWX/injected region(s): 1 x region starts with zero bytes, no code at the region base",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "880"
+ },
+ {
+  "ref": "F7",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 1032 unattended-upgr: 1 RWX/injected region(s): 1 x identical code in 4 processes, likely a system-wide hook",
+  "severity": "medium",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "1032"
+ },
+ {
+  "ref": "F8",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 1702 gnome-shell: 34 RWX/injected region(s): 34 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "1702"
+ },
+ {
+  "ref": "F9",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 1814 gjs: 4 RWX/injected region(s): 4 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "1814"
+ },
+ {
+  "ref": "F10",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 2212 gjs: 5 RWX/injected region(s): 5 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "2212"
+ },
+ {
+  "ref": "F11",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 2254 gjs: 9 RWX/injected region(s): 9 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "2254"
+ },
+ {
+  "ref": "F12",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 3000 firefox: 10 RWX/injected region(s): 10 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "3000"
+ },
+ {
+  "ref": "F13",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 3161 Privileged Cont: 5 RWX/injected region(s): 5 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "3161"
+ },
+ {
+  "ref": "F14",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 3330 WebExtensions: 6 RWX/injected region(s): 6 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "3330"
+ },
+ {
+  "ref": "F15",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 3640 Isolated Web Co: 4 RWX/injected region(s): 4 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "3640"
+ },
+ {
+  "ref": "F16",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 3742 Isolated Web Co: 3 RWX/injected region(s): 3 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "3742"
+ },
+ {
+  "ref": "F17",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 3981 Isolated Web Co: 5 RWX/injected region(s): 5 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "3981"
+ },
+ {
+  "ref": "F18",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 4215 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "4215"
+ },
+ {
+  "ref": "F19",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 4218 Isolated Web Co: 6 RWX/injected region(s): 6 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "4218"
+ },
+ {
+  "ref": "F20",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 4348 gnome-terminal-: 4 RWX/injected region(s): 4 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "4348"
+ },
+ {
+  "ref": "F21",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 4599 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "4599"
+ },
+ {
+  "ref": "F22",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 4771 Isolated Web Co: 7 RWX/injected region(s): 7 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "4771"
+ },
+ {
+  "ref": "F23",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 4806 Isolated Web Co: 3 RWX/injected region(s): 3 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "4806"
+ },
+ {
+  "ref": "F24",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5075 Isolated Web Co: 2 RWX/injected region(s): 2 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5075"
+ },
+ {
+  "ref": "F25",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5102 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5102"
+ },
+ {
+  "ref": "F26",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5128 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5128"
+ },
+ {
+  "ref": "F27",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5132 Isolated Web Co: 3 RWX/injected region(s): 3 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5132"
+ },
+ {
+  "ref": "F28",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5166 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5166"
+ },
+ {
+  "ref": "F29",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5191 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5191"
+ },
+ {
+  "ref": "F30",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5221 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5221"
+ },
+ {
+  "ref": "F31",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5278 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5278"
+ },
+ {
+  "ref": "F32",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5319 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5319"
+ },
+ {
+  "ref": "F33",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5321 Isolated Web Co: 2 RWX/injected region(s): 2 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5321"
+ },
+ {
+  "ref": "F34",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5359 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5359"
+ },
+ {
+  "ref": "F35",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5378 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5378"
+ },
+ {
+  "ref": "F36",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5381 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5381"
+ },
+ {
+  "ref": "F37",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5402 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5402"
+ },
+ {
+  "ref": "F38",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5432 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5432"
+ },
+ {
+  "ref": "F39",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5452 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5452"
+ },
+ {
+  "ref": "F40",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5472 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5472"
+ },
+ {
+  "ref": "F41",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5477 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5477"
+ },
+ {
+  "ref": "F42",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5491 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5491"
+ },
+ {
+  "ref": "F43",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5520 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5520"
+ },
+ {
+  "ref": "F44",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5559 Isolated Web Co: 2 RWX/injected region(s): 2 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5559"
+ },
+ {
+  "ref": "F45",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5570 Isolated Web Co: 2 RWX/injected region(s): 2 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5570"
+ },
+ {
+  "ref": "F46",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5604 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "5604"
+ },
+ {
+  "ref": "F47",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 6519 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "6519"
+ },
+ {
+  "ref": "F48",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 6572 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "6572"
+ },
+ {
+  "ref": "F49",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 6661 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "6661"
+ },
+ {
+  "ref": "F50",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 6683 Isolated Web Co: 3 RWX/injected region(s): 3 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "6683"
+ },
+ {
+  "ref": "F51",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 6962 Isolated Web Co: 2 RWX/injected region(s): 2 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "6962"
+ },
+ {
+  "ref": "F52",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 7075 Isolated Web Co: 9 RWX/injected region(s): 9 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "7075"
+ },
+ {
+  "ref": "F53",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 7135 Isolated Web Co: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "7135"
+ },
+ {
+  "ref": "F54",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 7421 Isolated Servic: 2 RWX/injected region(s): 2 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "7421"
+ },
+ {
+  "ref": "F55",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 7428 Web Content: 2 RWX/injected region(s): 2 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "7428"
+ },
+ {
+  "ref": "F56",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 7572 Web Content: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "7572"
+ },
+ {
+  "ref": "F57",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 7737 Web Content: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "7737"
+ },
+ {
+  "ref": "F58",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 6422 nettstat: name 'nettstat' imitates the system program 'netstat' (one letter different)",
+  "severity": "high",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "6422"
+ },
+ {
+  "ref": "F59",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 6422 nettstat: started by cron (nettstat <- sh <- cron <- cron): a scheduled job, a common way to keep malware running",
+  "severity": "medium",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "6422"
+ },
+ {
+  "ref": "F60",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 4453 bash: bash history: 'chmod 755 youtube_downloader.elf' in chmod 755 youtube_downloader.elf ",
+  "severity": "medium",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "4453"
+ },
+ {
+  "ref": "F61",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 4453 bash: bash history: 'sudo ./youtube_downloader.elf' in sudo ./youtube_downloader.elf ",
+  "severity": "medium",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "4453"
+ },
+ {
+  "ref": "F62",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 4908 sudo: runs a program from the current folder as root through sudo, not an installed one: sudo ./youtube_downloader.elf",
+  "severity": "medium",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "4908"
+ },
+ {
+  "ref": "F63",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 4909 sudo: runs a program from the current folder as root through sudo, not an installed one: sudo ./youtube_downloader.elf",
+  "severity": "medium",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "4909"
+ },
+ {
+  "ref": "F64",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 4910 youtube_downloa: runs a program from the current folder, not an installed one: ./youtube_downloader.elf",
+  "severity": "medium",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "4910"
+ },
+ {
+  "ref": "F65",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES identified (100.0%, implementation constants) in memory.vmem",
+  "severity": "info",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x86b83f"
+ },
+ {
+  "ref": "F66",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC P-256 identified (99.1%, implementation constants) in memory.vmem",
+  "severity": "info",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x2cd050a0"
+ },
+ {
+  "ref": "F67",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES-GCM identified (97.6%, implementation constants) in memory.vmem",
+  "severity": "info",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0xceb56c0"
+ },
+ {
+  "ref": "F68",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ChaCha20/Salsa20 identified (93.5%, implementation constants) in memory.vmem",
+  "severity": "info",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x7a397b0"
+ },
+ {
+  "ref": "F69",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC secp256k1 identified (92.8%, implementation constants) in memory.vmem",
+  "severity": "info",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x2cd04884"
+ },
+ {
+  "ref": "F70",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "Curve25519 identified (91.4%, implementation constants) in memory.vmem",
+  "severity": "info",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x6d1a8a20"
+ },
+ {
+  "ref": "F71",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "RSA identified (91.0%, implementation constants) in memory.vmem",
+  "severity": "info",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0xe97c8b"
+ },
+ {
+  "ref": "F72",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "DES identified (90.0%, implementation constants) in memory.vmem",
+  "severity": "info",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x128c8e00"
+ },
+ {
+  "ref": "F73",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "3DES identified (50.0%, API/string references only) in memory.vmem",
+  "severity": "info",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x2d45eb60"
+ },
+ {
+  "ref": "F74",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=65537 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x42aded0"
+ },
+ {
+  "ref": "F75",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=83975 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0xd6d3edc"
+ },
+ {
+  "ref": "F76",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=124389 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0xe3b7edc"
+ },
+ {
+  "ref": "F77",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x28ea1ad9"
+ },
+ {
+  "ref": "F78",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=65537 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x3e6508b0"
+ },
+ {
+  "ref": "F79",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=79877 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x43d8eedc"
+ },
+ {
+  "ref": "F80",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=131071 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x43e85edc"
+ },
+ {
+  "ref": "F81",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=43147 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x460e3d28"
+ },
+ {
+  "ref": "F82",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=68655 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x4d23eedc"
+ },
+ {
+  "ref": "F83",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x65e60c6d"
+ },
+ {
+  "ref": "F84",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x67e0c6c3"
+ },
+ {
+  "ref": "F85",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=113409 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x6ca67edc"
+ },
+ {
+  "ref": "F86",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=96263 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x810bcedc"
+ },
+ {
+  "ref": "F87",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=81923 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0xa262fedc"
+ },
+ {
+  "ref": "F88",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=77933 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0xafe08edc"
+ },
+ {
+  "ref": "F89",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=84109 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus; shared modulus",
+  "severity": "low",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0xb6a5fedc"
+ },
+ {
+  "ref": "F90",
+  "module": "rsa",
+  "kind": "rsa_summary",
+  "title": "275 RSA keys with no weaknesses and 10 corrupt key-like structures in memory.vmem",
+  "severity": "info",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F91",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "200 high-entropy regions (15028224 bytes) in memory.vmem",
+  "severity": "info",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x68000"
+ },
+ {
+  "ref": "F92",
+  "module": "rsa",
+  "kind": "key_recovery",
+  "title": "No RSA prime found in nettstat (PID 6422) for its 0 RSA key(s)",
+  "severity": "info",
+  "source": "..\\data\\linux\\out\\procs\\pid.6422.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F93",
+  "module": "rsa",
+  "kind": "key_recovery",
+  "title": "No RSA prime found in youtube_downloa (PID 4910) for its 0 RSA key(s)",
+  "severity": "info",
+  "source": "..\\data\\linux\\out\\procs\\pid.4910.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F94",
+  "module": "credentials",
+  "kind": "JWT",
+  "title": "JWT eyJhbG...psbQ: token expired",
+  "severity": "medium",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x7cacec1"
+ },
+ {
+  "ref": "F95",
+  "module": "credentials",
+  "kind": "JWT",
+  "title": "JWT eyJhbG...n2Xk: symmetric HS256: security rests on secret strength; offline guessing possible; token expired",
+  "severity": "medium",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x90e6eb80"
+ },
+ {
+  "ref": "F96",
+  "module": "credentials",
+  "kind": "JWT",
+  "title": "JWT eyJhbG...NGxg: token expired",
+  "severity": "medium",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0xa4b82c8a"
+ },
+ {
+  "ref": "F97",
+  "module": "credentials",
+  "kind": "AWS access key id",
+  "title": "AWS access key id AKIAIS...ITAL",
+  "severity": "medium",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0xb8b442ae"
+ },
+ {
+  "ref": "F98",
+  "module": "credentials",
+  "kind": "Bearer token",
+  "title": "Bearer token SG.e9c...PD8m",
+  "severity": "medium",
+  "source": "..\\data\\linux\\memory\\memory.vmem",
+  "location": "0x9f446790"
+ }
+]

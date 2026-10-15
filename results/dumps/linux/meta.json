@@ -1,0 +1,12 @@
+{
+ "title": "Ubuntu 22.04 (13Cubed Linux)",
+ "os": "Ubuntu 22.04, kernel 6.5.0-41",
+ "source": "13Cubed Linux memory forensics challenge",
+ "size": "4.0 GB",
+ "pcap": "",
+ "order": 6,
+ "findings": 98,
+ "risk": 89,
+ "compromise": 80,
+ "exposure": 93
+}
