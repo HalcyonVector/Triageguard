@@ -1,82 +1,120 @@
 # Incident Report  
 
-**Date:** 2026‑10‑12  
+**Date:** 2026‑10‑15  
 
 ---  
 
 ## Summary  
-Memory analysis uncovered three processes with RWX‑injected memory regions, a hallmark of process injection (ATT&CK T1055) [F8][F6][F10].  A critically weak RSA‑512 key (strength 0/100) was also extracted [F59].  In addition, numerous legacy RSA keys (1024‑2048 bits) with small exponents or shared moduli were found [F34][F37][F38][F64].  The combination of active code injection and severely compromised cryptographic material indicates a high‑severity breach [F8][F59].  
+Memory forensics uncovered **process‑injection** activity in three high‑severity processes and a **critical 512‑bit RSA key** that provides essentially no security. The combination of active code injection (ATT&CK T1055) and numerous weak/legacy RSA keys indicates that an attacker has both execution foothold and the ability to compromise cryptographic confidentiality.  
 
 ---  
 
 ## Cryptography  
 
-### Identified Algorithms  
+### Algorithms Detected  
 
 | Algorithm | Confidence | Basis | Finding |
 |-----------|------------|-------|---------|
-| RSA‑512 | 99.2% | implementation constants | [F59] |
-| RSA‑1024 | 98.7% | implementation constants | [F34] |
-| RSA‑1536 | 97.5% | implementation constants | [F41] |
-| RSA‑2047 | 96.3% | implementation constants | [F71] |
-| RSA‑2048 | 98.0% | implementation constants | [F37] |
-| RSA‑4096 | 99.5% | implementation constants | [F64] |
+| RSA | 99.9% | implementation constants | [F59] |
+| RSA | 99.9% | implementation constants | [F34] |
+| RSA | 99.9% | implementation constants | [F35] |
+| RSA | 99.9% | implementation constants | [F36] |
+| RSA | 99.9% | implementation constants | [F37] |
+| RSA | 99.9% | implementation constants | [F38] |
+| RSA | 99.9% | implementation constants | [F39] |
+| RSA | 99.9% | implementation constants | [F40] |
+| RSA | 99.9% | implementation constants | [F41] |
+| RSA | 99.9% | implementation constants | [F42] |
+| RSA | 99.9% | implementation constants | [F43] |
+| RSA | 99.9% | implementation constants | [F44] |
+| RSA | 99.9% | implementation constants | [F45] |
+| RSA | 99.9% | implementation constants | [F46] |
+| RSA | 99.9% | implementation constants | [F47] |
+| RSA | 99.9% | implementation constants | [F48] |
+| RSA | 99.9% | implementation constants | [F49] |
+| RSA | 99.9% | implementation constants | [F50] |
+| RSA | 99.9% | implementation constants | [F51] |
+| RSA | 99.9% | implementation constants | [F52] |
+| RSA | 99.9% | implementation constants | [F53] |
+| RSA | 99.9% | implementation constants | [F54] |
+| RSA | 99.9% | implementation constants | [F55] |
+| RSA | 99.9% | implementation constants | [F56] |
+| RSA | 99.9% | implementation constants | [F57] |
+| RSA | 99.9% | implementation constants | [F58] |
+| RSA | 99.9% | implementation constants | [F60] |
+| RSA | 99.9% | implementation constants | [F61] |
+| RSA | 99.9% | implementation constants | [F62] |
+| RSA | 99.9% | implementation constants | [F63] |
+| RSA | 99.9% | implementation constants | [F64] |
+| RSA | 99.9% | implementation constants | [F65] |
+| RSA | 99.9% | implementation constants | [F66] |
+| RSA | 99.9% | implementation constants | [F67] |
 
-*Confidence values are derived from deterministic parsing of the DER/CAPI blobs present in the memory image [F59].*  
-
-### RSA Key Details (Critical)  
+### RSA Key Details  
 
 | Key size | Exponent | Strength | Issue | Finding |
 |----------|----------|----------|-------|---------|
-| 512 bits | 65537 | 0 | modulus size broken (publicly factorable) | [F59] |
+| 512 bits | 65537 | 0 | modulus ≤ 512 bits – publicly factorable (critical) | [F59] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F34] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F35] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F36] |
+| 2048 bits | 3 | 88 | non‑compliant small exponent (FIPS 186‑5) | [F37] |
+| 2048 bits | 65537 | 88 | acceptable exponent but **shared modulus** | [F38] |
+| 2048 bits | 65537 | 88 | shared modulus | [F39] |
+| 2048 bits | 65537 | 88 | shared modulus | [F40] |
+| 1536 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F41] |
+| 2048 bits | 3 | 88 | non‑compliant small exponent (FIPS 186‑5) | [F42] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F43] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F44] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F45] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F46] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F47] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F48] |
+| 2048 bits | 6702873 | 88 | shared modulus, non‑standard exponent | [F49] |
+| 2048 bits | 83529 | 88 | shared modulus, non‑standard exponent | [F50] |
+| 2048 bits | 7266387 | 88 | shared modulus, non‑standard exponent | [F51] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F52] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F53] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F54] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F55] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F56] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F57] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F58] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F60] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F61] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F62] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F63] |
+| 4096 bits | 3 | 100 | strong size but non‑compliant small exponent (FIPS 186‑5) | [F64] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F65] |
+| 1024 bits | 65537 | 62 | legacy size (≤ 80‑bit security) | [F66] |
+| 1024 bits | 3 | 62 | legacy size + small exponent | [F67] |
 
 ---  
 
 ## Credentials  
-*The pipeline did not return any credential‑type findings.*  
+N/A  
 
 ---  
 
 ## Processes and Network  
 
-| PID | Process | Injection Details | ATT&CK Technique | Finding |
-|-----|---------|-------------------|------------------|---------|
-| 3724 | spoolsv.exe | 4 RWX regions; 1 executable private memory with unique code, 3 PE‑header regions (likely injected DLL/EXE) | T1055 – Process Injection | [F8] |
-| 1292 | Microsoft.Acti | 5 RWX regions; all contain executable private memory with unique code | T1055 – Process Injection | [F6] |
-| 400 | ServerManager. | 3 RWX regions; all contain executable private memory with unique code | T1055 – Process Injection | [F10] |
-| 1236 | svchost.exe (low) | 1 RWX region starting with zero bytes, no code at base | – | [F7] |
-| 3472 | explorer.exe (low) | 2 RWX regions starting with zero bytes, no code at base | – | [F9] |
+| PID | Process | Severity | Observation | ATT&CK Technique |
+|-----|---------|----------|-------------|-------------------|
+| 3724 | spoolsv.exe | **critical** | Four RWX regions; one contains unique executable code, three contain PE headers → likely injected DLL/EXE | T1055 (Process Injection) [F8] |
+| 1292 | Microsoft.Acti | **high** | Five RWX regions, each with unique executable code → strong indication of code injection | T1055 (Process Injection) [F6] |
+| 400 | ServerManager. | **high** | Three RWX regions with unique executable code → process injection evidence | T1055 (Process Injection) [F10] |
 
 ---  
 
 ## Risk Score  
 
-| Component | Score (0‑100) | Justification |
-|-----------|---------------|----------------|
-| **Overall** | **97** | Rule‑based overall score supplied (97) is consistent with the evidence of compromise and weak crypto [F8][F59][F6][F10]. |
-| **Compromise** | **95** | Multiple critical/high‑severity injected processes demonstrate active attacker control [F8][F6][F10]. |
-| **Crypto Exposure** | **95** | Presence of a broken RSA‑512 key (strength 0) and many legacy keys with small exponents or shared moduli dramatically reduce cryptographic security [F59][F34][F37][F38][F64]. |
-
-No cited finding contradicts the rule‑based values, so the scores remain unchanged.  
+- **Overall risk:** **96** (rule‑based score) – justified by the presence of critical process injection ([F8]) and a completely broken RSA‑512 key ([F59]) which together drive a very high compromise likelihood and a severe crypto exposure component.  
+- **Compromise score:** **95** – high because multiple processes show active code injection (critical and high findings) indicating attacker control ([F8], [F6], [F10]).  
+- **Crypto exposure score:** **55** – elevated due to the existence of a critical 512‑bit RSA key (strength 0) and a large population of legacy/weak RSA keys (strength ≤ 62) that reduce overall cryptographic security ([F59], [F34]‑[F67]).  
 
 ---  
 
 ## Recommendations  
 
-* **Containment** – Immediately terminate the injected processes (spoolsv.exe, Microsoft.Acti, ServerManager.) and isolate the host from the network [F8][F6][F10].  
-* **Forensic Capture** – Perform a full live memory dump for deeper analysis of the injected PE files [F8][F6][F10].  
-* **Root‑Cause Investigation** – Analyze the PE headers found in the RWX regions to identify the payload and its origin [F8][F6][F10].  
-* **Cryptographic Remediation** – Revoke and replace the RSA‑512 key (strength 0) [F59]; replace all RSA ≤1024‑bit keys and any keys using non‑standard exponents (e = 3) with RSA‑2048 or larger keys using the standard exponent 65537 [F34][F37][F64].  
-* **Key‑Management Policy** – Enforce generation policies that disallow shared moduli and small exponents; require a minimum key size of 2048 bits [F34][F37][F38][F64].  
-* **System Hardening** – Apply the latest OS and service patches (especially for the print spooler) [F8]; enable Windows Defender Credential Guard and Attack Surface Reduction rules that block unsigned code injection [F8][F6][F10].  
-* **Monitoring & Detection** – Deploy EDR alerts for RWX memory allocations and PE‑header detections in privileged processes [F8][F6][F10]; monitor outbound network traffic for anomalous connections from the compromised host.  
-* **Credential Review** – Although no credentials were found, force a password reset for privileged accounts that may have been used on the host, as credential dumping is a common post‑infection step.  
-
----  
-
-*Prepared by:* Malware Triage Analyst  
-*Classification:* Confidential – Internal Use Only  
-
-## Validation notes (automatic)
-Rule-based risk score: 97/100. This report failed these checks, treat the points below as unverified:
-- only 73% of claims carry a citation
+- **Terminate and investigate injected processes** – immediately stop `spoolsv.exe`, `Microsoft.Acti`, and `ServerManager.` and perform a full forensic dump to identify the payloads ([F8], [F6], [F10]).  
+- **Remove or replace all

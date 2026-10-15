@@ -1,24 +1,21 @@
 # Incident Report  
 
-**Date:** 2026‑10‑11  
-**Analyst:** Malware Triage Team  
+**Date:** 2026‑10‑15  
 
 ---  
 
 ## Summary  
-The memory image contains multiple **critical** malicious artifacts:  
+- The host **DESKTOP‑SDN1RPT** shows two critical code‑injection events: `spoolsv.exe` (PID 2188) has an RWX memory region that starts with a PE header, indicating a likely injected DLL/EXE and mapping to ATT&CK **T1055** [F6].  
+- `powershell.exe` (PID 3316) contains five RWX regions, two of which hold unique executable code and one with a PE header, also matching ATT&CK **T1055** and **T1059.001** [F8].  
+- A **critical** 512‑bit RSA key (e = 65537) was recovered; its modulus is publicly factorable, giving it 0‑bit security and a “broken” status [F37].  
 
-* **spoolsv.exe** (PID 2188) has a RWX‑injected region that includes a PE header, indicating a likely injected DLL/EXE (ATT&CK T1055) [F6].  
-* **powershell.exe** (PID 3316) shows five RWX‑injected regions, two with unique executable code and one with a PE header, evidencing code injection and script execution (ATT&CK T1055, T1059.001) [F8].  
-* An **RSA‑512** key (modulus 512 bits, exponent 65537) extracted from memory provides **0‑bit security** and is publicly factorable (broken) [F37].  
-
-The host also exhibits a large number of weak RSA keys (1024‑2048 bits, small exponent 3) and weak TLS configurations observed in network traffic [F48]. The rule‑based overall risk score is **97** (compromise 95, crypto exposure 95) and no cited evidence justifies a change [F1][F2][F3][F4][F5][F6][F7][F8][F9][F10][F11][F12][F13][F14][F15][F16][F17][F18][F19][F20][F21][F22][F23][F24][F25][F26][F27][F28][F29][F30][F31][F32][F33][F34][F35][F36][F37][F38][F39][F40][F41][F42][F43][F44][F45][F46][F47][F48].  
+These artifacts demonstrate an active attacker who has injected malicious code into trusted system processes and is using extremely weak cryptographic material.  
 
 ---  
 
 ## Cryptography  
 
-### Identified Algorithms  
+### Algorithms Detected  
 
 | Algorithm | Confidence | Basis | Finding |
 |-----------|------------|-------|---------|
@@ -36,11 +33,11 @@ The host also exhibits a large number of weak RSA keys (1024‑2048 bits, smal
 
 | Key size | Exponent | Strength | Issue | Finding |
 |----------|----------|----------|-------|---------|
-| 512 bits | 65537 | 0 | broken (publicly factorable) | [F37] |
+| 512 bits | 65537 | 0 | modulus size broken (publicly factorable) | [F37] |
 | 1024 bits | 65537 | 62 | legacy size, disallowed | [F25] |
 | 1024 bits | 65537 | 62 | legacy size, disallowed | [F26] |
 | 1024 bits | 65537 | 62 | legacy size, disallowed | [F27] |
-| 2048 bits | 3 | 88 | non‑compliant exponent (FIPS 186‑5) | [F28] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F28] |
 | 1024 bits | 65537 | 62 | legacy size, disallowed | [F29] |
 | 1024 bits | 65537 | 62 | legacy size, disallowed | [F30] |
 | 1024 bits | 65537 | 62 | legacy size, disallowed | [F31] |
@@ -51,27 +48,23 @@ The host also exhibits a large number of weak RSA keys (1024‑2048 bits, smal
 | 1024 bits | 65537 | 62 | legacy size, disallowed | [F36] |
 | 1024 bits | 65537 | 62 | legacy size, disallowed | [F38] |
 | 1024 bits | 65537 | 62 | legacy size, disallowed | [F39] |
+| 2048 bits | 3 | 88 | non‑compliant exponent (FIPS 186‑5) | [F28] |
 | 2048 bits | 3 | 88 | non‑compliant exponent (FIPS 186‑5) | [F40] |
 
 ---  
 
 ## Credentials  
-No credential artifacts (passwords, hashes, tokens) were reported in the findings [F1][F2][F3][F4][F5][F6][F7][F8][F9][F10][F11][F12][F13][F14][F15][F16][F17][F18][F19][F20][F21][F22][F23][F24][F25][F26][F27][F28][F29][F30][F31][F32][F33][F34][F35][F36][F37][F38][F39][F40][F41][F42][F43][F44][F45][F46][F47][F48].  
+- The supplied findings do not contain any credential‑related entries [F1].  
 
 ---  
 
 ## Processes and Network  
 
-| Category | Detail | Finding |
-|----------|--------|---------|
-| Suspicious process – critical | **spoolsv.exe** (PID 2188) with RWX‑injected PE region (ATT&CK T1055) | [F6] |
-| Suspicious process – critical | **powershell.exe** (PID 3316) with five RWX‑injected regions, code injection, script execution (ATT&CK T1055, T1059.001) | [F8] |
-| Low‑severity JIT process | **MsMpEng.exe** (PID 2404) shows expected RWX JIT memory – not malicious | [F7] |
-| Process list | 95 processes enumerated | [F1] |
-| Command‑line list | 95 command‑lines captured | [F2] |
-| Network summary | 115 network rows; 50 TLS conversations with SNI hosts (tumblr.com, redditmedia.com, optimizely.com); **weak TLS** observed | [F3][F48] |
-| USB devices | 32 USB entries observed | [F5] |
-| Injected memory summary | 7 injected regions overall | [F4] |
+| Category | Observation | Finding |
+|----------|-------------|---------|
+| Suspicious process – `spoolsv.exe` | One RWX region with a PE header, indicating injected code (ATT&CK T1055) | [F6] |
+| Suspicious process – `powershell.exe` | Five RWX regions; two contain unique code and one contains a PE header (ATT&CK T1055, T1059.001) | [F8] |
+| Network traffic | 50 TLS conversations observed; SNI list includes several media CDNs; no weak TLS versions reported | [F48] |
 
 ---  
 
@@ -79,26 +72,28 @@ No credential artifacts (passwords, hashes, tokens) were reported in the finding
 
 | Component | Score (0‑100) | Justification |
 |-----------|---------------|---------------|
-| **Compromise** | **95** | Critical code‑injection in system services (spoolsv.exe) and PowerShell, plus a broken RSA‑512 key, indicate active attacker control [F6][F8][F37]. |
-| **Crypto Exposure** | **95** | Numerous weak RSA keys (1024‑2048 bits, small exponent 3) and weak TLS configurations dramatically reduce cryptographic security [F25][F26][F27][F28][F29][F30][F31][F32][F33][F34][F35][F36][F38][F39][F40][F48]. |
-| **Overall** | **97** | Matches the rule‑based score; no cited evidence justifies a different value [F1][F2][F3][F4][F5][F6][F7][F8][F9][F10][F11][F12][F13][F14][F15][F16][F17][F18][F19][F20][F21][F22][F23][F24][F25][F26][F27][F28][F29][F30][F31][F32][F33][F34][F35][F36][F37][F38][F39][F40][F41][F42][F43][F44][F45][F46][F47][F48]. |
+| **Compromise** | **95** (rule‑based) | Supported by the two critical injection findings (F6, F8) that demonstrate an active foothold [F6][F8]. |
+| **Crypto Exposure** | **70** (adjusted) | The critical 512‑bit RSA key (F37) reduces the crypto‑exposure rating from the baseline 55 to 70 because it provides 0‑bit security [F37]. |
+| **Overall** | **96** (rule‑based) | The overall risk remains at the provided rule‑based value; the component adjustment does not change the aggregate score [F6][F8][F37]. |
 
 ---  
 
 ## Recommendations  
 
-1. **Immediate Containment** – Isolate the host from the network and terminate the malicious **spoolsv.exe** and **powershell.exe** processes; unload the injected modules if possible [F6][F8].  
-2. **Forensic Capture** – Acquire a full memory dump and disk image for deeper analysis of the injected payloads and any persisted artifacts [F1][F2][F3][F4][F5].  
-3. **Key Management** – Revoke any services using the extracted RSA‑512 key and replace with RSA‑3072 or ECC P‑256 keys generated securely [F37]; replace all 1024‑bit keys and those with exponent 3 [F25][F26][F27][F28][F29][F30][F31][F32][F33][F34][F35][F36][F38][F39][F40].  
-4. **Patch and Harden** – Apply the latest Windows updates and enable mitigations such as Control Flow Guard, DEP, and virtualization‑based security [F6][F8].  
-5. **TLS Configuration** – Disable DES and 3DES cipher suites, enforce TLS 1.2/1.3 with strong ciphers (AES‑GCM), and verify server configurations [F48].  
-6. **Monitoring & Detection** – Deploy EDR rules to alert on RWX memory regions, PE headers in injected memory, and PowerShell script‑block activity; enable PowerShell logging and AMSI [F6][F8].  
-7. **Credential Review** – Although no credentials were found, rotate any service accounts that may have been used by the compromised processes as a precaution [F1][F2][F3][F4][F5][F6][F7][F8].  
+1. **Isolate the host** – Immediately place the machine on a quarantine network and stop the malicious `spoolsv.exe` and `powershell.exe` processes [F6][F8].  
+2. **Capture fresh forensic images** – Obtain a new memory dump and a full disk image for deeper analysis of the injected payloads [F6][F8].  
+3. **Remove injected code** – Use trusted utilities (e.g., Sysinternals Process Explorer, Autoruns) to locate and delete the DLL/EXE files referenced by the RWX regions [F6][F8].  
+4. **Regenerate cryptographic keys** – Discard the 512‑bit RSA key and all legacy 1024‑bit keys; replace them with RSA ≥ 3072 bits or modern ECC (P‑256/P‑384) keys [F37][F25][F28].  
+5. **Enforce strong crypto policies** – Disable DES and 3DES, require TLS 1.2 or higher with strong cipher suites, and audit for low‑confidence algorithm usage (DES, 3DES, Curve25519) [F22][F23][F24].  
+6. **Apply system patches** – Install the latest Windows updates and enable mitigations such as Control Flow Guard and Data Execution Prevention to hinder future code‑injection attempts [F6][F8].  
+7. **Monitor for lateral movement** – Correlate additional network logs with the observed TLS SNI list to detect any further malicious communications [F48].  
+8. **Review credential protection** – Although no credentials were found, verify that LSASS and DPAPI are protected (e.g., enable Credential Guard) to prevent future credential dumping [F1].  
 
 ---  
 
-*All factual statements are cited to the corresponding finding IDs as required.*
+*Prepared by the Malware Triage Team.*  
 
 ## Validation notes (automatic)
-Rule-based risk score: 97/100. This report failed these checks, treat the points below as unverified:
-- only 87% of claims carry a citation
+Rule-based risk score: 96/100. This report failed these checks, treat the points below as unverified:
+- strength for F28 stated as 62 but computed 88
+- only 88% of claims carry a citation
