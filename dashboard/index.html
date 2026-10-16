@@ -21,6 +21,13 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
+/* scrollbars in the app's colours: a slim slate thumb that turns teal on hover */
+* { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--muted) 35%, transparent) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--muted) 30%, transparent); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--accent) 55%, transparent); background-clip: padding-box; }
+::-webkit-scrollbar-corner { background: transparent; }
 html { background: var(--bg); }
 body {
   margin: 0; min-height: 100vh; color: var(--text); font: 15px/1.5 var(--sans);
@@ -246,16 +253,14 @@ a.cite { color: var(--accent); font-family: var(--mono); font-size: .92em; text-
 .pipe-foot { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--faint); }
 
 /* buttons and the analyse dialog */
-.primary { font: 600 14px var(--sans); color: var(--ink-on-accent); background: linear-gradient(135deg, var(--accent), var(--accent2)); border: 0; border-radius: 10px; padding: 9px 16px; cursor: pointer; box-shadow: 0 6px 20px var(--glow1); display: inline-flex; gap: 8px; align-items: center; }
-.primary:hover { filter: brightness(1.08); } .primary[disabled] { opacity: .5; cursor: not-allowed; }
+.primary { font: 600 14px var(--sans); color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 10px; padding: 9px 16px; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; }
+.primary:hover { background: color-mix(in srgb, var(--accent) 22%, transparent); } .primary[disabled] { opacity: .5; cursor: not-allowed; }
 .ghost { font: 500 14px var(--sans); color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 9px 14px; cursor: pointer; }
 .topright { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 /* the header pill and button share one height; the button is a soft tint, not a bright gradient */
 .topright .pill, .topright #addbtn { height: 34px; box-sizing: border-box; border-radius: 999px; }
 .topright .pill { padding: 0 14px; font-size: 12px; }
-#addbtn { font: 600 13px var(--sans); padding: 0 16px; color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); box-shadow: none; }
-#addbtn:hover { filter: none; background: color-mix(in srgb, var(--accent) 22%, transparent); }
+#addbtn { font: 600 13px var(--sans); padding: 0 16px; }
 dialog { width: min(640px, calc(100vw - 32px)); max-height: calc(100vh - 40px); border: 1px solid var(--line); border-radius: 16px; padding: 0; background: var(--bg2); color: var(--text); box-shadow: 0 30px 80px rgba(0,0,0,.45); }
 dialog::backdrop { background: rgba(3,6,12,.6); backdrop-filter: blur(3px); }
 .dlg { padding: 22px; display: grid; gap: 14px; }
@@ -981,7 +986,7 @@ function benchHtml() {
   if (!B) return "";
   const r = (x) => `${x.hit}/${x.n}`;
   const rows = [
-    ["Cipher in use is identified", r(B.cipher_id_recall), "All misses are X25519, whose OpenSSL code has no constant we look for. Every OpenSSL process also lights up ciphers it never used: constants say what a process can do, not what it did."],
+    ["Cipher in use is identified", r(B.cipher_id_recall), (B.cipher_id_recall.hit === B.cipher_id_recall.n ? "Every cipher in use was found, X25519 included (by its field constants, which OpenSSL keeps as limbs)." : "Misses are listed in cases.csv.") + " Every OpenSSL process also lights up ciphers it never used: constants say what a process can do, not what it did."],
     ["Control process flagged", r(B.cipher_id_control_flags), "ChaCha20's constant is inside the Python interpreter itself, so even a process with no crypto library shows it"],
     ["Live AES key read back", r(B.aes_live_recall), "AES-128-CTR and AES-256-GCM contexts, key found by its schedule"],
     ["AES key after the context is freed", r(B.aes_freed_found), "OpenSSL wipes the schedule when it frees the context"],

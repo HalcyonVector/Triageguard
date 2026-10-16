@@ -38,6 +38,34 @@ def _h(s: str) -> bytes:
     return bytes.fromhex(s.replace(" ", ""))
 
 
+def _limbs(x, bits, n, signed=False):
+    """A field element as the limb array a 25519 implementation keeps in its code:
+    radix 2^51 (n=5 uint64, 64-bit builds) or radix 2^25.5 (n=10 int32, alternating 26
+    and 25 bits, values centred on zero as in ref10 and OpenSSL's curve25519.c)."""
+    p = 2**255 - 19
+    if not signed:
+        return b"".join(((x >> (bits * i)) & ((1 << bits) - 1)).to_bytes(8, "little") for i in range(n))
+    out, shift = [], 0
+    for i in range(n):
+        w = 26 if i % 2 == 0 else 25
+        out.append((x >> shift) & ((1 << w) - 1))
+        shift += w
+    for i in range(n):  # carry each limb into [-2^(w-1), 2^(w-1)) the way ref10 stores constants
+        w = 26 if i % 2 == 0 else 25
+        if out[i] >= 1 << (w - 1):
+            out[i] -= 1 << w
+            if i + 1 < n:
+                out[i + 1] += 1
+            else:
+                out[0] += 19  # 2^255 = 19 mod p
+    return b"".join(v.to_bytes(4, "little", signed=True) for v in out)
+
+
+_P25519 = 2**255 - 19
+_D25519 = (-121665 * pow(121666, -1, _P25519)) % _P25519   # Ed25519 d (RFC 8032 section 5.1)
+_SQRTM1 = pow(2, (_P25519 - 1) // 4, _P25519)              # sqrt(-1) mod p, used to decode points
+
+
 def _api(algo, name, weight, kind="api"):
     return Sig(algo, name, name.encode(), weight, kind, wide=True)
 
@@ -78,6 +106,12 @@ SIGNATURES = [
     # ---------------- ECC ----------------
     Sig("Curve25519", "p = 2^255-19 (LE)", b"\xed" + b"\xff" * 30 + b"\x7f", 0.6),
     Sig("Curve25519", "Ed25519 d constant (LE)", _h("a3785913ca4deb75abd841414d0a700098e879777940c78c73fe6f2bee6c0352"), 0.7),
+    # OpenSSL and ref10-style code keep field constants as limbs, never as 32 plain bytes,
+    # so X25519 processes showed only strings until these were added
+    Sig("Curve25519", "Ed25519 d as 10 int32 limbs (ref10, OpenSSL)", _limbs(_D25519, 0, 10, signed=True), 0.7),
+    Sig("Curve25519", "sqrt(-1) mod p as 10 int32 limbs", _limbs(_SQRTM1, 0, 10, signed=True), 0.6),
+    Sig("Curve25519", "Ed25519 d as 5 radix-2^51 limbs", _limbs(_D25519, 51, 5), 0.7),
+    Sig("Curve25519", "sqrt(-1) mod p as 5 radix-2^51 limbs", _limbs(_SQRTM1, 51, 5), 0.6),
     _api("Curve25519", "curve25519", 0.4, "string"),
     _api("Curve25519", "x25519", 0.4, "string"),
     _api("Curve25519", "ed25519", 0.4, "string"),
