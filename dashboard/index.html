@@ -164,6 +164,13 @@ a.cite { color: var(--accent); font-family: var(--mono); font-size: .92em; text-
 
 /* progress */
 .gt { display: inline-block; font-size: 12.5px; padding: 2px 7px; margin: 2px 3px 2px 0; border-radius: 6px; white-space: nowrap; background: var(--panel2); }
+.realmw { display: flex; flex-wrap: wrap; gap: 18px 28px; align-items: center; }
+.realmw > p { flex: 1 1 360px; min-width: 0; }
+.rmstats { display: flex; gap: 10px; flex-wrap: wrap; order: 2; }
+.rmstat { background: var(--panel2); border-radius: 10px; padding: 12px 16px; min-width: 120px; }
+.rmstat b { display: block; font: 700 26px var(--mono); color: var(--accent); }
+.rmstat span { font-size: 12.5px; color: var(--muted); }
+.mtable { table-layout: fixed; width: 100%; min-width: 640px; } .mtable td { overflow-wrap: anywhere; }
 .clickrow { cursor: pointer; } .clickrow:hover td { background: var(--panel2); }
 .gt.ok { color: var(--accent); } .gt.no { color: var(--bad); }
 .ring { position: relative; flex: none; width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(var(--c, var(--accent)) calc(var(--p) * 1%), var(--panel2) 0); }
@@ -983,7 +990,7 @@ function benchHtml() {
     ["RSA private key after the key is freed", r(B.rsa_freed_recovered), "OpenSSL clears the primes on free, unlike Windows 7 CryptoAPI in the WannaCry dump"],
   ];
   return `<h2>Benchmark: processes we control</h2>
-    <div class="card tablewrap"><p class="muted" style="margin:0 0 10px;font-size:13.5px;max-width:80ch">Processes we start ourselves with a known cipher and a fresh synthetic key, ${B.trials} trials each, read from memory and run through the same detectors. Run it again with <code>python -m triageguard benchmark</code> (Linux or WSL).</p>
+    <div class="card tablewrap"><p class="muted" style="margin:0 0 10px;font-size:13.5px">Processes we start ourselves with a known cipher and a fresh synthetic key, ${B.trials} trials each, read from memory and run through the same detectors. Run it again with <code>python -m triageguard benchmark</code> (Linux or WSL).</p>
     <table><tr><th>Check</th><th>Result</th><th>What it shows</th></tr>${rows.map((x) => `<tr><td>${x[0]}</td><td class="mono" style="white-space:nowrap">${x[1]}</td><td class="muted" style="font-size:13px">${x[2]}</td></tr>`).join("")}</table></div>`;
 }
 const CHECKS = {key_scanned: "picked for key scan", cipher_identified: "cipher identified", aes_key_recovered: "AES key recovered",
@@ -992,7 +999,7 @@ const tick = (ok, label) => `<span class="gt ${ok === null ? "" : ok ? "ok" : "n
 function labHtml(d) {
   const G = d.ground_truth;
   return `<div class="card tablewrap"><h3>${esc(d.meta.title || d.id)} <span class="mono" style="color:${G.passed === G.checks ? "var(--accent)" : "var(--bad)"}">${G.passed}/${G.checks}</span></h3>
-    <p class="muted" style="margin:0 0 10px;font-size:13.5px;max-width:80ch">We started these processes inside the VM with fresh random keys and wrote the answers down before the capture${G.kernel ? ` (kernel ${esc(G.kernel)})` : ""}. The full pipeline then ran on the dump with no access to the answers.</p>
+    <p class="muted" style="margin:0 0 10px;font-size:13.5px">We started these processes inside the VM with fresh random keys and wrote the answers down before the capture${G.kernel ? ` (kernel ${esc(G.kernel)})` : ""}. The full pipeline then ran on the dump with no access to the answers.</p>
     <table><tr><th>Process</th><th>Planted</th><th>Checks</th><th>Other keys</th></tr>${G.cases.map((c) => `<tr><td class="mono">${esc(c.process)} <span class="muted">${c.pid}</span></td><td>${esc(c.planted === "none" ? "nothing (control)" : c.planted)}</td>
       <td>${c.planted === "none" ? tick(!c.false_alarm, "no false alarm") : Object.keys(CHECKS).filter((k) => k in c).map((k) => tick(c[k], CHECKS[k])).join(" ")}</td>
       <td class="mono muted">${c.other_aes_keys || ""}</td></tr>`).join("")}</table>
@@ -1016,7 +1023,7 @@ function keysHtml() {
   const rows = keyRows();
   if (!rows.length) return "";
   return `<h2>Every key recovered from memory</h2>
-    <div class="card tablewrap"><p class="muted" style="margin:0 0 10px;font-size:13.5px;max-width:80ch">${rows.length} keys across ${new Set(rows.map((r) => r.d.id)).size} dumps. Key material is never stored, only a short fingerprint. Click a row for the finding.</p>
+    <div class="card tablewrap"><p class="muted" style="margin:0 0 10px;font-size:13.5px">${rows.length} keys across ${new Set(rows.map((r) => r.d.id)).size} dumps. Key material is never stored, only a short fingerprint. Click a row for the finding.</p>
     <table><tr><th>Key</th><th>Process</th><th>Dump</th><th>Found in</th><th>Proof</th><th>Source</th></tr>${rows.map((r) => `<tr class="clickrow" data-open="${r.d.id}|${r.f.ref}">
       <td class="mono" style="white-space:nowrap">${esc(r.cipher)}</td><td class="mono">${esc(r.proc)} <span class="muted">${r.pid || ""}</span></td>
       <td>${esc(r.d.meta.title || r.d.id)}</td><td class="muted" style="font-size:13px">${esc(r.how)}</td>
@@ -1036,10 +1043,10 @@ function renderMethods() {
   const rest = M.rows.filter((r) => !used.has(r.score));
   if (rest.length) groups.push(["Other", rest]);
   $("methods").innerHTML = `
-    <div class="card"><p style="margin:0;max-width:80ch">Every score is computed in code, never by the LLM. Each rule below names its formula, the published standard or paper it rests on, and the part that is our own choice because no standard covers it.</p>
+    <div class="card"><p style="margin:0">Every score is computed in code, never by the LLM. Each rule below names its formula, the published standard or paper it rests on, and the part that is our own choice because no standard covers it.</p>
       <div class="formula" style="margin-top:12px">overall risk = 1 − (1 − C)(1 − 0.5·E) · C = compromise, E = crypto exposure, each fused by Dempster's rule</div></div>
     ${groups.filter((g) => g[1].length).map(([name, rows]) => `<h2>${esc(name)}</h2>
-      <div class="card tablewrap"><table><tr><th>Score</th><th>Formula</th><th>Based on</th><th>Our own choice</th></tr>${rows.map((r) => `<tr>
+      <div class="card tablewrap"><table class="mtable"><colgroup><col style="width:15%"><col style="width:38%"><col style="width:31%"><col style="width:16%"></colgroup><tr><th>Score</th><th>Formula</th><th>Based on</th><th>Our own choice</th></tr>${rows.map((r) => `<tr>
         <td style="font-weight:600">${esc(r.score)}</td><td style="font-size:13px">${md(r.formula)}</td><td class="muted" style="font-size:13px">${md(r.basis)}</td><td class="muted" style="font-size:13px">${md(r.choice)}</td></tr>`).join("")}</table></div>`).join("")}
     ${M.note ? `<p class="note">${md(M.note)}</p>` : ""}
     <p class="note">Full text, with what changed and why: docs/FORMULAS.md in the repository.</p>`;
@@ -1062,7 +1069,9 @@ function renderValidation() {
     <h2>Lab dumps scored against planted keys</h2>
     ${labs.map(labHtml).join("") || '<p class="muted">No lab dump yet.</p>'}
     <h2>Real malware</h2>
-    <div class="card"><p class="muted" style="margin:0 0 10px;font-size:13.5px;max-width:80ch">Every rebuilt key is checked twice: the prime found in memory divides the public modulus, and the rebuilt private key undoes what the public key encrypts. So a hit here cannot be a false positive. ${blobs ? `${blobs} came from CryptoAPI private-key blobs still in memory` : ""}${blobs && primes ? " and " : ""}${primes ? `${primes} from primes left behind after the key was used, the flaw WannaKiwi used against WannaCry on Windows 7` : ""}. Each one is in the table below.</p>
+    <div class="card realmw"><div class="rmstats">
+        ${[[rebuilt.length, `RSA private key${rebuilt.length === 1 ? "" : "s"} rebuilt`], [blobs, "from CryptoAPI blobs"], [primes, "from leftover primes"]].map(([n, l]) => `<div class="rmstat"><b>${n}</b><span>${l}</span></div>`).join("")}
+      </div><p class="muted" style="margin:0;font-size:13.5px">Every rebuilt key is checked twice: the prime found in memory divides the public modulus, and the rebuilt private key undoes what the public key encrypts. So a hit here cannot be a false positive. ${blobs ? `${blobs} came from CryptoAPI private-key blobs still in memory` : ""}${blobs && primes ? " and " : ""}${primes ? `${primes} from primes left behind after the key was used, the flaw WannaKiwi used against WannaCry on Windows 7` : ""}. Each one is in the table below.</p>
 </div>
     ${keysHtml()}
     ${benchHtml()}
