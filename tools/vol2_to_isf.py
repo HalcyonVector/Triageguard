@@ -21,7 +21,9 @@ to be picked up automatically.
 """
 import sys, re, json, base64, argparse, zipfile, io, os
 
-LINE_RE = re.compile(r"^<(\d+)><0x([0-9a-fA-F]+)(?:\+0x[0-9a-fA-F]+)?><(DW_TAG_\w+)>\s*(.*)$")
+# dwarfdump prints a DIE offset either as hex (newer binutils: <1><0x1a2b>) or as
+# decimal, sometimes CU-relative with a '+' (older, 2.6.x-era: <1><37>, <0><0+11>).
+LINE_RE = re.compile(r"^<(\d+)><([0-9a-fA-Fx+]+)><(DW_TAG_\w+)>\s*(.*)$")
 ATTR_RE = re.compile(r"(DW_AT_\w+)<(.*?)>(?=\s+DW_AT_\w+<|\s*$)")
 ENC_KIND = {
     "DW_ATE_signed": ("int", True), "DW_ATE_unsigned": ("int", False),
@@ -43,9 +45,25 @@ def to_int(s):
         return None
 
 
+def parse_off(tok):
+    """A dwarfdump DIE offset: hex (0x1a2b), decimal (37), or CU-relative (0+11)."""
+    total = 0
+    for part in tok.split("+"):
+        part = part.strip()
+        if not part:
+            continue
+        total += int(part, 16) if part.lower().startswith("0x") else int(part, 10)
+    return total
+
+
 def ref_offset(val):
-    m = re.search(r"0x([0-9a-fA-F]+)", val)
-    return int(m.group(1), 16) if m else None
+    if val is None:
+        return None
+    m = re.search(r"0x([0-9a-fA-F]+)", val)      # newer dwarfdump: hex reference
+    if m:
+        return int(m.group(1), 16)
+    m = re.search(r"(\d+)", val)                  # older dwarfdump: <123> decimal reference
+    return int(m.group(1)) if m else None
 
 
 class DIE:
@@ -62,7 +80,7 @@ def parse_dwarf(text):
         m = LINE_RE.match(line)
         if not m:
             continue
-        depth, off = int(m.group(1)), int(m.group(2), 16)
+        depth, off = int(m.group(1)), parse_off(m.group(2))
         die = DIE(depth, off, m.group(3),
                   {a.group(1): a.group(2) for a in ATTR_RE.finditer(m.group(4))})
         dies[off] = die
@@ -104,9 +122,18 @@ def find_banner(image_path, version_hint=b"Linux version "):
 
 def build_isf(dwarf_text, sysmap_text, banner_b64=None):
     dies = parse_dwarf(dwarf_text)
+    # Pointer width is 8 on x86-64 but 4 on the older 32-bit kernels some CTF
+    # samples ship; take it from a real pointer DIE so 32-bit layouts are right.
+    ptr_size = 8
+    for d in dies.values():
+        if d.tag == "DW_TAG_pointer_type" and "DW_AT_byte_size" in d.attrs:
+            bs = to_int(d.attrs["DW_AT_byte_size"])
+            if bs:
+                ptr_size = bs
+                break
     base_types = {
         "void": {"size": 0, "signed": False, "kind": "void", "endian": "little"},
-        "pointer": {"size": 8, "signed": False, "kind": "int", "endian": "little"},
+        "pointer": {"size": ptr_size, "signed": False, "kind": "int", "endian": "little"},
     }
 
     def agg_name(die):
