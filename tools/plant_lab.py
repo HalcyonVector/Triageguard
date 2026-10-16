@@ -23,9 +23,11 @@ import sys
 import time
 from pathlib import Path
 
+# Written to a file and given the key on stdin, so neither the code nor the key shows up
+# in the process's command line (linux.psaux would otherwise hand the key to the scanner).
 CHILD = r'''
 import os, sys
-case, key = sys.argv[1], bytes.fromhex(sys.argv[2])
+case, key = sys.argv[1], bytes.fromhex(sys.stdin.readline())
 keep, n = [os.urandom(8 << 20)], 0
 if case != "control":
     from cryptography.hazmat.primitives import serialization
@@ -58,6 +60,8 @@ LAB = Path("/tmp/tglab")
 
 def main():
     LAB.mkdir(exist_ok=True)
+    worker = LAB / "worker.py"
+    worker.write_text(CHILD)
     procs, truth = [], []
     for name, case, cipher, keylen in CASES:
         key = os.urandom(keylen or 32)
@@ -68,8 +72,10 @@ def main():
             if exe.is_symlink() or exe.exists():
                 exe.unlink()
             exe.symlink_to(os.path.realpath(sys.executable))
-        p = subprocess.Popen([str(exe), "-c", CHILD, case, key.hex()], stdin=subprocess.PIPE,
+        p = subprocess.Popen([str(exe), str(worker), case], stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE, text=True)
+        p.stdin.write(key.hex() + "\n")
+        p.stdin.flush()
         n = int(p.stdout.readline() or 0)
         procs.append(p)
         truth.append({"process": name, "pid": p.pid, "path": str(exe), "case": case, "cipher": cipher or "none",

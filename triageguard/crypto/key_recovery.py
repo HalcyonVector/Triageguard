@@ -62,15 +62,19 @@ def find_factors(moduli, data, align=ALIGN):
 # key). Certificates (DER SPKI) and Tor relay keys belong to someone else, so their primes
 # were never on this host; testing them only makes every remainder far more expensive.
 LOCAL_FORMATS = ("CAPI blob", "CNG blob", "PEM private")
+# OpenSSL (Linux) keeps a generated key as bare BIGNUMs with no blob around them, so inside
+# one suspicious process the only recognisable copy of its own key is the public key it
+# exported. The pipeline tries these as a second pass, on that process's memory only.
+PUBLIC_FORMATS = ("DER SPKI", "PEM public")
 
 
-def recover(keys, data, align=ALIGN, min_bits=1024):
-    """Try every locally generated key of at least min_bits against data. Returns one
-    result per key whose private key could be rebuilt; d is checked by a round trip,
-    never stored."""
+def recover(keys, data, align=ALIGN, min_bits=1024, formats=LOCAL_FORMATS):
+    """Try every key of at least min_bits whose format is in formats against data.
+    Returns one result per key whose private key could be rebuilt; d is checked by a
+    round trip, never stored."""
     by_size = {}
     for k in keys:
-        if k["n"].bit_length() >= min_bits and k.get("format", "CAPI blob") in LOCAL_FORMATS:
+        if k["n"].bit_length() >= min_bits and k.get("format", "CAPI blob") in formats:
             by_size.setdefault((k["n"].bit_length() + 15) // 16, {}).setdefault(k["n"], k)
     found = []
     for group in by_size.values():

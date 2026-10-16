@@ -318,6 +318,23 @@ def test_key_recovery_finds_leftover_prime():
         assert hit and hit[0]["prime_offset"] == hex(200_000) and hit[0]["byte_order"] == order
 
 
+def test_key_recovery_from_exported_public_key():
+    # OpenSSL keeps its own key as bare BIGNUMs: only the exported public key is recognisable
+    import os
+    from cryptography.hazmat.primitives import serialization
+    from cryptography.hazmat.primitives.asymmetric import rsa
+    from triageguard.crypto import key_recovery, rsa_weak
+    priv = rsa.generate_private_key(3, 2048)
+    der = priv.public_key().public_bytes(serialization.Encoding.DER, serialization.PublicFormat.SubjectPublicKeyInfo)
+    data = bytearray(os.urandom(256 * 1024))
+    data[1000:1000 + len(der)] = der
+    data[100_000:100_128] = priv.private_numbers().p.to_bytes(128, "little")
+    keys = rsa_weak.extract_keys(bytes(data))
+    assert [k["format"] for k in keys] == ["DER SPKI"] and not key_recovery.recover(keys, bytes(data))
+    hit = key_recovery.recover(keys, bytes(data), formats=key_recovery.PUBLIC_FORMATS)
+    assert hit and hit[0]["e"] == 3 and hit[0]["prime_offset"] == hex(100_000)
+
+
 def test_aes_key_schedules_are_found():
     import os
     from triageguard.crypto import aes_keyfind as a

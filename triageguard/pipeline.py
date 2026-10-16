@@ -16,6 +16,9 @@ def _worst(sevs):
     return max(sevs, key=SEV_ORDER.index, default="info")
 
 
+MAX_PUBLIC_RECOVERY = 8  # public keys tried per process; a browser can hold hundreds of certificates
+
+
 def record_crypto(db, path, result, is_full_dump):
     for a in result["algorithms"]:
         strong = a["confidence"] >= 70 and a["basis"] == "implementation constants"
@@ -124,7 +127,9 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
                s, sev, b)
 
     log("[3/6] Crypto analysis")
-    record_crypto(db, dump, crypto.analyse(dump), is_full_dump=True)
+    full = crypto.analyse(dump)
+    record_crypto(db, dump, full, is_full_dump=True)
+    reported = {k["fingerprint"] for k in full["rsa_keys"] if k["issues"]}
     for b in [*binaries, *dumped]:
         if b not in blocked:
             record_crypto(db, b, crypto.analyse(b), is_full_dump=False)
@@ -139,6 +144,17 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
             data = f.read()
         keys = rsa_weak.extract_keys(data, source=str(pdump))
         hits = key_recovery.recover(keys, data)
+        if not hits:
+            public = [k for k in keys if k["format"] in key_recovery.PUBLIC_FORMATS][:MAX_PUBLIC_RECOVERY]
+            hits = key_recovery.recover(public, data, formats=key_recovery.PUBLIC_FORMATS)
+        # a key whose structure crosses a page boundary is split in physical memory, so the
+        # full-dump scan can miss it; the process's own (virtual) memory has it in one piece
+        for k in rsa_weak.assess([k for k in keys if k["format"] != rsa_weak.TOR and k["fingerprint"] not in reported]):
+            if k["issues"]:
+                reported.add(k["fingerprint"])
+                db.add("rsa", "rsa_key", f"RSA-{k['bits']} key e={k['e']} ({k['format']}) in {name} (PID {pid}), strength {k['strength']}/100 "
+                       f"({k['security_bits']}-bit security, {k['nist_status']}): {'; '.join(i['test'] for i in k['issues'])}",
+                       rsa_weak.to_serialisable([k])[0], _worst([i["severity"] for i in k["issues"]]), pdump, k["offset"])
         for h in hits:
             db.add("rsa", "key_recovered",
                    f"RSA-{h['bits']} private key of {name} (PID {pid}) recovered from "
