@@ -1,41 +1,51 @@
-case,trial,mb,uses,ciphers_implemented,used_cipher_found,ciphers_flagged_not_used,aes_key_expected,aes_key_found,aes_other_schedules,rsa_expected,rsa_recovered
-control,1,22,none,ChaCha20/Salsa20,,1,False,False,0,False,False
-aes128_live,1,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,True,0,False,False
-aes256_live,1,38,AES-GCM,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,5,True,True,0,False,False
-aes128_freed,1,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,False,0,False,False
-chacha20,1,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False
-x25519,1,39,Curve25519,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,False,7,False,False,0,False,False
-rsa_live,1,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,True
-rsa_freed,1,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,False
-control,2,22,none,ChaCha20/Salsa20,,1,False,False,0,False,False
-aes128_live,2,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,True,0,False,False
-aes256_live,2,38,AES-GCM,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,5,True,True,0,False,False
-aes128_freed,2,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,False,0,False,False
-chacha20,2,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False
-x25519,2,39,Curve25519,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,False,7,False,False,0,False,False
-rsa_live,2,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,True
-rsa_freed,2,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,False
-control,3,22,none,ChaCha20/Salsa20,,1,False,False,0,False,False
-aes128_live,3,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,True,0,False,False
-aes256_live,3,38,AES-GCM,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,5,True,True,0,False,False
-aes128_freed,3,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,False,0,False,False
-chacha20,3,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False
-x25519,3,39,Curve25519,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,False,7,False,False,0,False,False
-rsa_live,3,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,True
-rsa_freed,3,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,False
-control,4,22,none,ChaCha20/Salsa20,,1,False,False,0,False,False
-aes128_live,4,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,True,0,False,False
-aes256_live,4,38,AES-GCM,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,5,True,True,0,False,False
-aes128_freed,4,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,False,0,False,False
-chacha20,4,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False
-x25519,4,39,Curve25519,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,False,7,False,False,0,False,False
-rsa_live,4,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,True
-rsa_freed,4,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,False
-control,5,22,none,ChaCha20/Salsa20,,1,False,False,0,False,False
-aes128_live,5,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,True,0,False,False
-aes256_live,5,38,AES-GCM,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,5,True,True,0,False,False
-aes128_freed,5,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,False,0,False,False
-chacha20,5,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False
-x25519,5,39,Curve25519,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,False,7,False,False,0,False,False
-rsa_live,5,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,True
-rsa_freed,5,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,False
+case,trial,mb,uses,ciphers_implemented,used_cipher_found,ciphers_flagged_not_used,aes_key_expected,aes_key_found,aes_other_schedules,chacha_key_found,chacha_key_verified,chacha_other_keys,rsa_expected,rsa_recovered
+control,1,22,none,ChaCha20/Salsa20,,1,False,False,0,False,False,1,False,False
+aes128_live,1,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,True,0,False,False,1,False,False
+aes256_live,1,38,AES-GCM,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,5,True,True,0,False,False,1,False,False
+aes128_freed,1,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,False,0,False,False,1,False,False
+chacha20,1,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,False,1,False,False
+chacha20_partial,1,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,True,1,False,False
+chacha20_freed,1,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False,1,False,False
+x25519,1,39,Curve25519,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,False,7,False,False,0,False,False,1,False,False
+rsa_live,1,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False,1,True,True
+rsa_freed,1,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False,1,True,False
+control,2,22,none,ChaCha20/Salsa20,,1,False,False,0,False,False,1,False,False
+aes128_live,2,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,True,0,False,False,1,False,False
+aes256_live,2,38,AES-GCM,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,5,True,True,0,False,False,1,False,False
+aes128_freed,2,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,False,0,False,False,1,False,False
+chacha20,2,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,False,1,False,False
+chacha20_partial,2,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,True,1,False,False
+chacha20_freed,2,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False,1,False,False
+x25519,2,39,Curve25519,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,False,7,False,False,0,False,False,1,False,False
+rsa_live,2,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False,1,True,True
+rsa_freed,2,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False,1,True,False
+control,3,22,none,ChaCha20/Salsa20,,1,False,False,0,False,False,1,False,False
+aes128_live,3,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,True,0,False,False,1,False,False
+aes256_live,3,38,AES-GCM,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,5,True,True,0,False,False,1,False,False
+aes128_freed,3,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,False,0,False,False,1,False,False
+chacha20,3,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,False,1,False,False
+chacha20_partial,3,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,True,1,False,False
+chacha20_freed,3,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False,1,False,False
+x25519,3,39,Curve25519,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,False,7,False,False,0,False,False,1,False,False
+rsa_live,3,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False,1,True,True
+rsa_freed,3,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False,1,True,False
+control,4,22,none,ChaCha20/Salsa20,,1,False,False,0,False,False,1,False,False
+aes128_live,4,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,True,0,False,False,1,False,False
+aes256_live,4,38,AES-GCM,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,5,True,True,0,False,False,1,False,False
+aes128_freed,4,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,False,0,False,False,1,False,False
+chacha20,4,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,False,1,False,False
+chacha20_partial,4,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,True,1,False,False
+chacha20_freed,4,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False,1,False,False
+x25519,4,39,Curve25519,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,False,7,False,False,0,False,False,1,False,False
+rsa_live,4,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False,1,True,True
+rsa_freed,4,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False,1,True,False
+control,5,22,none,ChaCha20/Salsa20,,1,False,False,0,False,False,1,False,False
+aes128_live,5,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,True,0,False,False,1,False,False
+aes256_live,5,38,AES-GCM,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,5,True,True,0,False,False,1,False,False
+aes128_freed,5,38,AES,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,True,False,0,False,False,1,False,False
+chacha20,5,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,False,1,False,False
+chacha20_partial,5,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,True,True,1,False,False
+chacha20_freed,5,38,ChaCha20/Salsa20,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False,1,False,False
+x25519,5,39,Curve25519,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,False,7,False,False,0,False,False,1,False,False
+rsa_live,5,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False,1,True,True
+rsa_freed,5,38,RSA,AES AES-GCM ChaCha20/Salsa20 DES ECC P-256 ECC secp256k1 RSA,True,6,False,False,0,False,False,1,True,False

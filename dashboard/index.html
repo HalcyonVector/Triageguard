@@ -962,6 +962,12 @@ function benchHtml() {
     ["Live AES key read back", r(B.aes_live_recall), "AES-128-CTR and AES-256-GCM contexts, key found by its schedule"],
     ["AES key after the context is freed", r(B.aes_freed_found), "OpenSSL wipes the schedule when it frees the context"],
     ["False AES keys in the control processes", String(B.aes_control_false_keys), "each holds 8 MB of random bytes and no crypto library"],
+    ...(B.chacha_live_recall ? [
+      ["Live ChaCha20 key read back", r(B.chacha_live_recall), "Found in OpenSSL's ChaCha20 context; random nonce each trial"],
+      ["ChaCha20 key proven by its keystream", r(B.chacha_partial_verified), "When a partial block is pending, ChaCha20(key, counter - 1, nonce) equals the stored keystream, so the key is certain"],
+      ["ChaCha20 key after the context is freed", r(B.chacha_freed_found), "OpenSSL wipes the context on free, as with AES"],
+      ["Other ChaCha20 states in the control processes", String(B.chacha_control_other_keys), "One per process: Python 3.13's allocator (mimalloc) seeds its PRNG with a real ChaCha20 state. A true hit, just not the program's key"],
+    ] : []),
     ["RSA private key from primes, key in use", r(B.rsa_live_recovered), "OpenSSL keeps p and q as 64-bit limbs; rebuilt from the public key alone"],
     ["RSA private key after the key is freed", r(B.rsa_freed_recovered), "OpenSSL clears the primes on free, unlike Windows 7 CryptoAPI in the WannaCry dump"],
   ];

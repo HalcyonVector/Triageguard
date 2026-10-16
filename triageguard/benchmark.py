@@ -9,6 +9,8 @@ cipher ran and which key it used, each result is a true or false positive or neg
 The cases cover the three things a detector can be right about:
   * which ciphers a process implements (cipher identification by constants),
   * whether a live AES key can be read back (key schedule search),
+  * whether a ChaCha20 key can be read back, with the context's pending keystream
+    block (a partial last block) and without it, and after the context is freed,
   * whether an RSA private key can be rebuilt from primes left in memory, both while
     the key is in use and after the program freed it (the WannaCry flaw, here tested
     against OpenSSL, which wipes key material when it frees it).
@@ -22,7 +24,7 @@ import sys
 import time
 from pathlib import Path
 
-from .crypto import aes_keyfind, identify, key_recovery, rsa_weak
+from .crypto import aes_keyfind, chacha_keyfind, identify, key_recovery, rsa_weak
 
 CHILD = r'''
 import gc, os, sys
@@ -39,9 +41,11 @@ if case.startswith("aes"):
     keep.append(enc.update(b"x" * 4096))
     if case.endswith("freed"):
         del enc
-elif case == "chacha20":
-    enc = Cipher(algorithms.ChaCha20(key, b"\0" * 16), None).encryptor()
-    keep.append(enc.update(b"x" * 4096))
+elif case.startswith("chacha20"):
+    enc = Cipher(algorithms.ChaCha20(key, os.urandom(16)), None).encryptor()
+    keep.append(enc.update(b"x" * (100 if case.endswith("partial") else 4096)))
+    if case.endswith("freed"):
+        del enc
 elif case == "x25519":
     priv = x25519.X25519PrivateKey.generate()
     keep.append(priv.exchange(x25519.X25519PrivateKey.generate().public_key()))
@@ -63,6 +67,8 @@ CASES = {
     "aes256_live": ("AES-GCM", 32),
     "aes128_freed": ("AES", 16),
     "chacha20": ("ChaCha20/Salsa20", 32),
+    "chacha20_partial": ("ChaCha20/Salsa20", 32),
+    "chacha20_freed": ("ChaCha20/Salsa20", 32),
     "x25519": ("Curve25519", None),
     "rsa_live": ("RSA", None),
     "rsa_freed": ("RSA", None),
@@ -100,6 +106,8 @@ def run_case(case, trial):
     found = identify.score(identify.scan_buffer(data))
     impl = sorted(a["algorithm"] for a in found if a["basis"].startswith("implementation"))
     aes = aes_keyfind.find_keys(data) if keylen in (16, 32) or case == "control" else []
+    chacha = chacha_keyfind.find_keys(data)
+    mine = [k for k in chacha if k["key"] == key]
     rsa_hit = False
     if n:
         keys = [k for k in rsa_weak.extract_keys(data) if k["n"] == n]
@@ -113,6 +121,10 @@ def run_case(case, trial):
            "aes_key_expected": bool(keylen in (16, 32) and case.startswith("aes")),
            "aes_key_found": any(k["key"] == key for k in aes),
            "aes_other_schedules": sum(k["key"] != key for k in aes),
+           "chacha_key_found": bool(mine), "chacha_key_verified": any(k["verified"] for k in mine),
+           # Python 3.13's allocator (mimalloc) seeds its own PRNG with a ChaCha20 state,
+           # so a few real but unrelated states turn up in every process
+           "chacha_other_keys": sum(k["key"] != key for k in chacha),
            "rsa_expected": case.startswith("rsa"), "rsa_recovered": rsa_hit}
     del data
     gc.collect()
@@ -130,6 +142,10 @@ def summarise(rows):
         "aes_live_recall": rate(lambda r: r["case"] in ("aes128_live", "aes256_live"), "aes_key_found"),
         "aes_freed_found": rate(lambda r: r["case"] == "aes128_freed", "aes_key_found"),
         "aes_control_false_keys": sum(r["aes_other_schedules"] for r in rows if r["case"] == "control"),
+        "chacha_live_recall": rate(lambda r: r["case"] in ("chacha20", "chacha20_partial"), "chacha_key_found"),
+        "chacha_partial_verified": rate(lambda r: r["case"] == "chacha20_partial", "chacha_key_verified"),
+        "chacha_freed_found": rate(lambda r: r["case"] == "chacha20_freed", "chacha_key_found"),
+        "chacha_control_other_keys": sum(r["chacha_other_keys"] for r in rows if r["case"] == "control"),
         "rsa_live_recovered": rate(lambda r: r["case"] == "rsa_live", "rsa_recovered"),
         "rsa_freed_recovered": rate(lambda r: r["case"] == "rsa_freed", "rsa_recovered"),
     }

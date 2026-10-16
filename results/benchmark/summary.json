@@ -2,8 +2,8 @@
  "trials": 5,
  "python": "3.13.16",
  "cipher_id_recall": {
-  "hit": 30,
-  "n": 35
+  "hit": 40,
+  "n": 45
  },
  "cipher_id_control_flags": {
   "hit": 5,
@@ -18,6 +18,19 @@
   "n": 5
  },
  "aes_control_false_keys": 0,
+ "chacha_live_recall": {
+  "hit": 10,
+  "n": 10
+ },
+ "chacha_partial_verified": {
+  "hit": 5,
+  "n": 5
+ },
+ "chacha_freed_found": {
+  "hit": 0,
+  "n": 5
+ },
+ "chacha_control_other_keys": 5,
  "rsa_live_recovered": {
   "hit": 5,
   "n": 5
