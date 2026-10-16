@@ -31,7 +31,7 @@ the source it rests on, and what is our own choice because no standard covers it
 
 Not standard, and said so in the report: the signature masses, the malfind grading (MZ header critical,
 JIT and zero-filled regions low, shared code medium), command-line keywords, and the severity given to each
-finding type. These are heuristics tuned on the three public dumps.
+finding type. These are heuristics tuned on the public dumps.
 
 ## What changed (2026-10-12): weak public keys
 

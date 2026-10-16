@@ -132,6 +132,22 @@ def round_stats(rows):
             "xcheck_base": passed("baseline"), "xcheck_def": passed("defended"), "reports": len(rows)}
 
 
+def methods():
+    """The scoring table in docs/FORMULAS.md, so the Methods tab shows the same text the docs do."""
+    text = _read(ROOT / "docs" / "FORMULAS.md") or ""
+    rows, note = [], ""
+    for line in text.splitlines():
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if line.startswith("|") and len(cells) == 4 and cells[0] not in ("Score", "---") and not set(cells[0]) <= {"-"}:
+            rows.append(dict(zip(("score", "formula", "basis", "choice"), cells)))
+        elif rows and not line.startswith("|"):
+            break
+    m = re.search(r"\n(Not standard.*?)\n\n", text, re.S)
+    if m:
+        note = " ".join(m.group(1).split())
+    return {"rows": rows, "note": note}
+
+
 def load(results_dir):
     results = Path(results_dir)
     dumps = []
@@ -157,6 +173,8 @@ def load(results_dir):
             "report_llm": llm,
             "llm_check": llm_check(llm, findings) if llm else None,
             "report_rules": _read(d / "report_rules.md"),
+            # lab dumps only: the pipeline's result scored against the keys we planted
+            "ground_truth": json.loads(_read(d / "ground_truth_score.json") or "null"),
         })
     dumps.sort(key=lambda x: x["meta"].get("order", 99))
     rounds = []
@@ -166,7 +184,7 @@ def load(results_dir):
             rounds.append({"name": name, "note": note, "rows": rows, "stats": round_stats(rows)})
     return {"dumps": dumps, "rounds": rounds, "redteam": rounds[-1]["rows"] if rounds else [],
             "techniques": {k: list(v) for k, v in attack.TECHNIQUES.items()}, "campaigns": campaign.load(results),
-            "benchmark": json.loads(_read(results / "benchmark" / "summary.json") or "null")}
+            "benchmark": json.loads(_read(results / "benchmark" / "summary.json") or "null"), "methods": methods()}
 
 
 # ------------------------------------------------------------- analyse-a-dump jobs
