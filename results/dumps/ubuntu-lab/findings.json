@@ -300,9 +300,18 @@
   "ref": "F34",
   "module": "crypto",
   "kind": "aes_shared",
-  "title": "AES-256 key schedule identical in 2 processes (keysvc (1277), legacy_rsa (1278)), key id 630dcd2966c4: mapped from a shared library, so likely a built-in constant rather than a key the malware made",
+  "title": "AES key schedule identical in 2 processes (keysvc (1277), legacy_rsa (1278)), key id 630dcd2966c4: mapped from a shared library, so likely a built-in constant rather than a key the malware made",
   "severity": "info",
   "source": "",
   "location": ""
+ },
+ {
+  "ref": "F35",
+  "module": "crypto",
+  "kind": "chacha_key",
+  "title": "ChaCha20 key of syncd (PID 1276) recovered from its OpenSSL cipher context at 0xa74130, key id 4dade06e312d: data encrypted under this key can be decrypted",
+  "severity": "info",
+  "source": "..\\data\\ubuntu-lab\\out\\procs\\pid.1276.dmp",
+  "location": "0xa74130"
  }
 ]

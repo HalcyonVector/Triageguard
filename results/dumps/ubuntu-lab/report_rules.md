@@ -32,13 +32,14 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F27] **high** RSA-2048 key e=3 (DER SPKI) in legacy_rsa (PID 1278), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent
 - [F28] **info** RSA-2048 private key of legacy_rsa (PID 1278) recovered from a prime left in its memory at 0xabc010: data encrypted under this key can be decrypted
 
-## AES keys recovered
+## Symmetric keys recovered
 - [F29] **info** AES-256 key of updater (PID 1275) recovered from its expanded key schedule at 0x9ea098, key id aad044fcc2de: data encrypted under this key can be decrypted
 - [F30] **info** AES-256 key of keysvc (PID 1277) recovered from its expanded key schedule at 0x8287b0 (2 copies), key id 05a7c63877ac: data encrypted under this key can be decrypted
 - [F31] **info** AES-256 key of keysvc (PID 1277) recovered from its expanded key schedule at 0xabac30 (2 copies), key id 8ef4845f2e8c: data encrypted under this key can be decrypted
 - [F32] **info** AES-256 key of legacy_rsa (PID 1278) recovered from its expanded key schedule at 0x8d1550 (2 copies), key id 604cc1badd23: data encrypted under this key can be decrypted
 - [F33] **info** AES-256 key of legacy_rsa (PID 1278) recovered from its expanded key schedule at 0xabba30 (2 copies), key id 86e81212f32a: data encrypted under this key can be decrypted
-- [F34] **info** AES-256 key schedule identical in 2 processes (keysvc (1277), legacy_rsa (1278)), key id 630dcd2966c4: mapped from a shared library, so likely a built-in constant rather than a key the malware made
+- [F34] **info** AES key schedule identical in 2 processes (keysvc (1277), legacy_rsa (1278)), key id 630dcd2966c4: mapped from a shared library, so likely a built-in constant rather than a key the malware made
+- [F35] **info** ChaCha20 key of syncd (PID 1276) recovered from its OpenSSL cipher context at 0xa74130, key id 4dade06e312d: data encrypted under this key can be decrypted
 
 ## Encrypted / packed regions
 - [F23] **info** 200 high-entropy regions (18141184 bytes) in ubuntu-lab-Snapshot1.vmem

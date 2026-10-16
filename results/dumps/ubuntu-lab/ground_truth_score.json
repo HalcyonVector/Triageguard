@@ -1,7 +1,7 @@
 {
  "kernel": "6.8.0-146-generic",
- "passed": 11,
- "checks": 11,
+ "passed": 12,
+ "checks": 12,
  "cases": [
   {
    "process": "updater",
@@ -17,6 +17,7 @@
    "pid": 1276,
    "planted": "ChaCha20/Salsa20",
    "key_scanned": true,
+   "chacha20_key_recovered": true,
    "cipher_identified": true,
    "other_aes_keys": 0
   },

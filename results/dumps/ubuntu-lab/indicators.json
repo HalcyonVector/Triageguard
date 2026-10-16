@@ -43,5 +43,10 @@
   "type": "key",
   "value": "86e81212f32a",
   "label": "same AES key (86e81212f32a)"
+ },
+ {
+  "type": "key",
+  "value": "4dade06e312d",
+  "label": "same ChaCha20 key (4dade06e312d)"
  }
 ]
