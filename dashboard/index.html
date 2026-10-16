@@ -653,7 +653,7 @@ function rangeBar(sc) {
   return `<div class="rbar">${ticks}<span class="rspan" style="left:${lo}%;width:${Math.max(hi - lo, 1)}%"></span><span class="rdot" style="left:${sc.risk}%;background:${sevVar(sc.band)}"></span></div>
     <div class="rlab mono"><span>0</span><span style="left:40%">40</span><span style="left:70%">70</span><span style="left:90%">90</span><span style="right:0;left:auto;transform:none">100</span></div>`;
 }
-const recovered = (fs) => fs.filter((f) => f.kind === "key_recovered" || (f.kind === "aes_key" && /^AES-/.test(f.title)));
+const recovered = (fs) => fs.filter((f) => f.kind === "key_recovered" || (f.kind === "aes_key" && /^AES-/.test(f.title)) || (f.kind === "chacha_key" && /^(ChaCha20|Salsa20) /.test(f.title)));
 const keyIcon = `<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="vertical-align:-2px;margin-right:6px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></svg>`;
 function renderSummary() {
   const d = dump(), sc = d.scores, fs = d.findings, chk = d.llm_check;

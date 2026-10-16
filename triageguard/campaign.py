@@ -100,6 +100,8 @@ def indicators(findings):
             add("key", d["fingerprint"], f"same RSA private key ({d['fingerprint'][:12]})")
         elif kind == "aes_key" and d.get("key_id"):
             add("key", d["key_id"], f"same AES key ({d['key_id']})")
+        elif kind == "chacha_key" and d.get("key_id"):
+            add("key", d["key_id"], f"same ChaCha20 key ({d['key_id']})")
         elif kind == "suspicious_process" and "PE header" in str(d.get("reason", "")):
             add("pattern", f"pe-in:{str(d.get('process', '')).lower()}", f"PE injected into {d.get('process')}")
         elif kind == "tor_client":

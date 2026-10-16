@@ -624,3 +624,23 @@ def test_plugin_timeout_is_cached_so_reruns_do_not_wait_again(tmp_path, monkeypa
         except RuntimeError as e:
             assert "timed out after 10 minutes" in str(e)
     assert len(calls) == 1
+
+
+def test_chacha20_key_finder():
+    import os
+    import struct
+    from triageguard.crypto import aes_keyfind, chacha_keyfind as c
+    # RFC 8439 section 2.3.2 test vector
+    assert c.chacha_block(bytes(range(32)), 1, bytes.fromhex("000000090000004a00000000"))[:4].hex() == "10f1e7e4"
+    key, nonce = os.urandom(32), os.urandom(12)
+    ptr = struct.pack("<Q", 0x7976700df120)
+    header = struct.pack("<QQQ", 32, 16, 1) + bytes(120) + ptr + bytes(16)
+    # OpenSSL context with a pending partial block: its keystream proves the key
+    ctx = header + key + struct.pack("<I", 5) + nonce + c.chacha_block(key, 4, nonce) + struct.pack("<I", 9)
+    state = c.SIGMA + key[::-1] + struct.pack("<I", 1) + nonce
+    aes = os.urandom(32)
+    aes_ctx = header + aes_keyfind.expand(aes)  # AES-256-CTR has the same header
+    data = os.urandom(4096) + ctx + os.urandom(4096) + state + os.urandom(4096) + aes_ctx + os.urandom(4096)
+    hits = {(h["layout"], h["key"], h["verified"]) for h in c.find_keys(data)}
+    assert hits == {("openssl", key, True), ("state", key[::-1], True)}
+    assert c.find_keys(os.urandom(1 << 20)) == []

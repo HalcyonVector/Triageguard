@@ -20,14 +20,17 @@ def score(truth, findings):
         name, pid = c["process"], c["pid"]
         mine = [(k, t) for k, t in titles if f"(PID {pid})" in t]
         row = {"process": name, "pid": pid, "planted": c["cipher"],
-               "key_scanned": any(k in ("key_recovery", "key_recovered", "aes_key") for k, _ in mine)}
+               "key_scanned": any(k in ("key_recovery", "key_recovered", "aes_key", "chacha_key") for k, _ in mine)}
         if c["aes_key"]:
             want = hashlib.sha256(bytes.fromhex(c["aes_key"])).hexdigest()[:12]
             got = re.findall(r"key id ([0-9a-f]{12})", " ".join(t for k, t in mine if k == "aes_key"))
             row["aes_key_recovered"] = want in got
             row["cipher_identified"] = "AES-GCM" in algos
         if c["chacha20_key"]:
-            row["cipher_identified"] = "ChaCha20/Salsa20" in algos  # no ChaCha key finder yet
+            want = hashlib.sha256(bytes.fromhex(c["chacha20_key"])).hexdigest()[:12]
+            got = re.findall(r"key id ([0-9a-f]{12})", " ".join(t for k, t in mine if k == "chacha_key"))
+            row["chacha20_key_recovered"] = want in got
+            row["cipher_identified"] = "ChaCha20/Salsa20" in algos
         if c["rsa_n"]:
             row["rsa_private_key_recovered"] = any(k == "key_recovered" for k, _ in mine)
             if c["rsa_e"] < 65537:
@@ -35,10 +38,10 @@ def score(truth, findings):
         # schedules in a planted process that are not the planted key (OpenSSL's DRBG, say)
         row["other_aes_keys"] = sum(k == "aes_key" for k, _ in mine) - int(bool(row.get("aes_key_recovered")))
         if c["case"] == "control":
-            row["false_alarm"] = row["key_scanned"] or row["other_aes_keys"] > 0
+            row["false_alarm"] = row["key_scanned"] or row["other_aes_keys"] > 0 or any(k == "chacha_key" for k, _ in mine)
         rows.append(row)
     checks = [v for r in rows for k, v in r.items() if k in
-              ("aes_key_recovered", "cipher_identified", "rsa_private_key_recovered", "small_e_flagged", "key_scanned")
+              ("aes_key_recovered", "chacha20_key_recovered", "cipher_identified", "rsa_private_key_recovered", "small_e_flagged", "key_scanned")
               and r["planted"] != "none"]
     checks += [not r["false_alarm"] for r in rows if "false_alarm" in r]
     return {"kernel": truth.get("kernel"), "passed": sum(checks), "checks": len(checks), "cases": rows}
