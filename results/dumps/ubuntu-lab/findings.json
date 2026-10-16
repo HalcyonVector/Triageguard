@@ -1,0 +1,308 @@
+[
+ {
+  "ref": "F1",
+  "module": "memory",
+  "kind": "processes",
+  "title": "processes: 252 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F2",
+  "module": "memory",
+  "kind": "cmdlines",
+  "title": "cmdlines: 252 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F3",
+  "module": "memory",
+  "kind": "network",
+  "title": "network: 299 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F4",
+  "module": "memory",
+  "kind": "injected",
+  "title": "injected: 1 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F5",
+  "module": "memory",
+  "kind": "bash",
+  "title": "bash: 15 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F6",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 931 unattended-upgr: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process",
+  "severity": "high",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "931"
+ },
+ {
+  "ref": "F7",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 1275 updater: command line mentions 'encrypt': /tmp/tglab/updater -c \nimport os, sys\ncase, key = sys.argv[1], bytes.fromhex(sys.argv[2])\nkeep, n = [os.urandom(8 << 20)], 0\nif case != \"control\":\n    from cryptography.hazmat.primitives import serial",
+  "severity": "medium",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "1275"
+ },
+ {
+  "ref": "F8",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 1276 syncd: command line mentions 'encrypt': /tmp/tglab/syncd -c \nimport os, sys\ncase, key = sys.argv[1], bytes.fromhex(sys.argv[2])\nkeep, n = [os.urandom(8 << 20)], 0\nif case != \"control\":\n    from cryptography.hazmat.primitives import serializ",
+  "severity": "medium",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "1276"
+ },
+ {
+  "ref": "F9",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 1277 keysvc: command line mentions 'encrypt': /tmp/tglab/keysvc -c \nimport os, sys\ncase, key = sys.argv[1], bytes.fromhex(sys.argv[2])\nkeep, n = [os.urandom(8 << 20)], 0\nif case != \"control\":\n    from cryptography.hazmat.primitives import seriali",
+  "severity": "medium",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "1277"
+ },
+ {
+  "ref": "F10",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 1278 legacy_rsa: command line mentions 'encrypt': /tmp/tglab/legacy_rsa -c \nimport os, sys\ncase, key = sys.argv[1], bytes.fromhex(sys.argv[2])\nkeep, n = [os.urandom(8 << 20)], 0\nif case != \"control\":\n    from cryptography.hazmat.primitives import ser",
+  "severity": "medium",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "1278"
+ },
+ {
+  "ref": "F11",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 1279 python3: command line mentions 'encrypt': /usr/bin/python3 -c \nimport os, sys\ncase, key = sys.argv[1], bytes.fromhex(sys.argv[2])\nkeep, n = [os.urandom(8 << 20)], 0\nif case != \"control\":\n    from cryptography.hazmat.primitives import serializ",
+  "severity": "medium",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "1279"
+ },
+ {
+  "ref": "F12",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES identified (100.0%, implementation constants) in ubuntu-lab-Snapshot1.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "0x8de2e5"
+ },
+ {
+  "ref": "F13",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC P-256 identified (99.1%, implementation constants) in ubuntu-lab-Snapshot1.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "0x82338a4"
+ },
+ {
+  "ref": "F14",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES-GCM identified (97.6%, implementation constants) in ubuntu-lab-Snapshot1.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "0x8e4e54"
+ },
+ {
+  "ref": "F15",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ChaCha20/Salsa20 identified (95.5%, implementation constants) in ubuntu-lab-Snapshot1.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "0xa7499b0"
+ },
+ {
+  "ref": "F16",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC secp256k1 identified (92.8%, implementation constants) in ubuntu-lab-Snapshot1.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "0x8233250"
+ },
+ {
+  "ref": "F17",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "DES identified (80.0%, implementation constants) in ubuntu-lab-Snapshot1.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "0xf39a6e0"
+ },
+ {
+  "ref": "F18",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "Curve25519 identified (78.4%, API/string references only) in ubuntu-lab-Snapshot1.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "0x6f18110"
+ },
+ {
+  "ref": "F19",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "RSA identified (70.0%, implementation constants) in ubuntu-lab-Snapshot1.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "0xf5940b"
+ },
+ {
+  "ref": "F20",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "3DES identified (50.0%, API/string references only) in ubuntu-lab-Snapshot1.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "0x81f82b6"
+ },
+ {
+  "ref": "F21",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=43147 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "0xd347454"
+ },
+ {
+  "ref": "F22",
+  "module": "rsa",
+  "kind": "rsa_summary",
+  "title": "98 RSA keys with no weaknesses and 0 corrupt key-like structures in ubuntu-lab-Snapshot1.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F23",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "200 high-entropy regions (18141184 bytes) in ubuntu-lab-Snapshot1.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "0x71000"
+ },
+ {
+  "ref": "F24",
+  "module": "rsa",
+  "kind": "key_recovery",
+  "title": "No RSA prime found in updater (PID 1275) for its 0 RSA key(s)",
+  "severity": "info",
+  "source": "..\\data\\ubuntu-lab\\out\\procs\\pid.1275.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F25",
+  "module": "rsa",
+  "kind": "key_recovery",
+  "title": "No RSA prime found in syncd (PID 1276) for its 0 RSA key(s)",
+  "severity": "info",
+  "source": "..\\data\\ubuntu-lab\\out\\procs\\pid.1276.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F26",
+  "module": "rsa",
+  "kind": "key_recovered",
+  "title": "RSA-2048 private key of keysvc (PID 1277) recovered from a prime left in its memory at 0xabbbe0: data encrypted under this key can be decrypted",
+  "severity": "info",
+  "source": "..\\data\\ubuntu-lab\\out\\procs\\pid.1277.dmp",
+  "location": "0xabbbe0"
+ },
+ {
+  "ref": "F27",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI) in legacy_rsa (PID 1278), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "high",
+  "source": "..\\data\\ubuntu-lab\\out\\procs\\pid.1278.dmp",
+  "location": "0xe0bf90"
+ },
+ {
+  "ref": "F28",
+  "module": "rsa",
+  "kind": "key_recovered",
+  "title": "RSA-2048 private key of legacy_rsa (PID 1278) recovered from a prime left in its memory at 0xabc010: data encrypted under this key can be decrypted",
+  "severity": "info",
+  "source": "..\\data\\ubuntu-lab\\out\\procs\\pid.1278.dmp",
+  "location": "0xabc010"
+ },
+ {
+  "ref": "F29",
+  "module": "crypto",
+  "kind": "aes_key",
+  "title": "AES-256 key of updater (PID 1275) recovered from its expanded key schedule at 0x9ea098, key id aad044fcc2de: data encrypted under this key can be decrypted",
+  "severity": "info",
+  "source": "..\\data\\ubuntu-lab\\out\\procs\\pid.1275.dmp",
+  "location": "0x9ea098"
+ },
+ {
+  "ref": "F30",
+  "module": "crypto",
+  "kind": "aes_key",
+  "title": "AES-256 key of keysvc (PID 1277) recovered from its expanded key schedule at 0x8287b0 (2 copies), key id 05a7c63877ac: data encrypted under this key can be decrypted",
+  "severity": "info",
+  "source": "..\\data\\ubuntu-lab\\out\\procs\\pid.1277.dmp",
+  "location": "0x8287b0"
+ },
+ {
+  "ref": "F31",
+  "module": "crypto",
+  "kind": "aes_key",
+  "title": "AES-256 key of keysvc (PID 1277) recovered from its expanded key schedule at 0xabac30 (2 copies), key id 8ef4845f2e8c: data encrypted under this key can be decrypted",
+  "severity": "info",
+  "source": "..\\data\\ubuntu-lab\\out\\procs\\pid.1277.dmp",
+  "location": "0xabac30"
+ },
+ {
+  "ref": "F32",
+  "module": "crypto",
+  "kind": "aes_key",
+  "title": "AES-256 key of legacy_rsa (PID 1278) recovered from its expanded key schedule at 0x8d1550 (2 copies), key id 604cc1badd23: data encrypted under this key can be decrypted",
+  "severity": "info",
+  "source": "..\\data\\ubuntu-lab\\out\\procs\\pid.1278.dmp",
+  "location": "0x8d1550"
+ },
+ {
+  "ref": "F33",
+  "module": "crypto",
+  "kind": "aes_key",
+  "title": "AES-256 key of legacy_rsa (PID 1278) recovered from its expanded key schedule at 0xabba30 (2 copies), key id 86e81212f32a: data encrypted under this key can be decrypted",
+  "severity": "info",
+  "source": "..\\data\\ubuntu-lab\\out\\procs\\pid.1278.dmp",
+  "location": "0xabba30"
+ },
+ {
+  "ref": "F34",
+  "module": "crypto",
+  "kind": "aes_shared",
+  "title": "AES-256 key schedule identical in 2 processes (keysvc (1277), legacy_rsa (1278)), key id 630dcd2966c4: mapped from a shared library, so likely a built-in constant rather than a key the malware made",
+  "severity": "info",
+  "source": "",
+  "location": ""
+ }
+]

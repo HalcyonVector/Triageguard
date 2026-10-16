@@ -1,0 +1,49 @@
+{
+ "kernel": "6.8.0-146-generic",
+ "passed": 11,
+ "checks": 11,
+ "cases": [
+  {
+   "process": "updater",
+   "pid": 1275,
+   "planted": "AES-GCM",
+   "key_scanned": true,
+   "aes_key_recovered": true,
+   "cipher_identified": true,
+   "other_aes_keys": 0
+  },
+  {
+   "process": "syncd",
+   "pid": 1276,
+   "planted": "ChaCha20/Salsa20",
+   "key_scanned": true,
+   "cipher_identified": true,
+   "other_aes_keys": 0
+  },
+  {
+   "process": "keysvc",
+   "pid": 1277,
+   "planted": "RSA",
+   "key_scanned": true,
+   "rsa_private_key_recovered": true,
+   "other_aes_keys": 2
+  },
+  {
+   "process": "legacy_rsa",
+   "pid": 1278,
+   "planted": "RSA",
+   "key_scanned": true,
+   "rsa_private_key_recovered": true,
+   "small_e_flagged": true,
+   "other_aes_keys": 2
+  },
+  {
+   "process": "python3",
+   "pid": 1279,
+   "planted": "none",
+   "key_scanned": false,
+   "other_aes_keys": 0,
+   "false_alarm": false
+  }
+ ]
+}

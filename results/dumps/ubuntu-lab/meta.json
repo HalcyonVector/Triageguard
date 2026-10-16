@@ -1,0 +1,12 @@
+{
+ "title": "Ubuntu 24.04 lab (planted keys)",
+ "os": "linux",
+ "source": "Self-built VM, synthetic keys",
+ "size": "2.0 GB",
+ "pcap": "",
+ "order": 11,
+ "findings": 34,
+ "risk": 86,
+ "compromise": 80,
+ "exposure": 55
+}
