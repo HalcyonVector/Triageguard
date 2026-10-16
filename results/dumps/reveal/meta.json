@@ -1,0 +1,12 @@
+{
+ "title": "Reveal (Win10, CyberDefenders)",
+ "os": "windows",
+ "source": "CyberDefenders CTF: Reveal",
+ "size": "2.0 GB",
+ "pcap": "",
+ "order": 9,
+ "findings": 72,
+ "risk": 90,
+ "compromise": 80,
+ "exposure": 98
+}

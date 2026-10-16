@@ -1,0 +1,650 @@
+[
+ {
+  "ref": "F1",
+  "module": "memory",
+  "kind": "processes",
+  "title": "processes: 109 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F2",
+  "module": "memory",
+  "kind": "cmdlines",
+  "title": "cmdlines: 109 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F3",
+  "module": "memory",
+  "kind": "network",
+  "title": "network: 79 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F4",
+  "module": "memory",
+  "kind": "injected",
+  "title": "injected: 12 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F5",
+  "module": "memory",
+  "kind": "usb",
+  "title": "usb: 31 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F6",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 7848 RuntimeBroker.: 1 RWX/injected region(s): 1 x region starts with zero bytes, no code at the region base",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "7848"
+ },
+ {
+  "ref": "F7",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 4492 thunderbird.ex: 2 RWX/injected region(s): 2 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "4492"
+ },
+ {
+  "ref": "F8",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 3644 thunderbird.ex: 2 RWX/injected region(s): 2 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "3644"
+ },
+ {
+  "ref": "F9",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 3004 thunderbird.ex: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "3004"
+ },
+ {
+  "ref": "F10",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 2820 smartscreen.ex: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process",
+  "severity": "high",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "2820"
+ },
+ {
+  "ref": "F11",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 3692 powershell.exe: 5 RWX/injected region(s): 5 x executable private memory with code unique to this process",
+  "severity": "high",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "3692"
+ },
+ {
+  "ref": "F12",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.2820.vad.0x153f35a0000-0x153f35bffff.dmp: entropy 0.257, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\reveal\\out\\malfind\\pid.2820.vad.0x153f35a0000-0x153f35bffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F13",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3004.vad.0x1a785f40000-0x1a785f4ffff.dmp: entropy 3.228, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\reveal\\out\\malfind\\pid.3004.vad.0x1a785f40000-0x1a785f4ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F14",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3644.vad.0x2b991750000-0x2b99175ffff.dmp: entropy 3.598, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\reveal\\out\\malfind\\pid.3644.vad.0x2b991750000-0x2b99175ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F15",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3644.vad.0x2b9917e0000-0x2b9917effff.dmp: entropy 3.102, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\reveal\\out\\malfind\\pid.3644.vad.0x2b9917e0000-0x2b9917effff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F16",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3692.vad.0x1cb6aa50000-0x1cb6aa5ffff.dmp: entropy 0.059, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\reveal\\out\\malfind\\pid.3692.vad.0x1cb6aa50000-0x1cb6aa5ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F17",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3692.vad.0x1cb6c3e0000-0x1cb6c3e6fff.dmp: entropy 0.186, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\reveal\\out\\malfind\\pid.3692.vad.0x1cb6c3e0000-0x1cb6c3e6fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F18",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3692.vad.0x1cb6cac0000-0x1cb6cacffff.dmp: entropy 1.466, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\reveal\\out\\malfind\\pid.3692.vad.0x1cb6cac0000-0x1cb6cacffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F19",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3692.vad.0x7df44e2c0000-0x7df44e2cffff.dmp: entropy 0.036, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\reveal\\out\\malfind\\pid.3692.vad.0x7df44e2c0000-0x7df44e2cffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F20",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.3692.vad.0x7df44e2d0000-0x7df44e36ffff.dmp: entropy 0.003, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\reveal\\out\\malfind\\pid.3692.vad.0x7df44e2d0000-0x7df44e36ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F21",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.4492.vad.0x1bfe20e0000-0x1bfe20effff.dmp: entropy 3.599, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\reveal\\out\\malfind\\pid.4492.vad.0x1bfe20e0000-0x1bfe20effff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F22",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.4492.vad.0x1bfe2300000-0x1bfe230ffff.dmp: entropy 3.103, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\reveal\\out\\malfind\\pid.4492.vad.0x1bfe2300000-0x1bfe230ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F23",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.7848.vad.0x230013f0000-0x230013fffff.dmp: entropy 1.983, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\reveal\\out\\malfind\\pid.7848.vad.0x230013f0000-0x230013fffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F24",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES identified (100.0%, implementation constants) in 192-Reveal.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x3659ed0"
+ },
+ {
+  "ref": "F25",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC P-256 identified (99.0%, implementation constants) in 192-Reveal.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x3e2391c"
+ },
+ {
+  "ref": "F26",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "RSA identified (98.7%, implementation constants) in 192-Reveal.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x167354"
+ },
+ {
+  "ref": "F27",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES-GCM identified (98.2%, implementation constants) in 192-Reveal.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0xeb22fe0"
+ },
+ {
+  "ref": "F28",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC secp256k1 identified (92.8%, implementation constants) in 192-Reveal.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x3f77bfc"
+ },
+ {
+  "ref": "F29",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "generic identified (83.2%, API/string references only) in 192-Reveal.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x6a947b"
+ },
+ {
+  "ref": "F30",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ChaCha20/Salsa20 identified (82.0%, implementation constants) in 192-Reveal.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x6d20f28"
+ },
+ {
+  "ref": "F31",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "Curve25519 identified (78.4%, API/string references only) in 192-Reveal.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x3f78590"
+ },
+ {
+  "ref": "F32",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "DES identified (72.0%, implementation constants) in 192-Reveal.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x35d6d50"
+ },
+ {
+  "ref": "F33",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "3DES identified (72.0%, API/string references only) in 192-Reveal.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x9257326"
+ },
+ {
+  "ref": "F34",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x1d9c6bc"
+ },
+ {
+  "ref": "F35",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x85c4dec"
+ },
+ {
+  "ref": "F36",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x188411a0"
+ },
+ {
+  "ref": "F37",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-512 key e=65537 (CAPI blob), strength 0/100 (0-bit security, broken): modulus size",
+  "severity": "critical",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x334457f0"
+ },
+ {
+  "ref": "F38",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x43abb2bc"
+ },
+ {
+  "ref": "F39",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (CNG blob), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x3f7f3c0"
+ },
+ {
+  "ref": "F40",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x56491b"
+ },
+ {
+  "ref": "F41",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x564bdf"
+ },
+ {
+  "ref": "F42",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x564eb2"
+ },
+ {
+  "ref": "F43",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x6e31f7"
+ },
+ {
+  "ref": "F44",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x55b7760"
+ },
+ {
+  "ref": "F45",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x621560b"
+ },
+ {
+  "ref": "F46",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x7ff39bb"
+ },
+ {
+  "ref": "F47",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1536 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x9034c10"
+ },
+ {
+  "ref": "F48",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0xaca40d8"
+ },
+ {
+  "ref": "F49",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0xbda2988"
+ },
+ {
+  "ref": "F50",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0xea2e290"
+ },
+ {
+  "ref": "F51",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=43147 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x14aa10e8"
+ },
+ {
+  "ref": "F52",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=62353 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x14aa1514"
+ },
+ {
+  "ref": "F53",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x1bdcda26"
+ },
+ {
+  "ref": "F54",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size",
+  "severity": "critical",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x24575617"
+ },
+ {
+  "ref": "F55",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x246f3259"
+ },
+ {
+  "ref": "F56",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x246f3673"
+ },
+ {
+  "ref": "F57",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x2541ab51"
+ },
+ {
+  "ref": "F58",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x2680f853"
+ },
+ {
+  "ref": "F59",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=65537 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x27898cec"
+ },
+ {
+  "ref": "F60",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x282f2edb"
+ },
+ {
+  "ref": "F61",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x3175d41f"
+ },
+ {
+  "ref": "F62",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x3739901d"
+ },
+ {
+  "ref": "F63",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x3a5fd54c"
+ },
+ {
+  "ref": "F64",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x3b6e4192"
+ },
+ {
+  "ref": "F65",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x430f5337"
+ },
+ {
+  "ref": "F66",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=131071 (DER SPKI), strength 88/100 (112-bit security, acceptable): shared modulus",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x44fa1edc"
+ },
+ {
+  "ref": "F67",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x4b231071"
+ },
+ {
+  "ref": "F68",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x4b23194a"
+ },
+ {
+  "ref": "F69",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x5d974dc9"
+ },
+ {
+  "ref": "F70",
+  "module": "rsa",
+  "kind": "rsa_summary",
+  "title": "484 RSA keys with no weaknesses and 7 corrupt key-like structures in 192-Reveal.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F71",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "200 high-entropy regions (868352 bytes) in 192-Reveal.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x133000"
+ },
+ {
+  "ref": "F72",
+  "module": "credentials",
+  "kind": "JWT",
+  "title": "JWT eyJ0eX...8Es4: symmetric HS256: security rests on secret strength; offline guessing possible; no expiry (exp) claim",
+  "severity": "medium",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
+  "location": "0x7d981ce0"
+ }
+]

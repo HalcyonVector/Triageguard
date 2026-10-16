@@ -1,0 +1,152 @@
+[
+ {
+  "type": "process",
+  "value": "skypeapp.exe",
+  "label": "process SkypeApp.exe"
+ },
+ {
+  "type": "process",
+  "value": "wwahost.exe",
+  "label": "process WWAHost.exe"
+ },
+ {
+  "type": "process",
+  "value": "microsoftedgeu",
+  "label": "process MicrosoftEdgeU"
+ },
+ {
+  "type": "process",
+  "value": "thunderbird.ex",
+  "label": "process thunderbird.ex"
+ },
+ {
+  "type": "process",
+  "value": "officeclicktor",
+  "label": "process OfficeClickToR"
+ },
+ {
+  "type": "process",
+  "value": "skypebackgroun",
+  "label": "process SkypeBackgroun"
+ },
+ {
+  "type": "process",
+  "value": "calculator.exe",
+  "label": "process Calculator.exe"
+ },
+ {
+  "type": "process",
+  "value": "appvshnotify.e",
+  "label": "process AppVShNotify.e"
+ },
+ {
+  "type": "process",
+  "value": "wordpad.exe",
+  "label": "process wordpad.exe"
+ },
+ {
+  "type": "process",
+  "value": "net.exe",
+  "label": "process net.exe"
+ },
+ {
+  "type": "ip",
+  "value": "196.204.4.8",
+  "label": "connection to 196.204.4.8"
+ },
+ {
+  "type": "ip",
+  "value": "191.237.206.80",
+  "label": "connection to 191.237.206.80"
+ },
+ {
+  "type": "ip",
+  "value": "13.107.6.156",
+  "label": "connection to 13.107.6.156"
+ },
+ {
+  "type": "ip",
+  "value": "20.93.72.182",
+  "label": "connection to 20.93.72.182"
+ },
+ {
+  "type": "ip",
+  "value": "93.186.134.98",
+  "label": "connection to 93.186.134.98"
+ },
+ {
+  "type": "ip",
+  "value": "45.9.74.32",
+  "label": "connection to 45.9.74.32"
+ },
+ {
+  "type": "ip",
+  "value": "192.229.221.95",
+  "label": "connection to 192.229.221.95"
+ },
+ {
+  "type": "ip",
+  "value": "20.191.45.158",
+  "label": "connection to 20.191.45.158"
+ },
+ {
+  "type": "ip",
+  "value": "13.74.129.92",
+  "label": "connection to 13.74.129.92"
+ },
+ {
+  "type": "ip",
+  "value": "20.42.73.26",
+  "label": "connection to 20.42.73.26"
+ },
+ {
+  "type": "ip",
+  "value": "13.107.42.16",
+  "label": "connection to 13.107.42.16"
+ },
+ {
+  "type": "ip",
+  "value": "23.44.141.39",
+  "label": "connection to 23.44.141.39"
+ },
+ {
+  "type": "ip",
+  "value": "204.79.197.203",
+  "label": "connection to 204.79.197.203"
+ },
+ {
+  "type": "code",
+  "value": "0477271d36bc991e183bc7614e8618432c1731136306b46ce48cf78d49f1fabe",
+  "label": "same code (0477271d36bc)"
+ },
+ {
+  "type": "code",
+  "value": "ee475bf33e1fe94314ecdbb147c4da3a269f5ea160aefa7603305e4be5f50f31",
+  "label": "same code (ee475bf33e1f)"
+ },
+ {
+  "type": "code",
+  "value": "ad9ab42a37acda093ab45767aaaea1d86a51233cbb4cf45c9a5965f1aa88905a",
+  "label": "same code (ad9ab42a37ac)"
+ },
+ {
+  "type": "code",
+  "value": "4f38935b909dc11fcb831df28b34471f273876f6cc05ce95e5ff52d827099fb1",
+  "label": "same code (4f38935b909d)"
+ },
+ {
+  "type": "code",
+  "value": "8799c353ef918eaef57d356f1afd26709913ca9659a6aa1665084a9a974f1898",
+  "label": "same code (8799c353ef91)"
+ },
+ {
+  "type": "code",
+  "value": "c7eb74d1cda7688807188edff9bc923948b16f6e2cce68a2c9e4866282e2feea",
+  "label": "same code (c7eb74d1cda7)"
+ },
+ {
+  "type": "code",
+  "value": "15e0a306880cc1d3a723a425bdcf41f8548c1ccc940fe07bee4811709913866f",
+  "label": "same code (15e0a306880c)"
+ }
+]
