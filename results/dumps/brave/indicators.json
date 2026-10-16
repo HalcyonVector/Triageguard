@@ -1,0 +1,162 @@
+[
+ {
+  "type": "process",
+  "value": "yourphone.exe",
+  "label": "process YourPhone.exe"
+ },
+ {
+  "type": "process",
+  "value": "lockapp.exe",
+  "label": "process LockApp.exe"
+ },
+ {
+  "type": "process",
+  "value": "winstore.app.e",
+  "label": "process WinStore.App.e"
+ },
+ {
+  "type": "process",
+  "value": "brave.exe",
+  "label": "process brave.exe"
+ },
+ {
+  "type": "ip",
+  "value": "23.35.68.233",
+  "label": "connection to 23.35.68.233"
+ },
+ {
+  "type": "ip",
+  "value": "96.90.32.107",
+  "label": "connection to 96.90.32.107"
+ },
+ {
+  "type": "ip",
+  "value": "52.230.222.68",
+  "label": "connection to 52.230.222.68"
+ },
+ {
+  "type": "ip",
+  "value": "40.125.122.151",
+  "label": "connection to 40.125.122.151"
+ },
+ {
+  "type": "ip",
+  "value": "185.70.41.35",
+  "label": "connection to 185.70.41.35"
+ },
+ {
+  "type": "ip",
+  "value": "142.250.191.208",
+  "label": "connection to 142.250.191.208"
+ },
+ {
+  "type": "ip",
+  "value": "172.217.9.46",
+  "label": "connection to 172.217.9.46"
+ },
+ {
+  "type": "ip",
+  "value": "52.113.196.254",
+  "label": "connection to 52.113.196.254"
+ },
+ {
+  "type": "ip",
+  "value": "185.70.41.130",
+  "label": "connection to 185.70.41.130"
+ },
+ {
+  "type": "ip",
+  "value": "142.250.190.14",
+  "label": "connection to 142.250.190.14"
+ },
+ {
+  "type": "ip",
+  "value": "69.85.230.250",
+  "label": "connection to 69.85.230.250"
+ },
+ {
+  "type": "ip",
+  "value": "204.79.197.200",
+  "label": "connection to 204.79.197.200"
+ },
+ {
+  "type": "ip",
+  "value": "35.186.220.63",
+  "label": "connection to 35.186.220.63"
+ },
+ {
+  "type": "ip",
+  "value": "204.79.197.222",
+  "label": "connection to 204.79.197.222"
+ },
+ {
+  "type": "ip",
+  "value": "73.30.45.11",
+  "label": "connection to 73.30.45.11"
+ },
+ {
+  "type": "ip",
+  "value": "172.217.4.35",
+  "label": "connection to 172.217.4.35"
+ },
+ {
+  "type": "ip",
+  "value": "13.107.3.254",
+  "label": "connection to 13.107.3.254"
+ },
+ {
+  "type": "ip",
+  "value": "52.242.211.89",
+  "label": "connection to 52.242.211.89"
+ },
+ {
+  "type": "ip",
+  "value": "23.101.202.202",
+  "label": "connection to 23.101.202.202"
+ },
+ {
+  "type": "ip",
+  "value": "172.217.4.74",
+  "label": "connection to 172.217.4.74"
+ },
+ {
+  "type": "code",
+  "value": "6cddd7ac85a211245e5867ebe07abe53d4070dafef80bffa3c06bff8379fe04f",
+  "label": "same code (6cddd7ac85a2)"
+ },
+ {
+  "type": "code",
+  "value": "c748fed3cb6fd42eadf2379bab4da7add9a529eae9945028dd9dcdde229939fa",
+  "label": "same code (c748fed3cb6f)"
+ },
+ {
+  "type": "code",
+  "value": "f341d1a5433b8dcace9a987af35ac822e3acc700bef90d34a009c820b9d3e72c",
+  "label": "same code (f341d1a5433b)"
+ },
+ {
+  "type": "code",
+  "value": "644f16d540dc6c4f1465b98b71dc92378f71c121260620c1be1bcd1f56a6112f",
+  "label": "same code (644f16d540dc)"
+ },
+ {
+  "type": "code",
+  "value": "2ff5a7d0191a7494aea19f344e85994d4fcd320bc22e4cec34b8c3a1017a9632",
+  "label": "same code (2ff5a7d0191a)"
+ },
+ {
+  "type": "code",
+  "value": "8bccf0e7809785e4a189e239cec194245b6c190804dd9a3780dfc17ca8781be8",
+  "label": "same code (8bccf0e78097)"
+ },
+ {
+  "type": "code",
+  "value": "48a3f1cda791306e60d5596893699fa1177b8ca08dc94e4f6ab7649109226399",
+  "label": "same code (48a3f1cda791)"
+ },
+ {
+  "type": "code",
+  "value": "af9fad47a95848748e869f6e46f84f51445e50e3a2b9f81f8f97397c3aee0c4f",
+  "label": "same code (af9fad47a958)"
+ }
+]

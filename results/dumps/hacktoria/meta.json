@@ -1,0 +1,12 @@
+{
+ "title": "Hacktoria (Windows)",
+ "os": "windows",
+ "source": "Hacktoria CTF",
+ "size": "1.0 GB",
+ "pcap": "",
+ "order": 11,
+ "findings": 58,
+ "risk": 60,
+ "compromise": 55,
+ "exposure": 20
+}

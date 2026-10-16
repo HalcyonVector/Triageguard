@@ -1,0 +1,12 @@
+{
+ "title": "Brave (Windows, CyberDefenders)",
+ "os": "windows",
+ "source": "CyberDefenders CTF: Brave",
+ "size": "4.5 GB",
+ "pcap": "",
+ "order": 10,
+ "findings": 78,
+ "risk": 89,
+ "compromise": 80,
+ "exposure": 93
+}

@@ -1,0 +1,704 @@
+[
+ {
+  "ref": "F1",
+  "module": "memory",
+  "kind": "processes",
+  "title": "processes: 134 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F2",
+  "module": "memory",
+  "kind": "cmdlines",
+  "title": "cmdlines: 134 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F3",
+  "module": "memory",
+  "kind": "network",
+  "title": "network: 103 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F4",
+  "module": "memory",
+  "kind": "injected",
+  "title": "injected: 17 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F5",
+  "module": "memory",
+  "kind": "usb",
+  "title": "usb: 32 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F6",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 1156 MsMpEng.exe: 7 RWX/injected region(s): 7 x known JIT process, RWX private memory is expected",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "1156"
+ },
+ {
+  "ref": "F7",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5104 SearchApp.exe: 2 RWX/injected region(s): 2 x executable private memory with code unique to this process",
+  "severity": "high",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "5104"
+ },
+ {
+  "ref": "F8",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 6716 smartscreen.ex: 2 RWX/injected region(s): 2 x executable private memory with code unique to this process",
+  "severity": "high",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "6716"
+ },
+ {
+  "ref": "F9",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 6988 OneDrive.exe: 1 RWX/injected region(s): 1 x region starts with zero bytes, no code at the region base",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "6988"
+ },
+ {
+  "ref": "F10",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5096 powershell.exe: 5 RWX/injected region(s): 5 x executable private memory with code unique to this process",
+  "severity": "high",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "5096"
+ },
+ {
+  "ref": "F11",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1156.vad.0x244e0960000-0x244e0a5ffff.dmp: entropy 4.938, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.1156.vad.0x244e0960000-0x244e0a5ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F12",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1156.vad.0x244e0a70000-0x244e0c6ffff.dmp: entropy 5.036, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.1156.vad.0x244e0a70000-0x244e0c6ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F13",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1156.vad.0x244e2eb0000-0x244e2fbcfff.dmp: entropy 4.559, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.1156.vad.0x244e2eb0000-0x244e2fbcfff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F14",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1156.vad.0x244e3b00000-0x244e3c0cfff.dmp: entropy 4.342, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.1156.vad.0x244e3b00000-0x244e3c0cfff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F15",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1156.vad.0x244e3f60000-0x244e406cfff.dmp: entropy 3.058, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.1156.vad.0x244e3f60000-0x244e406cfff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F16",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1156.vad.0x244ea260000-0x244ea36cfff.dmp: entropy 2.827, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.1156.vad.0x244ea260000-0x244ea36cfff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F17",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.1156.vad.0x244ee170000-0x244ee27cfff.dmp: entropy 0.01, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.1156.vad.0x244ee170000-0x244ee27cfff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F18",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.5096.vad.0x211f14d0000-0x211f14e9fff.dmp: entropy 0.058, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.5096.vad.0x211f14d0000-0x211f14e9fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F19",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.5096.vad.0x211f1640000-0x211f164ffff.dmp: entropy 0.059, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.5096.vad.0x211f1640000-0x211f164ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F20",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.5096.vad.0x211f17c0000-0x211f17cffff.dmp: entropy 1.426, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.5096.vad.0x211f17c0000-0x211f17cffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F21",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.5096.vad.0x7df4c4d90000-0x7df4c4d9ffff.dmp: entropy 0.037, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.5096.vad.0x7df4c4d90000-0x7df4c4d9ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F22",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.5096.vad.0x7df4c4da0000-0x7df4c4e3ffff.dmp: entropy 0.003, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.5096.vad.0x7df4c4da0000-0x7df4c4e3ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F23",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.5104.vad.0x1e223a20000-0x1e223a3ffff.dmp: entropy 1.322, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.5104.vad.0x1e223a20000-0x1e223a3ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F24",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.5104.vad.0x1e224f60000-0x1e224fc3fff.dmp: entropy 0.288, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.5104.vad.0x1e224f60000-0x1e224fc3fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F25",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.6716.vad.0x1dff1080000-0x1dff109ffff.dmp: entropy 0.257, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.6716.vad.0x1dff1080000-0x1dff109ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F26",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.6716.vad.0x1dff1480000-0x1dff14e3fff.dmp: entropy 0.081, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.6716.vad.0x1dff1480000-0x1dff14e3fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F27",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.6988.vad.0x7a60000-0x7a6ffff.dmp: entropy 0.341, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\brave\\out\\malfind\\pid.6988.vad.0x7a60000-0x7a6ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F28",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES identified (100.0%, implementation constants) in 20210430-Win10Home-20H2-64bit-memdump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x26e4140"
+ },
+ {
+  "ref": "F29",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC P-256 identified (99.7%, implementation constants) in 20210430-Win10Home-20H2-64bit-memdump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x43317dc"
+ },
+ {
+  "ref": "F30",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "RSA identified (99.6%, implementation constants) in 20210430-Win10Home-20H2-64bit-memdump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x311e5"
+ },
+ {
+  "ref": "F31",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES-GCM identified (98.2%, implementation constants) in 20210430-Win10Home-20H2-64bit-memdump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x10225d090"
+ },
+ {
+  "ref": "F32",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ChaCha20/Salsa20 identified (93.5%, implementation constants) in 20210430-Win10Home-20H2-64bit-memdump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x15ce8940"
+ },
+ {
+  "ref": "F33",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC secp256k1 identified (92.8%, implementation constants) in 20210430-Win10Home-20H2-64bit-memdump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x44822fc"
+ },
+ {
+  "ref": "F34",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "Curve25519 identified (91.4%, implementation constants) in 20210430-Win10Home-20H2-64bit-memdump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x6d143580"
+ },
+ {
+  "ref": "F35",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "DES identified (86.0%, implementation constants) in 20210430-Win10Home-20H2-64bit-memdump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0xbfeab108"
+ },
+ {
+  "ref": "F36",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "generic identified (83.2%, API/string references only) in 20210430-Win10Home-20H2-64bit-memdump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x2b96a6f"
+ },
+ {
+  "ref": "F37",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "3DES identified (60.0%, API/string references only) in 20210430-Win10Home-20H2-64bit-memdump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0xdc60c3c"
+ },
+ {
+  "ref": "F38",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0xcd7423c"
+ },
+ {
+  "ref": "F39",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x15decddc"
+ },
+ {
+  "ref": "F40",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x23be20f0"
+ },
+ {
+  "ref": "F41",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x4b8f0fef"
+ },
+ {
+  "ref": "F42",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x4b8f1083"
+ },
+ {
+  "ref": "F43",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x92fdf37a"
+ },
+ {
+  "ref": "F44",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1023 key e=65537 (CAPI blob), strength 62/100 (80.0-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x93908fcc"
+ },
+ {
+  "ref": "F45",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0xaa4d157c"
+ },
+ {
+  "ref": "F46",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (CNG blob), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x4489bc0"
+ },
+ {
+  "ref": "F47",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x120897e"
+ },
+ {
+  "ref": "F48",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x237201b"
+ },
+ {
+  "ref": "F49",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x25e1192"
+ },
+ {
+  "ref": "F50",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x25e195f"
+ },
+ {
+  "ref": "F51",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1536 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x43c7920"
+ },
+ {
+  "ref": "F52",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x7d08aab"
+ },
+ {
+  "ref": "F53",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x9c250c9"
+ },
+ {
+  "ref": "F54",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0xb1f1af3"
+ },
+ {
+  "ref": "F55",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x107ad8b0"
+ },
+ {
+  "ref": "F56",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x1a1a1769"
+ },
+ {
+  "ref": "F57",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x1a1bc4e0"
+ },
+ {
+  "ref": "F58",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x1a1becea"
+ },
+ {
+  "ref": "F59",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x315eb0d2"
+ },
+ {
+  "ref": "F60",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x315ebba7"
+ },
+ {
+  "ref": "F61",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x486bbcf4"
+ },
+ {
+  "ref": "F62",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x4aba15ba"
+ },
+ {
+  "ref": "F63",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x4f0b24c4"
+ },
+ {
+  "ref": "F64",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x5113ac81"
+ },
+ {
+  "ref": "F65",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=62353 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x5121db34"
+ },
+ {
+  "ref": "F66",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x515b97ee"
+ },
+ {
+  "ref": "F67",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=43147 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x53604698"
+ },
+ {
+  "ref": "F68",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x53acb704"
+ },
+ {
+  "ref": "F69",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=50557 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x53acbd23"
+ },
+ {
+  "ref": "F70",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x56f6759c"
+ },
+ {
+  "ref": "F71",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x9e3257a4"
+ },
+ {
+  "ref": "F72",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0xb43de46d"
+ },
+ {
+  "ref": "F73",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0xdfc42240"
+ },
+ {
+  "ref": "F74",
+  "module": "rsa",
+  "kind": "rsa_summary",
+  "title": "506 RSA keys with no weaknesses and 18 corrupt key-like structures in 20210430-Win10Home-20H2-64bit-memdump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F75",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "200 high-entropy regions (1744896 bytes) in 20210430-Win10Home-20H2-64bit-memdump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x31000"
+ },
+ {
+  "ref": "F76",
+  "module": "credentials",
+  "kind": "JWT",
+  "title": "JWT eyJhbG...8Sus: symmetric HS256: security rests on secret strength; offline guessing possible; token expired",
+  "severity": "medium",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0xf4ad6df"
+ },
+ {
+  "ref": "F77",
+  "module": "credentials",
+  "kind": "AWS access key id",
+  "title": "AWS access key id AKIAIW...H53A",
+  "severity": "medium",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0x2a081eb"
+ },
+ {
+  "ref": "F78",
+  "module": "credentials",
+  "kind": "Bearer token",
+  "title": "Bearer token 585d36...ca1d",
+  "severity": "medium",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
+  "location": "0xd297a90"
+ }
+]
