@@ -223,7 +223,13 @@ def extract(dump, outdir):
 
 # Processes that legitimately JIT code into private RWX memory (Defender's
 # emulator, browser JS engines), a well-known malfind false positive
-JIT_PROCESSES = {"msmpeng.exe", "msedge.exe", "msedgewebview2.exe", "chrome.exe", "firefox.exe", "mpdefendercoreservice.exe"}
+JIT_PROCESSES = {"msmpeng.exe", "msedge.exe", "msedgewebview2.exe", "chrome.exe", "firefox.exe", "mpdefendercoreservice.exe",
+                 # JavaScript (Chakra) and .NET hosts: their JIT writes code into RWX pages by design. Each of
+                 # these was flagged on several unrelated images, including ones with no malware in them
+                 "smartscreen.exe", "searchapp.exe", "wwahost.exe", "servermanager.exe", "emet_agent.exe"}
+# Windows keeps 14 characters of a process name ("smartscreen.ex"), so names are compared
+# cut to that length; that also covers .NET services such as Microsoft.ActiveDirectory.WebServices
+JIT_PREFIXES = tuple({j[:14] for j in JIT_PROCESSES} | {"microsoft.acti"})
 SHELLS = {"cmd.exe", "powershell.exe", "pwsh.exe"}
 SHELL_PARENTS = {"explorer.exe", "cmd.exe", "powershell.exe", "pwsh.exe", "conhost.exe", "windowsterminal.exe", "wt.exe"}
 LINUX_JIT = {"java", "node", "chrome", "firefox", "dotnet", "qemu-system-x86", "Xorg", "gnome-shell"}
@@ -240,6 +246,10 @@ LIBFFI_TRAMPOLINE = bytes.fromhex("f30f1efa4c8d15f5ffffffff2507000000")
 LINUX_SHELLS = {"sh", "bash", "dash", "zsh", "ksh", "busybox"}
 # a shell whose parent is a network service is the classic web shell or exploited daemon
 SERVICE_PARENTS = {"apache2", "httpd", "nginx", "php-fpm", "php", "mysqld", "postgres", "java", "tomcat", "node", "python3", "perl"}
+# a shell whose parent is netcat or socat is a reverse or bind shell
+NETCAT_NAMES = {"nc", "ncat", "netcat", "nc.openbsd", "nc.traditional", "socat"}
+# turning a raw reverse shell into a full terminal, the step right after getting one
+PTY_RE = re.compile(r"pty\.spawn|script\s+-q\S*\s+/dev/null|socat\s.*\bpty\b|stty\s+raw\s+-echo")
 LINUX_TMP_RE = re.compile(r"^(?:\S*/)?(?:/tmp|/dev/shm|/var/tmp|/run/user/\d+)/")
 LINUX_USER_DIRS_RE = re.compile(r"^(?:/home/[^/]+|/root|~)/(?:Downloads|Desktop)/")
 # programs malware likes to impersonate with a one-letter change ("nettstat", "sshd-", "kworkerr")
@@ -270,7 +280,9 @@ def imitated_tool(name):
     n = name.strip()
     if len(n) < 4 or n in SYSTEM_TOOLS or _known(n):
         return None
-    return next((t for t in sorted(SYSTEM_TOOLS) if len(t) >= 4 and _one_edit(n, t)), None)
+    # "python" next to "python3" (or "perl5" next to "perl") is a version suffix, not a disguise
+    return next((t for t in sorted(SYSTEM_TOOLS)
+                 if len(t) >= 4 and _one_edit(n, t) and n.rstrip("0123456789.") != t.rstrip("0123456789.")), None)
 BASH_RE = re.compile(r"(curl|wget)[^|;]*\|\s*(ba)?sh|base64\s+-d[^|;]*\|\s*(ba)?sh|nc(at)?\s.*-e\s|/dev/tcp/|chmod\s+\+x\s+/(tmp|dev/shm)|"
                      r"openssl\s+enc|gpg\s+(-c|--symmetric)|shred\s|history\s+-c|crontab\s|"
                      # running a binary the user just downloaded, as root (no package manager vouches for it)
@@ -316,7 +328,7 @@ def suspicious_processes(results):
                 sev, why = "critical", "contains an ELF header, likely a loaded-from-memory binary"
             elif LIBFFI_TRAMPOLINE in head:
                 sev, why = "low", "libffi closure trampolines (Python ctypes/cffi callbacks), RWX by design"
-            elif name.lower() in JIT_PROCESSES or name in LINUX_JIT or name.startswith(LINUX_JIT_PREFIXES):
+            elif name.lower() in JIT_PROCESSES or name.lower().startswith(JIT_PREFIXES) or name in LINUX_JIT or name.startswith(LINUX_JIT_PREFIXES):
                 sev, why = "low", "known JIT process, RWX private memory is expected"
             elif not head[:16].strip(b"\x00"):
                 # shellcode starts executing at the region base; a zeroed head is a data/thunk block
@@ -355,6 +367,9 @@ def suspicious_processes(results):
             if str(p.get("ImageFileName", "")) in LINUX_SHELLS and parent in SERVICE_PARENTS:
                 flags.append({"pid": p.get("PID"), "process": p.get("ImageFileName"), "severity": "high",
                               "reason": f"shell started by the network service {parent} (PID {p.get('PPID')}), likely a web shell or exploited daemon"})
+            elif str(p.get("ImageFileName", "")) in LINUX_SHELLS and parent in NETCAT_NAMES:
+                flags.append({"pid": p.get("PID"), "process": p.get("ImageFileName"), "severity": "high",
+                              "reason": f"shell started by {parent} (PID {p.get('PPID')}): a reverse or bind shell"})
     if isinstance(procs, list) and results.get("_os") == "linux":
         by_pid = {p.get("PID"): p for p in procs if isinstance(p, dict)}
         for p in procs:
@@ -378,7 +393,10 @@ def suspicious_processes(results):
     if isinstance(cmdlines, list):
         for r in cmdlines:
             args = str(r.get("Args") or "")
-            if m := CMDLINE_RE.search(args):
+            if m := PTY_RE.search(args):
+                flags.append({"pid": r.get("PID"), "process": r.get("Process"), "severity": "high", "cmdline": args[:500],
+                              "reason": f"upgrades a reverse shell to a full terminal ('{m.group(0)}'): {args[:200]}"})
+            elif m := CMDLINE_RE.search(args):
                 flags.append({"pid": r.get("PID"), "process": r.get("Process"), "severity": "medium", "cmdline": args[:500],
                               "reason": f"command line mentions '{m.group(0)}': {args[:200]}"})
             elif args.startswith("./") or re.match(r"sudo\s+(?:-\S+\s+)*\./", args):

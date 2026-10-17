@@ -164,11 +164,26 @@ def _pollard_rho(n, max_bits=100):
     return None
 
 
+# Weak keys that ship with Windows itself: the same modulus turns up in unrelated images
+# (Windows 10, 11 and Server 2012 R2, and the Reveal, RedLine and Ramnit machines), so it is
+# a constant inside a system component, not a key this host generated or relies on. Breaking
+# it exposes nothing about the incident, so it is recorded as info, like a known-good file
+# hash in NSRL.
+PLATFORM_KEYS = {
+    "dbc228e0c113b4f2": "RSA-512 public key present in every Windows 10/11/Server image analysed (6 unrelated hosts)",
+    "9ea675c163ebfc5e": "RSA-512 CryptoAPI key blob present in 3 unrelated Windows 10 images",
+}
+
+
 def assess(keys):
     """Run weakness tests. Adds 'issues', 'security_bits', 'nist_status' and 'strength' (0-100) to each key."""
     for k in keys:
         k["issues"] = []
         n, e, bits = k["n"], k["e"], k["bits"]
+        if k.get("fingerprint") in PLATFORM_KEYS:
+            k["issues"] = [{"test": "platform key", "severity": "info", "detail": PLATFORM_KEYS[k["fingerprint"]]}]
+            k["platform"] = True
+            continue
         # severity bands follow the factoring record and NIST SP 800-131A Rev. 2 (see strength_score)
         if bits <= FACTORED_RECORD_BITS:
             k["issues"].append({"test": "modulus size", "severity": "critical",
@@ -199,7 +214,7 @@ def assess(keys):
             k["factor"] = pq[0]
 
     # cross-key tests (corrupt moduli would only produce bogus shared-prime hits)
-    valid = [k for k in keys if not k.get("corrupt")]
+    valid = [k for k in keys if not k.get("corrupt") and not k.get("platform")]
     for i, a in enumerate(valid):
         for b in valid[i + 1:]:
             if a["n"] == b["n"] and a["e"] != b["e"]:

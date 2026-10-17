@@ -580,7 +580,7 @@
   "module": "rsa",
   "kind": "rsa_key",
   "title": "RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size",
-  "severity": "critical",
+  "severity": "info",
   "source": "..\\data\\memory\\memory.dmp",
   "location": "0x62622887"
  },

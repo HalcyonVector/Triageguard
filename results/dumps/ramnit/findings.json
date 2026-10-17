@@ -49,7 +49,7 @@
   "module": "memory",
   "kind": "suspicious_process",
   "title": "PID 2128 SearchApp.exe: 2 RWX/injected region(s): 1 x identical code in 3 processes, likely a system-wide hook; 1 x executable private memory with code unique to this process",
-  "severity": "high",
+  "severity": "low",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
   "location": "2128"
  },
@@ -67,7 +67,7 @@
   "module": "memory",
   "kind": "suspicious_process",
   "title": "PID 7484 smartscreen.ex: 5 RWX/injected region(s): 3 x identical code in 3 processes, likely a system-wide hook; 2 x executable private memory with code unique to this process",
-  "severity": "high",
+  "severity": "low",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
   "location": "7484"
  },
@@ -85,7 +85,7 @@
   "module": "memory",
   "kind": "suspicious_process",
   "title": "PID 5912 WWAHost.exe: 2 RWX/injected region(s): 1 x identical code in 3 processes, likely a system-wide hook; 1 x executable private memory with code unique to this process",
-  "severity": "high",
+  "severity": "low",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
   "location": "5912"
  },
@@ -328,7 +328,7 @@
   "module": "rsa",
   "kind": "rsa_key",
   "title": "RSA-512 key e=65537 (CAPI blob), strength 0/100 (0-bit security, broken): modulus size",
-  "severity": "critical",
+  "severity": "info",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
   "location": "0x3f95ff80"
  },
@@ -427,7 +427,7 @@
   "module": "rsa",
   "kind": "rsa_key",
   "title": "RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size",
-  "severity": "critical",
+  "severity": "info",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
   "location": "0x195fd617"
  },

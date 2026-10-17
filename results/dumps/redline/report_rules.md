@@ -10,7 +10,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 | Score | Evidence source | Findings | Strongest | Mass |
 |---|---|---|---|---|
 | compromise | memory/suspicious_process | 3 | [F7] | 0.95 |
-| exposure | rsa/rsa_key | 16 | [F24] | 0.95 |
+| exposure | rsa/rsa_key | 16 | [F25] | 0.95 |
 | exposure | credentials/JWT | 3 | [F40] | 0.55 |
 
 ## Cipher identification
@@ -28,7 +28,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 ## RSA keys
 - [F22] **low** RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F23] **low** RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
-- [F24] **critical** RSA-512 key e=65537 (CAPI blob), strength 0/100 (0-bit security, broken): modulus size
+- [F24] **info** RSA-512 key e=65537 (CAPI blob), strength 0/100 (0-bit security, broken): modulus size
 - [F25] **critical** RSA-512 key e=65537 (CAPI blob), strength 0/100 (0-bit security, broken): modulus size
 - [F26] **low** RSA-2048 key e=3 (CNG blob), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent
 - [F27] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
@@ -41,7 +41,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F34] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F35] **low** RSA-1536 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F36] **low** RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent
-- [F37] **critical** RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size
+- [F37] **info** RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size
 - [F38] **info** 130 RSA keys with no weaknesses and 9 corrupt key-like structures in MemoryDump.mem
 
 ## Encrypted / packed regions
@@ -60,7 +60,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F5] **info** usb: 25 rows
 - [F6] **low** PID 5704 RuntimeBroker.: 1 RWX/injected region(s): 1 x region starts with zero bytes, no code at the region base
 - [F7] **critical** PID 5896 oneetx.exe: 1 RWX/injected region(s): 1 x contains a PE header (MZ), likely injected DLL/EXE
-- [F8] **high** PID 7540 smartscreen.ex: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process
+- [F8] **low** PID 7540 smartscreen.ex: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process
 
 ## Static analysis
 - [F9] **info** pid.5704.vad.0x21ddbca0000-0x21ddbcaffff.dmp: entropy 1.982, crypto imports [], yara []
@@ -71,6 +71,6 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 
 | Tactic | Technique | Findings |
 |---|---|---|
-| Defense Evasion | T1055 Process Injection | [F7], [F8] |
+| Defense Evasion | T1055 Process Injection | [F7] |
 | Credential Access | T1528 Steal Application Access Token | [F40], [F41], [F42] |
 | Credential Access | T1552 Unsecured Credentials | [F40], [F41], [F42] |

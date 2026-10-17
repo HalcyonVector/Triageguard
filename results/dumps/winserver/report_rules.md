@@ -2,7 +2,7 @@
 
 **Risk score:** 96/100 (critical, CVSS v3.1 bands)
 - Compromise: 95/100 (critical), evidence of attacker activity
-- Crypto exposure: 55/100 (medium), weak keys, tokens and TLS; counts half in the overall score
+- Crypto exposure: 20/100 (low), weak keys, tokens and TLS; counts half in the overall score
 **Weakest RSA key strength:** 0/100
 
 Risk is the Dempster-Shafer combination of independent evidence sources, each counted once at its strongest finding (severity as CVSS v3.1 band midpoint). A weak key seen only as a public key counts at most as medium.
@@ -10,7 +10,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 | Score | Evidence source | Findings | Strongest | Mass |
 |---|---|---|---|---|
 | compromise | memory/suspicious_process | 5 | [F8] | 0.95 |
-| exposure | rsa/rsa_key | 81 | [F59] | 0.55 |
+| exposure | rsa/rsa_key | 81 | [F34] | 0.20 |
 
 ## Cipher identification
 - [F26] **info** AES identified (99.9%, implementation constants) in citadeldc01.mem
@@ -55,7 +55,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F56] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F57] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F58] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
-- [F59] **critical** RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size
+- [F59] **info** RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size
 - [F60] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F61] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F62] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
@@ -122,11 +122,11 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F3] **info** network: 19685 rows
 - [F4] **info** injected: 15 rows
 - [F5] **info** usb: 19 rows
-- [F6] **high** PID 1292 Microsoft.Acti: 5 RWX/injected region(s): 5 x executable private memory with code unique to this process
+- [F6] **low** PID 1292 Microsoft.Acti: 5 RWX/injected region(s): 5 x executable private memory with code unique to this process
 - [F7] **low** PID 1236 svchost.exe: 1 RWX/injected region(s): 1 x region starts with zero bytes, no code at the region base
 - [F8] **critical** PID 3724 spoolsv.exe: 4 RWX/injected region(s): 1 x executable private memory with code unique to this process; 3 x contains a PE header (MZ), likely injected DLL/EXE
 - [F9] **low** PID 3472 explorer.exe: 2 RWX/injected region(s): 2 x region starts with zero bytes, no code at the region base
-- [F10] **high** PID 400 ServerManager.: 3 RWX/injected region(s): 3 x executable private memory with code unique to this process
+- [F10] **low** PID 400 ServerManager.: 3 RWX/injected region(s): 3 x executable private memory with code unique to this process
 
 ## Static analysis
 - [F11] **info** pid.1236.vad.0x1b10ee0000-0x1b10ee0fff.dmp: entropy 1.184, crypto imports [], yara []
@@ -152,4 +152,4 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 
 | Tactic | Technique | Findings |
 |---|---|---|
-| Defense Evasion | T1055 Process Injection | [F6], [F8], [F10] |
+| Defense Evasion | T1055 Process Injection | [F8] |

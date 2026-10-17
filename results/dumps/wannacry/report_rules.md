@@ -10,7 +10,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 | Score | Evidence source | Findings | Strongest | Mass |
 |---|---|---|---|---|
 | exposure | rsa/rsa_key | 59 | [F71] | 0.95 |
-| compromise | memory/suspicious_process | 7 | [F7] | 0.80 |
+| compromise | memory/suspicious_process | 7 | [F8] | 0.80 |
 | compromise | memory/tor_client | 1 | [F89] | 0.55 |
 
 ## Cipher identification
@@ -101,7 +101,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F4] **info** injected: 6 rows
 - [F5] **info** usb: 14 rows
 - [F6] **low** PID 832 explorer.exe: 1 RWX/injected region(s): 1 x region starts with zero bytes, no code at the region base
-- [F7] **high** PID 1760 EMET_Agent.exe: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process
+- [F7] **low** PID 1760 EMET_Agent.exe: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process
 - [F8] **high** PID 2392 svchost.exe: 3 RWX/injected region(s): 2 x region starts with zero bytes, no code at the region base; 1 x executable private memory with code unique to this process
 - [F9] **high** PID 2288 SearchFilterHo: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process
 - [F10] **low** PID 3812 ed01ebfbc9eb5b: runs from a user-writable folder: "C:\Users\IEUser\Desktop\ed01ebfbc9eb5bbea545af4d01bf5f1071661840480439c6e5babe8e080e41aa.bin\ed01ebfbc9eb5bbea545af4d01bf5f1071661840480439c6e5babe8e080e41aa.bin (1).exe" 
@@ -121,5 +121,5 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 
 | Tactic | Technique | Findings |
 |---|---|---|
-| Defense Evasion | T1055 Process Injection | [F7], [F8], [F9] |
+| Defense Evasion | T1055 Process Injection | [F8], [F9] |
 | Command and Control | T1090.003 Proxy: Multi-hop Proxy | [F89] |

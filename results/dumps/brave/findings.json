@@ -58,7 +58,7 @@
   "module": "memory",
   "kind": "suspicious_process",
   "title": "PID 5104 SearchApp.exe: 2 RWX/injected region(s): 2 x executable private memory with code unique to this process",
-  "severity": "high",
+  "severity": "low",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
   "location": "5104"
  },
@@ -67,7 +67,7 @@
   "module": "memory",
   "kind": "suspicious_process",
   "title": "PID 6716 smartscreen.ex: 2 RWX/injected region(s): 2 x executable private memory with code unique to this process",
-  "severity": "high",
+  "severity": "low",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\brave\\temp_extract_dir\\c49-AfricanFalls2\\20210430-Win10Home-20H2-64bit-memdump.mem",
   "location": "6716"
  },

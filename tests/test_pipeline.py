@@ -170,3 +170,26 @@ def test_libffi_trampoline_is_not_injection():
            "0f 1f 80 00 00 00 00 ec 5c 7c 0d f7 74 00 00 68 5a 6d 1e 00 00 00 00 10 f5 87 0d f7 74 00 00")
     vol = {"injected": [{"PID": 843, "Process": "unattended-upgr", "Start": 0x1000, "Protection": "rwx", "Hexdump": ffi}]}
     assert [f["severity"] for f in suspicious_processes(vol)] == ["low"]
+
+
+def test_known_benign_names_and_platform_keys():
+    from triageguard.crypto import rsa_weak
+    from triageguard.memory import imitated_tool, suspicious_processes
+    assert imitated_tool("python") is None and imitated_tool("nettstat") == "netstat"
+    code = " ".join(["48"] * 64)
+    vol = {"injected": [{"PID": 1, "Process": "smartscreen.ex", "Start VPN": 0x1000, "Protection": "PAGE_EXECUTE_READWRITE", "Hexdump": code},
+                        {"PID": 2, "Process": "Microsoft.Acti", "Start VPN": 0x1000, "Protection": "PAGE_EXECUTE_READWRITE", "Hexdump": code}]}
+    assert {f["severity"] for f in suspicious_processes(vol)} == {"low"}
+    k = {"n": (1 << 511) + 1, "e": 65537, "bits": 512, "fingerprint": "dbc228e0c113b4f2"}
+    assert [i["severity"] for i in rsa_weak.assess([k])[0]["issues"]] == ["info"]
+
+
+def test_reverse_shell_chain():
+    from triageguard.memory import suspicious_processes
+    # the Seized image: ncat -> bash -> python pty.spawn -> bash, all as root
+    vol = {"_os": "linux",
+           "processes": [{"PID": 2854, "PPID": 1, "ImageFileName": "ncat"}, {"PID": 2876, "PPID": 2854, "ImageFileName": "bash"},
+                         {"PID": 2886, "PPID": 2876, "ImageFileName": "python"}, {"PID": 2887, "PPID": 2886, "ImageFileName": "bash"}],
+           "cmdlines": [{"PID": 2886, "Process": "python", "Args": 'python -c import pty; pty.spawn("/bin/bash")'}]}
+    sev = {f["pid"]: f["severity"] for f in suspicious_processes(vol)}
+    assert sev[2876] == "high" and sev[2886] == "high"

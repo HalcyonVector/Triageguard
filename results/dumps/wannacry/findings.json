@@ -58,7 +58,7 @@
   "module": "memory",
   "kind": "suspicious_process",
   "title": "PID 1760 EMET_Agent.exe: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process",
-  "severity": "high",
+  "severity": "low",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\wannacry\\wannacry.elf",
   "location": "1760"
  },

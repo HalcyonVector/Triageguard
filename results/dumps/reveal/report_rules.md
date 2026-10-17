@@ -1,17 +1,17 @@
 # TriageGuard report (rule-based)
 
-**Risk score:** 90/100 (critical, CVSS v3.1 bands)
+**Risk score:** 86/100 (high, CVSS v3.1 bands)
 - Compromise: 80/100 (high), evidence of attacker activity
-- Crypto exposure: 98/100 (critical), weak keys, tokens and TLS; counts half in the overall score
+- Crypto exposure: 64/100 (medium), weak keys, tokens and TLS; counts half in the overall score
 **Weakest RSA key strength:** 0/100
 
 Risk is the Dempster-Shafer combination of independent evidence sources, each counted once at its strongest finding (severity as CVSS v3.1 band midpoint). A weak key seen only as a public key counts at most as medium.
 
 | Score | Evidence source | Findings | Strongest | Mass |
 |---|---|---|---|---|
-| exposure | rsa/rsa_key | 36 | [F37] | 0.95 |
-| compromise | memory/suspicious_process | 6 | [F10] | 0.80 |
+| compromise | memory/suspicious_process | 6 | [F11] | 0.80 |
 | exposure | credentials/JWT | 1 | [F72] | 0.55 |
+| exposure | rsa/rsa_key | 36 | [F34] | 0.20 |
 
 ## Cipher identification
 - [F24] **info** AES identified (100.0%, implementation constants) in 192-Reveal.dmp
@@ -29,7 +29,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F34] **low** RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F35] **low** RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F36] **low** RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
-- [F37] **critical** RSA-512 key e=65537 (CAPI blob), strength 0/100 (0-bit security, broken): modulus size
+- [F37] **info** RSA-512 key e=65537 (CAPI blob), strength 0/100 (0-bit security, broken): modulus size
 - [F38] **low** RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F39] **low** RSA-2048 key e=3 (CNG blob), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent
 - [F40] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
@@ -46,7 +46,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F51] **low** RSA-2048 key e=43147 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent
 - [F52] **low** RSA-4096 key e=62353 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent
 - [F53] **low** RSA-1024 key e=3 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size; small exponent
-- [F54] **critical** RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size
+- [F54] **info** RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size
 - [F55] **low** RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent
 - [F56] **low** RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent
 - [F57] **low** RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent
@@ -80,7 +80,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F7] **low** PID 4492 thunderbird.ex: 2 RWX/injected region(s): 2 x known JIT process, RWX private memory is expected
 - [F8] **low** PID 3644 thunderbird.ex: 2 RWX/injected region(s): 2 x known JIT process, RWX private memory is expected
 - [F9] **low** PID 3004 thunderbird.ex: 1 RWX/injected region(s): 1 x known JIT process, RWX private memory is expected
-- [F10] **high** PID 2820 smartscreen.ex: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process
+- [F10] **low** PID 2820 smartscreen.ex: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process
 - [F11] **high** PID 3692 powershell.exe: 5 RWX/injected region(s): 5 x executable private memory with code unique to this process
 
 ## Static analysis
@@ -101,7 +101,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 
 | Tactic | Technique | Findings |
 |---|---|---|
-| Defense Evasion | T1055 Process Injection | [F10], [F11] |
+| Defense Evasion | T1055 Process Injection | [F11] |
 | Execution | T1059.001 Command and Scripting Interpreter: PowerShell | [F11] |
 | Credential Access | T1528 Steal Application Access Token | [F72] |
 | Credential Access | T1552 Unsecured Credentials | [F72] |

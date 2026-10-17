@@ -49,7 +49,7 @@
   "module": "memory",
   "kind": "suspicious_process",
   "title": "PID 1292 Microsoft.Acti: 5 RWX/injected region(s): 5 x executable private memory with code unique to this process",
-  "severity": "high",
+  "severity": "low",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
   "location": "1292"
  },
@@ -85,7 +85,7 @@
   "module": "memory",
   "kind": "suspicious_process",
   "title": "PID 400 ServerManager.: 3 RWX/injected region(s): 3 x executable private memory with code unique to this process",
-  "severity": "high",
+  "severity": "low",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
   "location": "400"
  },
@@ -526,7 +526,7 @@
   "module": "rsa",
   "kind": "rsa_key",
   "title": "RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size",
-  "severity": "critical",
+  "severity": "info",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\case001_dc\\citadeldc01.mem",
   "location": "0x23d70337"
  },

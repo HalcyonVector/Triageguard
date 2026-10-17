@@ -2,7 +2,7 @@
 
 **Risk score:** 96/100 (critical, CVSS v3.1 bands)
 - Compromise: 95/100 (critical), evidence of attacker activity
-- Crypto exposure: 55/100 (medium), weak keys, tokens and TLS; counts half in the overall score
+- Crypto exposure: 20/100 (low), weak keys, tokens and TLS; counts half in the overall score
 **Weakest RSA key strength:** 0/100
 
 Risk is the Dempster-Shafer combination of independent evidence sources, each counted once at its strongest finding (severity as CVSS v3.1 band midpoint). A weak key seen only as a public key counts at most as medium.
@@ -10,7 +10,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 | Score | Evidence source | Findings | Strongest | Mass |
 |---|---|---|---|---|
 | compromise | memory/suspicious_process | 3 | [F6] | 0.95 |
-| exposure | rsa/rsa_key | 16 | [F37] | 0.55 |
+| exposure | rsa/rsa_key | 16 | [F25] | 0.20 |
 
 ## Cipher identification
 - [F16] **info** AES identified (99.9%, implementation constants) in DESKTOP-SDN1RPT.mem
@@ -37,7 +37,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F34] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F35] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F36] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
-- [F37] **critical** RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size
+- [F37] **info** RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size
 - [F38] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F39] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F40] **low** RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent

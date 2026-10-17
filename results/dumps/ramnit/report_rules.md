@@ -1,16 +1,16 @@
 # TriageGuard report (rule-based)
 
-**Risk score:** 90/100 (critical, CVSS v3.1 bands)
+**Risk score:** 82/100 (high, CVSS v3.1 bands)
 - Compromise: 80/100 (high), evidence of attacker activity
-- Crypto exposure: 95/100 (critical), weak keys, tokens and TLS; counts half in the overall score
+- Crypto exposure: 20/100 (low), weak keys, tokens and TLS; counts half in the overall score
 **Weakest RSA key strength:** 0/100
 
 Risk is the Dempster-Shafer combination of independent evidence sources, each counted once at its strongest finding (severity as CVSS v3.1 band midpoint). A weak key seen only as a public key counts at most as medium.
 
 | Score | Evidence source | Findings | Strongest | Mass |
 |---|---|---|---|---|
-| exposure | rsa/rsa_key | 32 | [F37] | 0.95 |
-| compromise | memory/suspicious_process | 6 | [F6] | 0.80 |
+| compromise | memory/suspicious_process | 6 | [F7] | 0.80 |
+| exposure | rsa/rsa_key | 32 | [F33] | 0.20 |
 
 ## Cipher identification
 - [F23] **info** AES identified (100.0%, implementation constants) in memory.dmp
@@ -29,7 +29,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F34] **low** RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F35] **low** RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F36] **low** RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
-- [F37] **critical** RSA-512 key e=65537 (CAPI blob), strength 0/100 (0-bit security, broken): modulus size
+- [F37] **info** RSA-512 key e=65537 (CAPI blob), strength 0/100 (0-bit security, broken): modulus size
 - [F38] **low** RSA-2048 key e=3 (CNG blob), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent
 - [F39] **low** RSA-1536 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F40] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
@@ -40,7 +40,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F45] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F46] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F47] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
-- [F48] **critical** RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size
+- [F48] **info** RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size
 - [F49] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F50] **low** RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size
 - [F51] **low** RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent
@@ -74,11 +74,11 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F3] **info** network: 86 rows
 - [F4] **info** injected: 11 rows
 - [F5] **info** usb: 28 rows
-- [F6] **high** PID 2128 SearchApp.exe: 2 RWX/injected region(s): 1 x identical code in 3 processes, likely a system-wide hook; 1 x executable private memory with code unique to this process
+- [F6] **low** PID 2128 SearchApp.exe: 2 RWX/injected region(s): 1 x identical code in 3 processes, likely a system-wide hook; 1 x executable private memory with code unique to this process
 - [F7] **high** PID 7068 RuntimeBroker.: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process
-- [F8] **high** PID 7484 smartscreen.ex: 5 RWX/injected region(s): 3 x identical code in 3 processes, likely a system-wide hook; 2 x executable private memory with code unique to this process
+- [F8] **low** PID 7484 smartscreen.ex: 5 RWX/injected region(s): 3 x identical code in 3 processes, likely a system-wide hook; 2 x executable private memory with code unique to this process
 - [F9] **low** PID 7780 OneDrive.exe: 1 RWX/injected region(s): 1 x region starts with zero bytes, no code at the region base
-- [F10] **high** PID 5912 WWAHost.exe: 2 RWX/injected region(s): 1 x identical code in 3 processes, likely a system-wide hook; 1 x executable private memory with code unique to this process
+- [F10] **low** PID 5912 WWAHost.exe: 2 RWX/injected region(s): 1 x identical code in 3 processes, likely a system-wide hook; 1 x executable private memory with code unique to this process
 - [F11] **low** PID 4628 ChromeSetup.ex: runs from a user-writable folder: "C:\Users\alex\Downloads\ChromeSetup.exe" 
 
 ## Static analysis
@@ -98,4 +98,4 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 
 | Tactic | Technique | Findings |
 |---|---|---|
-| Defense Evasion | T1055 Process Injection | [F6], [F7], [F8], [F10] |
+| Defense Evasion | T1055 Process Injection | [F7] |

@@ -9,7 +9,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 
 | Score | Evidence source | Findings | Strongest | Mass |
 |---|---|---|---|---|
-| compromise | memory/suspicious_process | 5 | [F7] | 0.80 |
+| compromise | memory/suspicious_process | 5 | [F10] | 0.80 |
 | exposure | credentials/JWT | 1 | [F76] | 0.55 |
 | exposure | credentials/AWS access key id | 1 | [F77] | 0.55 |
 | exposure | credentials/Bearer token | 1 | [F78] | 0.55 |
@@ -81,8 +81,8 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F4] **info** injected: 17 rows
 - [F5] **info** usb: 32 rows
 - [F6] **low** PID 1156 MsMpEng.exe: 7 RWX/injected region(s): 7 x known JIT process, RWX private memory is expected
-- [F7] **high** PID 5104 SearchApp.exe: 2 RWX/injected region(s): 2 x executable private memory with code unique to this process
-- [F8] **high** PID 6716 smartscreen.ex: 2 RWX/injected region(s): 2 x executable private memory with code unique to this process
+- [F7] **low** PID 5104 SearchApp.exe: 2 RWX/injected region(s): 2 x executable private memory with code unique to this process
+- [F8] **low** PID 6716 smartscreen.ex: 2 RWX/injected region(s): 2 x executable private memory with code unique to this process
 - [F9] **low** PID 6988 OneDrive.exe: 1 RWX/injected region(s): 1 x region starts with zero bytes, no code at the region base
 - [F10] **high** PID 5096 powershell.exe: 5 RWX/injected region(s): 5 x executable private memory with code unique to this process
 
@@ -109,7 +109,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 
 | Tactic | Technique | Findings |
 |---|---|---|
-| Defense Evasion | T1055 Process Injection | [F7], [F8], [F10] |
+| Defense Evasion | T1055 Process Injection | [F10] |
 | Execution | T1059.001 Command and Scripting Interpreter: PowerShell | [F10] |
 | Credential Access | T1528 Steal Application Access Token | [F76], [F78] |
 | Credential Access | T1552 Unsecured Credentials | [F76], [F77], [F78] |

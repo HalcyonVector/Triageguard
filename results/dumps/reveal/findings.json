@@ -85,7 +85,7 @@
   "module": "memory",
   "kind": "suspicious_process",
   "title": "PID 2820 smartscreen.ex: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process",
-  "severity": "high",
+  "severity": "low",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
   "location": "2820"
  },
@@ -328,7 +328,7 @@
   "module": "rsa",
   "kind": "rsa_key",
   "title": "RSA-512 key e=65537 (CAPI blob), strength 0/100 (0-bit security, broken): modulus size",
-  "severity": "critical",
+  "severity": "info",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
   "location": "0x334457f0"
  },
@@ -481,7 +481,7 @@
   "module": "rsa",
   "kind": "rsa_key",
   "title": "RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size",
-  "severity": "critical",
+  "severity": "info",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\reveal\\temp_extract_dir\\192-Reveal.dmp",
   "location": "0x24575617"
  },
