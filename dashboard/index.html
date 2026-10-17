@@ -190,14 +190,6 @@ a.cite { color: var(--accent); font-family: var(--mono); font-size: .92em; text-
 .ring i { position: absolute; inset: 7px; border-radius: 50%; background: var(--bg2); }
 .ring b { position: relative; font: 700 17px var(--mono); }
 .rowflex { display: flex; align-items: center; gap: 16px; }
-.ws ul { padding: 0; margin: 10px 0 0; } .ws li { list-style: none; display: flex; gap: 9px; padding: 4px 0; color: var(--muted); font-size: 13.5px; }
-.ws li.done { color: var(--text); } .ws li em { font-style: normal; font-family: var(--mono); color: var(--accent); width: 14px; flex: none; } .ws li.todo em { color: var(--warn); }
-.timeline { position: relative; padding-left: 26px; }
-.timeline::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: linear-gradient(var(--accent), transparent); }
-.tl { position: relative; padding: 0 0 16px; } .tl:last-child { padding-bottom: 0; }
-.tl::before { content: ""; position: absolute; left: -26px; top: 4px; width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); }
-.tl.todo::before { border-color: var(--warn); border-style: dashed; } .tl.next::before { border-color: var(--accent2); }
-.tl b { display: block; } .tl span { color: var(--muted); font-size: 13px; }
 
 /* finding drawer */
 .drawer { position: fixed; top: 0; right: 0; height: 100vh; width: min(440px, 100vw); z-index: 20; background: var(--bg2); border-left: 1px solid var(--line);
@@ -343,7 +335,6 @@ dialog::backdrop { background: rgba(3,6,12,.6); backdrop-filter: blur(3px); }
       <nav id="nav-all">
         <button data-tab="board"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Board</button>
         <button data-tab="redteam"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>Red team</button>
-        <button data-tab="roadmap"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Progress</button>
         <button data-tab="validation"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>Validation</button>
         <button data-tab="methods"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h3M8 12h8M8 16h5M14 7l3 3"/></svg>Methods</button>
       </nav></div>
@@ -372,7 +363,6 @@ dialog::backdrop { background: rgba(3,6,12,.6); backdrop-filter: blur(3px); }
     <section id="redteam" class="hidden"></section>
     <section id="validation" class="hidden"></section>
     <section id="methods" class="hidden"></section>
-    <section id="roadmap" class="hidden"></section>
   </main>
 </div>
 <aside class="drawer" id="drawer" aria-label="Finding details"></aside>
@@ -383,7 +373,6 @@ const SEV = ["critical", "high", "medium", "low", "info"];
 const TACTICS = ["Execution", "Defense Evasion", "Credential Access", "Command and Control", "Impact"];
 const TABS = {
   board: ["Board", "all", "Every analysed dump side by side"], redteam: ["Red team", "all", "Prompt-injection attacks against the LLM report, before and after the defences"],
-  roadmap: ["Progress", "all", "What is built and what is left"],
   validation: ["Validation", "all", "How we know the detectors are right, and every key recovered from memory"],
   methods: ["Methods", "all", "How every score is computed, and the standard each rule rests on"],
   summary: ["Summary", "dump", "How the risk score was built and what to act on"], crypto: ["Cryptography", "dump", "Ciphers, RSA keys and credentials found in memory"],
@@ -650,7 +639,7 @@ function reload(selectId, goTab) {
   return fetch("/api/data").then((r) => r.json()).then((d) => {
     D = Object.assign({dumps: [], rounds: [], techniques: {}}, d);
     if (selectId && D.dumps.some((x) => x.id === selectId)) cur = selectId;
-    renderDumpViews(); renderRedteam(); renderValidation(); renderMethods(); renderRoadmap();
+    renderDumpViews(); renderRedteam(); renderValidation(); renderMethods();
     if (goTab) show(goTab);
   });
 }
@@ -975,28 +964,6 @@ function renderRedteam() {
   $("redteam").querySelectorAll("[data-round]").forEach((b) => b.onclick = () => { roundIdx = +b.dataset.round; renderRedteam(); });
 }
 
-/* ---------- Progress ---------- */
-const WORKSTREAMS = [
-  ["Pipeline", [["Memory (Volatility 3)", 1], ["Static analysis", 1], ["Crypto module", 1], ["Credentials", 1], ["Network (pcap)", 1], ["Evidence fusion and ATT&CK mapping", 1], ["Analyse a dump from the dashboard", 1], ["RSA key recovery (WannaCry flaw)", 1], ["AES key schedule search", 1], ["ChaCha20 / Salsa20 key search", 1], ["Campaign linking across dumps", 1], ["Score ranges (CVSS band edges)", 1]]],
-  ["Grounded scoring", [["Cipher confidence: Dempster-Shafer", 1], ["RSA strength: NIST SP 800-57", 1], ["Risk: compromise + exposure, fused", 1], ["Every formula sourced (FORMULAS.md)", 1]]],
-  ["Evaluation", [["Windows 11, 10, 7, Server and WannaCry dumps", 1], ["Red team round 1 (78 reports)", 1], ["Red team round 2 (186 reports, adaptive)", 1], ["More public dumps", 1], ["Ground-truth crypto test", 1], ["Linux dumps (Ubuntu, CentOS)", 1], ["Lab dump scored against planted keys", 1]]],
-  ["Write-up", [["Literature survey", 1], ["README and demo script", 1], ["Dashboard v2", 1], ["Validation and Methods tabs", 1], ["Final report and PQC paragraph", 0]]],
-];
-const TIMELINE = [
-  ["Pipeline and crypto core", "Six stages, SQLite store with citation ids, cipher ID and RSA weak-key tests", "done"],
-  ["Three public dumps", "Windows 11, Windows 10 with a real pcap, and Windows 7", "done"],
-  ["Red team round 1", "6 attacks in JWT and OTP fields; attack success 4/36 to 0/36", "done"],
-  ["Every score grounded in a source", "Dempster-Shafer confidence, NIST key strength, CVSS bands, evidence fusion", "done"],
-  ["ATT&CK mapping", "Findings mapped to MITRE ATT&CK, prompt injection to ATLAS", "done"],
-  ["Red team round 2", "15 attacks incl. adaptive ones; 2/90 to 0/90, 0 unflagged, citations 37% to 67%", "done"],
-  ["More public dumps", "Windows Server DC (same case as Win10) and a WannaCry Win7 image", "done"],
-  ["Key recovery", "4 RSA-2048 private keys rebuilt from WannaCry memory; AES key schedule search", "done"],
-  ["Campaign linking", "Dumps from the same intrusion joined by rare shared evidence", "done"],
-  ["Ground-truth crypto test", "Processes with known ciphers and synthetic keys, every detector scored", "done"],
-  ["Linux dumps", "Ubuntu 22.04 and CentOS 7.7 public images, Volatility 3 symbol tables per kernel", "done"],
-  ["Lab dump with planted keys", "Self-built Ubuntu 24.04 VM; all 12 checks pass, including a new ChaCha20 key finder", "done"],
-  ["Final report", "Method, results and limits written up before submission", "todo"],
-];
 /* ---------- Validation ---------- */
 function benchHtml() {
   const B = D.benchmark;
@@ -1109,25 +1076,6 @@ function renderValidation() {
     if (cur !== id) { cur = id; renderDumpViews(); }
     openDrawer(ref);
   });
-}
-
-function renderRoadmap() {
-  const all = WORKSTREAMS.flatMap((w) => w[1]), done = all.filter((x) => x[1]).length, p = Math.round(done / all.length * 100);
-  const last = D.rounds[D.rounds.length - 1];
-  $("roadmap").innerHTML = `
-    <div class="grid g4">
-      <div class="card rowflex">${ring(p, p + "%")}<div><div class="label">Overall</div><div class="muted">${done} of ${all.length} tasks done</div></div></div>
-      <div class="card stat"><div class="label">Public dumps</div><div class="num">${D.dumps.length}</div><div class="lab">${D.dumps.map((d) => esc(d.meta.title || d.id)).join(", ")}</div></div>
-      <div class="card stat"><div class="label">LLM reports measured</div><div class="num">${D.rounds.reduce((s, r) => s + r.stats.reports, 0)}</div><div class="lab">${last ? `latest: ${last.stats.asr_base}/${last.stats.n} → ${last.stats.asr_def}/${last.stats.n}` : ""}</div></div>
-      <div class="card stat"><div class="label">Automated tests</div><div class="num">61</div><div class="lab">all passing</div></div>
-    </div>
-    <h2>Workstreams</h2>
-    <div class="grid g2">${WORKSTREAMS.map(([name, items]) => { const d = items.filter((x) => x[1]).length, q = Math.round(d / items.length * 100);
-      return `<div class="card ws"><div class="rowflex">${ring(q, q + "%", q === 100 ? "var(--accent)" : "var(--accent2)")}<div><h3 style="margin:0">${name}</h3><span class="muted" style="font-size:13px">${d} of ${items.length} done</span></div></div>
-        <ul>${items.map((x) => `<li class="${x[1] ? "done" : "todo"}"><em>${x[1] ? "✓" : "○"}</em>${esc(x[0])}</li>`).join("")}</ul></div>`; }).join("")}</div>
-    <h2>Timeline</h2>
-    <div class="card"><div class="timeline">${TIMELINE.map((t) => `<div class="tl ${t[2]}"><b>${esc(t[0])} ${t[2] === "next" ? '<span class="tag" style="color:var(--accent2)">next</span>' : t[2] === "todo" ? '<span class="tag flag">to do</span>' : ""}</b><span>${esc(t[1])}</span></div>`).join("")}</div></div>
-    <p class="note">Constraints: public datasets and synthetic keys and tokens only, no live malware execution, no real credentials.</p>`;
 }
 
 /* ---------- tabs and theme ---------- */

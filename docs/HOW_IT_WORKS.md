@@ -355,7 +355,7 @@ in tests are synthetic.
 dump in the sidebar and these views follow it: **Overview** (findings, risk gauge, critical and high count, the
 LLM report's citation coverage), **Cryptography** (cipher confidence and RSA strength in their own columns),
 **Findings** (filter and search), **Report** (LLM or rule-based, with clickable citations that jump to the
-finding). **Red team** and **Progress** cover everything. The page reads the files in `results/` each time it
+finding). **Red team**, **Validation** and **Methods** cover every dump. The page reads the files in `results/` each time it
 loads, so regenerating a report and refreshing the page is enough.
 
 ## 9. Where everything is

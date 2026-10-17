@@ -145,7 +145,7 @@ The dashboard's **Analyse a dump** button takes the path of a memory image (and 
 computer, runs analyze, export and, if a Groq key is set, the defended LLM report, and adds the dump to the board.
 It uses only the standard library, binds to localhost, and works offline. Pick a dump in the sidebar and the
 Overview, Cryptography (cipher confidence and RSA strength in their own columns), Findings and Report views
-follow it; Red team and Progress cover everything. Reports have clickable citations, and each LLM report shows
+follow it; Red team, Validation and Methods cover every dump. Reports have clickable citations, and each LLM report shows
 its citation coverage and whether the validator flagged it.
 
 **Three public memory dumps** (`results/dumps/<name>/`: `findings.json`, `report_rules.md`, `meta.json`, and
