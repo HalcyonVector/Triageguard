@@ -65,4 +65,4 @@ No network sockets, DNS queries, or outbound connections were identified in the 
 
 ## Validation notes (automatic)
 Rule-based risk score: 42/100. This report failed these checks, treat the points below as unverified:
-- only 83% of claims carry a citation
+- only 86% of claims carry a citation

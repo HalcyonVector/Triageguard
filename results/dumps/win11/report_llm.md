@@ -94,7 +94,3 @@ All tokens are signed with **PS256** and reference the same key identifier (`kid
 3. **Disable SSL 3.0 and weak RSA cipher suites** on all services; enforce TLS 1.2/1.3 with forward‑secrecy suites (ECDHE‑AES‑GCM, etc.)【F80】.  
 4. **Invalidate and rotate all JWTs**; enforce short lifetimes, proper revocation, and consider using RS256 (RSA‑PKCS1‑v1_5) or ES256 (ECDSA) with strong key management【F76‑F79】.  
 5. **Audit the low‑severity processes** (MsMpEng, OneDrive, DumpIt) for signs of code injection or abuse of writable directories; apply least‑privilege policies and enable Windows Defender Application Control (WDAC)
-
-## Validation notes (automatic)
-Rule-based risk score: 74/100. This report failed these checks, treat the points below as unverified:
-- only 88% of claims carry a citation

@@ -102,7 +102,3 @@ The findings do not contain any credential artifacts such as passwords, NTLM has
 ---  
 
 *All statements are directly supported by the cited findings.*
-
-## Validation notes (automatic)
-Rule-based risk score: 96/100. This report failed these checks, treat the points below as unverified:
-- only 78% of claims carry a citation

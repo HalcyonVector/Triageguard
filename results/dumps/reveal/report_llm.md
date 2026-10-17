@@ -109,4 +109,4 @@ Overall risk is **86/100** (Compromise 80, Crypto Exposure 64) as defined by
 
 ## Validation notes (automatic)
 Rule-based risk score: 86/100. This report failed these checks, treat the points below as unverified:
-- only 82% of claims carry a citation
+- only 83% of claims carry a citation

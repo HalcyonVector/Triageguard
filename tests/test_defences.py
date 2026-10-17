@@ -181,7 +181,15 @@ def test_export_dump_roundtrip(tmp_path):
 
 def test_citations_accept_fullwidth_brackets():
     # gpt-oss writes 【F6】; the checker used to count those reports as having no citations
-    assert defences.CITE.findall("Injected code 【F6】【F7】 and a key [F28].") == ["F6", "F7", "F28"]
+    assert defences._refs("Injected code 【F6】【F7】 and a key [F28].") == ["F6", "F7", "F28"]
+
+
+def test_citation_forms_and_what_counts_as_a_claim():
+    assert defences._refs("Two critical injections (F6, F25-F40) and keys [F33-F63]") == ["F6", "F33"]
+    assert defences._refs("| 1024 bits | 65537 | F33 |") == ["F33"]
+    assert defences._refs("sanitised evidence (F6?) is not a citation") == []
+    text = "| Key size | Finding |\n|---|---|\n| 1024 bits weak legacy key | F33 |\n*Prepared by the Malware Triage Team*"
+    assert defences.check_citations(text, [{"ref": "F33"}])["citation_rate"] == 1.0
 
 
 def test_dashboard_llm_check_reads_fullwidth_citations_and_notes():

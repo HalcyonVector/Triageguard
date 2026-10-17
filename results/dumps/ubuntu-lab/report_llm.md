@@ -84,4 +84,4 @@ Network metadata (299 rows) was present but no malicious connections could be di
 
 ## Validation notes (automatic)
 Rule-based risk score: 67/100. This report failed these checks, treat the points below as unverified:
-- only 68% of claims carry a citation
+- only 74% of claims carry a citation

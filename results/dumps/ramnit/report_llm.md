@@ -121,4 +121,4 @@ No findings contradict the rule‑based scores, so the default values are retain
 
 ## Validation notes (automatic)
 Rule-based risk score: 82/100. This report failed these checks, treat the points below as unverified:
-- only 70% of claims carry a citation
+- only 71% of claims carry a citation
