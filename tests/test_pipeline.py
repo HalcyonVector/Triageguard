@@ -204,3 +204,29 @@ def test_xp_heap_and_call_thunks_are_not_injection():
     vol = {"injected": [{"PID": 924, "Process": "csrss.exe", "Start VPN": 0x7f6f0000, "Protection": "PAGE_EXECUTE_READWRITE", "Hexdump": heap},
                         {"PID": 3088, "Process": "soffice.bin", "Start VPN": 0x29a0000, "Protection": "PAGE_EXECUTE_READWRITE", "Hexdump": thunks}]}
     assert {f["severity"] for f in suspicious_processes(vol)} == {"low"}
+
+
+def test_llm_report_uses_rescored_findings(tmp_path, monkeypatch):
+    import json
+    from triageguard import cli, report
+    from triageguard.store import Store
+    db = tmp_path / "d.db"
+    s = Store(str(db))
+    s.start_run("d.mem")
+    flag = {"pid": 1, "process": "a.exe", "severity": "high", "reason": "1 RWX/injected region(s): 1 x unique code"}
+    s.add("memory", "suspicious_process", "PID 1 a.exe: " + flag["reason"], flag, "high")
+    s.commit()
+    ref = s.findings()[0]["ref"]
+    s.close()
+    fj = tmp_path / "findings.json"
+    fj.write_text(json.dumps([{"ref": ref, "severity": "low", "title": "PID 1 a.exe: 1 RWX/injected region(s): 1 x heap"}]))
+    seen = {}
+    monkeypatch.setattr(report, "llm_available", lambda: True)
+
+    def fake_generate(findings, *a):
+        seen["f"] = findings
+        return "x", "llm"
+    monkeypatch.setattr(report, "generate", fake_generate)
+    cli.main(["report", str(db), "--out", str(tmp_path / "r.md"), "--findings", str(fj)])
+    f = seen["f"][0]
+    assert f["severity"] == "low" and f["data"]["severity"] == "low" and f["data"]["reason"].endswith("1 x heap")

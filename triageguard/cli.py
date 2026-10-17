@@ -100,6 +100,7 @@ def main(argv=None):
     g.add_argument("--out", required=True, help="markdown file to write, e.g. results/dumps/win10/report_llm.md")
     g.add_argument("--undefended", action="store_true", help="baseline prompt without defences")
     g.add_argument("--model", help="LLM model id")
+    g.add_argument("--findings", help="results/dumps/<name>/findings.json: use its (rescored) severities and titles")
 
     args = ap.parse_args(argv)
     if getattr(args, "model", None):
@@ -151,6 +152,15 @@ def main(argv=None):
             findings = store.findings(args.run)
         finally:
             store.close()
+        if args.findings:
+            # findings.json may have been rescored after the database was written
+            fresh = {f["ref"]: f for f in json.loads(Path(args.findings).read_text(encoding="utf-8-sig"))}
+            for f in findings:
+                new = fresh.get(f["ref"])
+                if new and (new["severity"], new["title"]) != (f["severity"], f["title"]):
+                    f["severity"], f["title"] = new["severity"], new["title"]
+                    if isinstance(f.get("data"), dict) and "reason" in f["data"] and ": " in new["title"]:
+                        f["data"].update(severity=new["severity"], reason=new["title"].split(": ", 1)[1])
         text, mode = report.generate(findings, True, not args.undefended)
         if mode == "rules":  # the LLM call failed; keep any existing report rather than overwrite it
             raise SystemExit("LLM report failed (see the message above), nothing written")
