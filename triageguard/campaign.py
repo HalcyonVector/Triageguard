@@ -48,7 +48,7 @@ vmicsvc.exe mscorsvw.exe EMET_Service.exe EMET_Agent.exe VSSVC.exe wbengine.exe 
 LINUX_KNOWN = tuple("""
 kworker ksoftirqd migration rcu_ cpuhp idle_inject kthreadd irq/ watchdog scsi_ jbd2 ext4- kswapd khugepaged
 oom_reaper kcompactd kblockd ata_sff md edac devfreq kdevtmpfs netns writeback kintegrityd kauditd khungtaskd
-ksmd crypto kthrotld acpi_thermal ipv6_addrconf zswap card mm_percpu ttm vmw_ psimon pool_workqueue charger_manager
+ksmd crypto kthrotld acpi_thermal ipv6_addrconf zswap card mm_percpu ttm vmw_ psimon pool_workqueue ecryptfs edac-poller charger_manager
 init systemd (sd-pam) sshd sh bash dash zsh cron atd rsyslogd dbus polkitd agetty login sudo su snapd snap
 networkmanager networkd-dispat udisksd modemmanager accounts-daemon avahi-daemon cupsd cups-browsed gdm gnome-
 gsd- xorg xwayland pulseaudio pipewire wireplumber gvfs at-spi ibus- tracker- evolution- vmtoolsd vgauthservice
@@ -59,7 +59,7 @@ goa- gjs mutter-x11-fram ssh-agent gpg-agent less vim nano top ps journalctl avm
 # names that come numbered or suffixed (kworker/0:1, systemd-journal, gsd-power); the rest match exactly
 LINUX_FAMILIES = tuple(k for k in LINUX_KNOWN if k[-1] in "-_/" or k in (
     "kworker", "ksoftirqd", "migration", "cpuhp", "idle_inject", "watchdog", "jbd2", "kswapd", "kcompactd",
-    "kblockd", "card", "systemd", "dbus", "gdm", "pipewire", "gvfs", "at-spi", "networkmanager"))
+    "kblockd", "card", "pool_workqueue", "ecryptfs", "edac", "systemd", "dbus", "gdm", "pipewire", "gvfs", "at-spi", "networkmanager"))
 
 
 def _known(name):
@@ -147,5 +147,7 @@ def load(results_dir):
     """Link every dump in results/dumps that has an indicators.json."""
     dumps = {}
     for p in sorted(Path(results_dir, "dumps").glob("*/indicators.json")):
-        dumps[p.parent.name] = json.loads(p.read_text(encoding="utf-8"))
+        inds = json.loads(p.read_text(encoding="utf-8"))
+        # re-filter saved process names, so a name added to the known lists later stops linking dumps
+        dumps[p.parent.name] = [x for x in inds if not (x["type"] == "process" and _known(x["value"]))]
     return link(dumps)
