@@ -154,6 +154,7 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
         log(f"      key recovery: dumping {name} (PID {pid})")
         pdump = memory.dump_process(dump, pid, workdir / "procs", vol.get("_os", "windows"))
         if not pdump:
+            log(f"      key recovery: skipped {name} (PID {pid}), process dump failed or timed out")
             continue
         with open(pdump, "rb") as f:
             data = f.read()

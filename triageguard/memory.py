@@ -40,7 +40,9 @@ LINUX_COLUMNS = {"COMM": "ImageFileName", "ARGS": "Args", "Destination Addr": "F
 TIMEOUT = 1800
 # linux.sockstat walks every open file of every task and ran past 30 minutes on a 4 GB
 # desktop image with Firefox open; give up sooner and report the network table as skipped
-PLUGIN_TIMEOUT = {"linux.sockstat": 600}
+# windows.memmap --dump on one big process (a browser installer on the 4 GB Ramnit image)
+# can run for the full half hour; key recovery skips that process and moves on instead
+PLUGIN_TIMEOUT = {"linux.sockstat": 600, "windows.memmap": 600}
 # Offline symbol tables (ISF JSON) for networks that block the Microsoft symbol
 # server, e.g. JPCERTCC/Windows-Symbol-Tables. Point this at the folder.
 ROOT = Path(__file__).resolve().parents[1]
@@ -401,6 +403,8 @@ def dump_process(dump, pid, outdir, os_name="windows"):
     try:
         run_plugin(dump, plugin, ["--pid", str(pid), "--dump"], outdir)
     except Exception:
+        for part in outdir.glob(f"pid.{pid}.*"):  # a half-written dump from a timed-out run
+            part.unlink(missing_ok=True)
         return None
     if os_name == "linux":
         parts = sorted(outdir.glob(f"pid.{pid}.vma.*.dmp"), key=lambda f: int(f.name.split(".vma.")[1].split("-")[0], 16))
