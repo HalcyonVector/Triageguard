@@ -17,6 +17,10 @@ def _worst(sevs):
 
 
 MAX_PUBLIC_RECOVERY = 8  # public keys tried per process; a browser can hold hundreds of certificates
+# the prime search reads every 4-byte window in Python: about 3 minutes per 100 MB per pass.
+# Ransomware processes are tens of MB; a browser or installer can be 500 MB+ (ChromeSetup on
+# the Ramnit image is 555 MB and took over half an hour), so those skip only that search
+MAX_RECOVERY_BYTES = 192 * 1024 * 1024
 
 
 def record_crypto(db, path, result, is_full_dump):
@@ -159,8 +163,11 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
         with open(pdump, "rb") as f:
             data = f.read()
         keys = rsa_weak.extract_keys(data, source=str(pdump))
-        hits = key_recovery.recover(keys, data)
-        if not hits:
+        too_big = len(data) > MAX_RECOVERY_BYTES
+        if too_big:
+            log(f"      key recovery: {name} is {len(data) >> 20} MB, skipping the RSA prime search (keys and AES/ChaCha20 still scanned)")
+        hits = [] if too_big else key_recovery.recover(keys, data)
+        if not hits and not too_big:
             public = [k for k in keys if k["format"] in key_recovery.PUBLIC_FORMATS][:MAX_PUBLIC_RECOVERY]
             hits = key_recovery.recover(public, data, formats=key_recovery.PUBLIC_FORMATS)
         # a key whose structure crosses a page boundary is split in physical memory, so the
@@ -180,7 +187,11 @@ def run(dump, pcap=None, binaries=(), db_path="triageguard.db", workdir="out", u
                    h, "info", pdump, h["prime_offset"])
         _collect(aes_keys, aes_keyfind.find_keys(data), pid, name, pdump)
         _collect(chacha_keys, chacha_keyfind.find_keys(data), pid, name, pdump)
-        if not hits:
+        if too_big and keys:
+            db.add("rsa", "key_recovery", f"RSA prime search skipped in {name} (PID {pid}): {len(data) >> 20} MB process, "
+                   f"{len(keys)} RSA key(s) assessed but not tested for leftover primes",
+                   {"pid": pid, "keys": len(keys), "bytes": len(data)}, "info", pdump)
+        elif not hits:
             db.add("rsa", "key_recovery", f"No RSA prime found in {name} (PID {pid}) for its {len(keys)} RSA key(s)",
                    {"pid": pid, "keys": len(keys)}, "info", pdump)
 

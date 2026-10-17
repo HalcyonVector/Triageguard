@@ -419,6 +419,10 @@ def dump_process(dump, pid, outdir, os_name="windows"):
     outdir = Path(outdir)
     outdir.mkdir(parents=True, exist_ok=True)
     plugin = "linux.proc.Maps" if os_name == "linux" else "windows.memmap"
+    # Volatility never overwrites: with an old pid.<pid>.dmp present it writes pid.<pid>-1.dmp
+    # and the old (possibly half-written) file would be the one read
+    for old in outdir.glob(f"pid.{pid}[.-]*"):
+        old.unlink(missing_ok=True)
     try:
         run_plugin(dump, plugin, ["--pid", str(pid), "--dump"], outdir)
     except Exception:
