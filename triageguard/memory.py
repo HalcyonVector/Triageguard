@@ -243,6 +243,13 @@ LINUX_JIT_PREFIXES = ("Isolated Web Co", "Isolated Servic", "Web Content", "WebE
 # C callback (unattended-upgrades on every Ubuntu install) has one. Injected code never
 # needs this exact stub, and it only jumps to a pointer stored beside it.
 LIBFFI_TRAMPOLINE = bytes.fromhex("f30f1efa4c8d15f5ffffffff2507000000")
+# An NT heap segment starts with a HEAP header whose Signature (offset 8) is 0xEEFFEEFF.
+# XP created the CSRSS shared heap and some winlogon heaps executable, so malfind lists
+# them in every XP image; it is heap data, not code.
+NT_HEAP_SIGNATURE = b"\xff\xee\xff\xee"
+# C++ bridge call thunks (OpenOffice's UNO bridge and similar): a vtable of pointers followed
+# by 16-byte stubs "mov eax, slot; mov edx, offset; jmp dispatcher", generated at run time
+THUNK_RE = re.compile(rb"\xb8.{4}\xba.{4}\xe9", re.S)
 LINUX_SHELLS = {"sh", "bash", "dash", "zsh", "ksh", "busybox"}
 # a shell whose parent is a network service is the classic web shell or exploited daemon
 SERVICE_PARENTS = {"apache2", "httpd", "nginx", "php-fpm", "php", "mysqld", "postgres", "java", "tomcat", "node", "python3", "perl"}
@@ -326,6 +333,10 @@ def suspicious_processes(results):
                 sev, why = "critical", "contains a PE header (MZ), likely injected DLL/EXE"
             elif head.startswith(b"\x7fELF"):
                 sev, why = "critical", "contains an ELF header, likely a loaded-from-memory binary"
+            elif head[8:12] == NT_HEAP_SIGNATURE:
+                sev, why = "low", "Windows heap segment (HEAP signature 0xEEFFEEFF), heap data rather than code"
+            elif len(THUNK_RE.findall(head)) >= 2:
+                sev, why = "low", "run-time call thunks (mov eax/mov edx/jmp to one dispatcher), a C++ bridge vtable"
             elif LIBFFI_TRAMPOLINE in head:
                 sev, why = "low", "libffi closure trampolines (Python ctypes/cffi callbacks), RWX by design"
             elif name.lower() in JIT_PROCESSES or name.lower().startswith(JIT_PREFIXES) or name in LINUX_JIT or name.startswith(LINUX_JIT_PREFIXES):

@@ -193,3 +193,14 @@ def test_reverse_shell_chain():
            "cmdlines": [{"PID": 2886, "Process": "python", "Args": 'python -c import pty; pty.spawn("/bin/bash")'}]}
     sev = {f["pid"]: f["severity"] for f in suspicious_processes(vol)}
     assert sev[2876] == "high" and sev[2886] == "high"
+
+
+def test_xp_heap_and_call_thunks_are_not_injection():
+    from triageguard.memory import suspicious_processes
+    # regions malfind reported in the M57 XP image: the CSRSS shared heap and OpenOffice's UNO bridge thunks
+    heap = "c8 00 00 00 b0 01 00 00 ff ee ff ee 08 70 00 00 08 00 00 00 00 fe 00 00 " + " 00" * 40
+    thunks = ("64 d1 86 61 38 00 9a 02 48 00 9a 02 58 00 9a 02 18 00 9a 02 28 00 9a 02 b8 03 00 00 00 ba 00 00 "
+              "00 00 e9 9b 1b ec 5e 00 b8 04 00 00 00 ba 00 00 00 00 e9 8b 1b ec 5e 00 b8 00 00 00 00 ba 00 00")
+    vol = {"injected": [{"PID": 924, "Process": "csrss.exe", "Start VPN": 0x7f6f0000, "Protection": "PAGE_EXECUTE_READWRITE", "Hexdump": heap},
+                        {"PID": 3088, "Process": "soffice.bin", "Start VPN": 0x29a0000, "Protection": "PAGE_EXECUTE_READWRITE", "Hexdump": thunks}]}
+    assert {f["severity"] for f in suspicious_processes(vol)} == {"low"}

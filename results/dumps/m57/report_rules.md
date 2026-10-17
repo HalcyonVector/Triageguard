@@ -1,7 +1,7 @@
 # TriageGuard report (rule-based)
 
-**Risk score:** 86/100 (high, CVSS v3.1 bands)
-- Compromise: 80/100 (high), evidence of attacker activity
+**Risk score:** 42/100 (medium, CVSS v3.1 bands)
+- Compromise: 20/100 (low), evidence of attacker activity
 - Crypto exposure: 55/100 (medium), weak keys, tokens and TLS; counts half in the overall score
 **Weakest RSA key strength:** 0/100
 
@@ -9,8 +9,8 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 
 | Score | Evidence source | Findings | Strongest | Mass |
 |---|---|---|---|---|
-| compromise | memory/suspicious_process | 4 | [F6] | 0.80 |
 | exposure | rsa/rsa_key | 82 | [F110] | 0.55 |
+| compromise | memory/suspicious_process | 4 | [F6] | 0.20 |
 
 ## Cipher identification
 - [F23] **info** AES identified (98.8%, implementation constants) in charlie-2009-12-11.mddramimage
@@ -118,10 +118,10 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F3] **info** network: skipped (NotImplementedError: This version of Windows is not supported: 5.1 15.2600!)
 - [F4] **info** injected: 13 rows
 - [F5] **info** usb: 16 rows
-- [F6] **high** PID 924 csrss.exe: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process
-- [F7] **high** PID 948 winlogon.exe: 10 RWX/injected region(s): 2 x executable private memory with code unique to this process; 8 x region starts with zero bytes, no code at the region base
+- [F6] **low** PID 924 csrss.exe: 1 RWX/injected region(s): 1 x Windows heap segment (HEAP signature 0xEEFFEEFF), heap data rather than code
+- [F7] **low** PID 948 winlogon.exe: 10 RWX/injected region(s): 2 x Windows heap segment (HEAP signature 0xEEFFEEFF), heap data rather than code; 8 x region starts with zero bytes, no code at the region base
 - [F8] **low** PID 1004 lsass.exe: 1 RWX/injected region(s): 1 x region starts with zero bytes, no code at the region base
-- [F9] **high** PID 3088 soffice.bin: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process
+- [F9] **low** PID 3088 soffice.bin: 1 RWX/injected region(s): 1 x run-time call thunks (mov eax/mov edx/jmp to one dispatcher), a C++ bridge vtable
 
 ## Static analysis
 - [F10] **info** pid.1004.vad.0x280000-0x347fff.dmp: entropy 0.051, crypto imports [], yara []
@@ -137,9 +137,3 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F20] **info** pid.948.vad.0x741a0000-0x741a3fff.dmp: entropy 6.889, crypto imports [], yara []
 - [F21] **info** pid.948.vad.0x7add0000-0x7add3fff.dmp: entropy 2.317, crypto imports [], yara []
 - [F22] **info** pid.948.vad.0x7f6f0000-0x7f7effff.dmp: entropy 0.049, crypto imports [], yara []
-
-## MITRE ATT&CK view
-
-| Tactic | Technique | Findings |
-|---|---|---|
-| Defense Evasion | T1055 Process Injection | [F6], [F7], [F9] |

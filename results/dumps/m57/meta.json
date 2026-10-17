@@ -6,7 +6,7 @@
  "pcap": "",
  "order": 7,
  "findings": 116,
- "risk": 86,
- "compromise": 80,
+ "risk": 42,
+ "compromise": 20,
  "exposure": 55
-}
+}

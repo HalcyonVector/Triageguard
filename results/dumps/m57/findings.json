@@ -48,8 +48,8 @@
   "ref": "F6",
   "module": "memory",
   "kind": "suspicious_process",
-  "title": "PID 924 csrss.exe: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process",
-  "severity": "high",
+  "title": "PID 924 csrss.exe: 1 RWX/injected region(s): 1 x Windows heap segment (HEAP signature 0xEEFFEEFF), heap data rather than code",
+  "severity": "low",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
   "location": "924"
  },
@@ -57,8 +57,8 @@
   "ref": "F7",
   "module": "memory",
   "kind": "suspicious_process",
-  "title": "PID 948 winlogon.exe: 10 RWX/injected region(s): 2 x executable private memory with code unique to this process; 8 x region starts with zero bytes, no code at the region base",
-  "severity": "high",
+  "title": "PID 948 winlogon.exe: 10 RWX/injected region(s): 2 x Windows heap segment (HEAP signature 0xEEFFEEFF), heap data rather than code; 8 x region starts with zero bytes, no code at the region base",
+  "severity": "low",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
   "location": "948"
  },
@@ -75,8 +75,8 @@
   "ref": "F9",
   "module": "memory",
   "kind": "suspicious_process",
-  "title": "PID 3088 soffice.bin: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process",
-  "severity": "high",
+  "title": "PID 3088 soffice.bin: 1 RWX/injected region(s): 1 x run-time call thunks (mov eax/mov edx/jmp to one dispatcher), a C++ bridge vtable",
+  "severity": "low",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\m57\\unpacked\\charlie-2009-12-11.mddramimage",
   "location": "3088"
  },
