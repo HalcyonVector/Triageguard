@@ -269,6 +269,16 @@ def _run_job(job_id, steps):
         job["status"], job["error"] = "failed", str(e)
 
 
+def build_site(results_dir="results", out="site"):
+    """A static, read-only copy of the dashboard (page + data.json) for GitHub Pages."""
+    out = Path(out)
+    out.mkdir(parents=True, exist_ok=True)
+    shutil.copy(PAGE, out / "index.html")
+    (out / "data.json").write_text(json.dumps(load(results_dir)), encoding="utf-8")
+    (out / ".nojekyll").write_text("", encoding="utf-8")
+    return out
+
+
 def serve(port=8765, results_dir="results", open_browser=True):
     origins = {f"http://127.0.0.1:{port}", f"http://localhost:{port}"}
 

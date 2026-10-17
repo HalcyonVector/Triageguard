@@ -69,6 +69,7 @@ def main(argv=None):
     d.add_argument("--port", type=int, default=8765)
     d.add_argument("--results", default="results", help="folder with the saved dumps and red-team CSV")
     d.add_argument("--no-browser", action="store_true")
+    d.add_argument("--static", metavar="OUT", help="write a read-only copy (page + data.json) to OUT instead of serving")
 
     rs = sub.add_parser("rescore-results", help="recompute scores and rule reports of every exported dump after a scoring change")
     rs.add_argument("--results", default="results")
@@ -133,7 +134,10 @@ def main(argv=None):
         raise SystemExit(update())
     elif args.cmd == "dashboard":
         from . import dashboard
-        dashboard.serve(args.port, args.results, not args.no_browser)
+        if args.static:
+            print("static dashboard ->", dashboard.build_site(args.results, args.static))
+        else:
+            dashboard.serve(args.port, args.results, not args.no_browser)
     elif args.cmd == "export":
         from . import dashboard
         meta = {k: getattr(args, k) for k in ("title", "os", "source", "size", "pcap", "order")}
