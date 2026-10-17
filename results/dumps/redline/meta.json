@@ -1,0 +1,12 @@
+{
+ "title": "RedLine (Windows, CyberDefenders)",
+ "os": "windows",
+ "source": "CyberDefenders CTF: RedLine",
+ "size": "2.0 GB",
+ "pcap": "",
+ "order": 12,
+ "findings": 42,
+ "risk": 97,
+ "compromise": 95,
+ "exposure": 98
+}

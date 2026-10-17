@@ -1,0 +1,632 @@
+[
+ {
+  "ref": "F1",
+  "module": "memory",
+  "kind": "processes",
+  "title": "processes: 127 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F2",
+  "module": "memory",
+  "kind": "cmdlines",
+  "title": "cmdlines: 127 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F3",
+  "module": "memory",
+  "kind": "network",
+  "title": "network: 86 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F4",
+  "module": "memory",
+  "kind": "injected",
+  "title": "injected: 11 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F5",
+  "module": "memory",
+  "kind": "usb",
+  "title": "usb: 28 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F6",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 2128 SearchApp.exe: 2 RWX/injected region(s): 1 x identical code in 3 processes, likely a system-wide hook; 1 x executable private memory with code unique to this process",
+  "severity": "high",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "2128"
+ },
+ {
+  "ref": "F7",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 7068 RuntimeBroker.: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process",
+  "severity": "high",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "7068"
+ },
+ {
+  "ref": "F8",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 7484 smartscreen.ex: 5 RWX/injected region(s): 3 x identical code in 3 processes, likely a system-wide hook; 2 x executable private memory with code unique to this process",
+  "severity": "high",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "7484"
+ },
+ {
+  "ref": "F9",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 7780 OneDrive.exe: 1 RWX/injected region(s): 1 x region starts with zero bytes, no code at the region base",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "7780"
+ },
+ {
+  "ref": "F10",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5912 WWAHost.exe: 2 RWX/injected region(s): 1 x identical code in 3 processes, likely a system-wide hook; 1 x executable private memory with code unique to this process",
+  "severity": "high",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "5912"
+ },
+ {
+  "ref": "F11",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 4628 ChromeSetup.ex: runs from a user-writable folder: \"C:\\Users\\alex\\Downloads\\ChromeSetup.exe\" ",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "4628"
+ },
+ {
+  "ref": "F12",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.2128.vad.0x25942230000-0x2594224ffff.dmp: entropy 0.836, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\ramnit\\out\\malfind\\pid.2128.vad.0x25942230000-0x2594224ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F13",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.2128.vad.0x259535c0000-0x25953623fff.dmp: entropy 0.086, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\ramnit\\out\\malfind\\pid.2128.vad.0x259535c0000-0x25953623fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F14",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.5912.vad.0x18909a60000-0x18909a7ffff.dmp: entropy 0.466, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\ramnit\\out\\malfind\\pid.5912.vad.0x18909a60000-0x18909a7ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F15",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.5912.vad.0x1890a380000-0x1890a3e3fff.dmp: entropy 0.081, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\ramnit\\out\\malfind\\pid.5912.vad.0x1890a380000-0x1890a3e3fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F16",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.7068.vad.0x1db7d360000-0x1db7d360fff.dmp: entropy 0.117, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\ramnit\\out\\malfind\\pid.7068.vad.0x1db7d360000-0x1db7d360fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F17",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.7484.vad.0x1f413fe0000-0x1f413ffffff.dmp: entropy 0.257, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\ramnit\\out\\malfind\\pid.7484.vad.0x1f413fe0000-0x1f413ffffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F18",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.7484.vad.0x1f414320000-0x1f414383fff.dmp: entropy 0.081, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\ramnit\\out\\malfind\\pid.7484.vad.0x1f414320000-0x1f414383fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F19",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.7484.vad.0x1f4247d0000-0x1f4247effff.dmp: entropy 0.257, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\ramnit\\out\\malfind\\pid.7484.vad.0x1f4247d0000-0x1f4247effff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F20",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.7484.vad.0x1f424860000-0x1f4248c3fff.dmp: entropy 0.081, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\ramnit\\out\\malfind\\pid.7484.vad.0x1f424860000-0x1f4248c3fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F21",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.7484.vad.0x1f4351d0000-0x1f4351effff.dmp: entropy 0.257, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\ramnit\\out\\malfind\\pid.7484.vad.0x1f4351d0000-0x1f4351effff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F22",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.7780.vad.0x76b0000-0x76bffff.dmp: entropy 0.341, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\ramnit\\out\\malfind\\pid.7780.vad.0x76b0000-0x76bffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F23",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES identified (100.0%, implementation constants) in memory.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x54c8360"
+ },
+ {
+  "ref": "F24",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "Curve25519 identified (99.7%, implementation constants) in memory.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0xdd57dae0"
+ },
+ {
+  "ref": "F25",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "RSA identified (99.6%, implementation constants) in memory.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x171de5"
+ },
+ {
+  "ref": "F26",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES-GCM identified (99.3%, implementation constants) in memory.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x62d63580"
+ },
+ {
+  "ref": "F27",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC P-256 identified (99.0%, implementation constants) in memory.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x3e2391c"
+ },
+ {
+  "ref": "F28",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC secp256k1 identified (92.8%, implementation constants) in memory.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x3f77bfc"
+ },
+ {
+  "ref": "F29",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "generic identified (83.2%, API/string references only) in memory.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x3d46589"
+ },
+ {
+  "ref": "F30",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ChaCha20/Salsa20 identified (82.0%, implementation constants) in memory.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x59622d80"
+ },
+ {
+  "ref": "F31",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "DES identified (60.0%, implementation constants) in memory.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x3f73d00"
+ },
+ {
+  "ref": "F32",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "3DES identified (60.0%, API/string references only) in memory.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x58c341fb"
+ },
+ {
+  "ref": "F33",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x12f43518"
+ },
+ {
+  "ref": "F34",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x1b76dacc"
+ },
+ {
+  "ref": "F35",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x1e6d3428"
+ },
+ {
+  "ref": "F36",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x2efb904a"
+ },
+ {
+  "ref": "F37",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-512 key e=65537 (CAPI blob), strength 0/100 (0-bit security, broken): modulus size",
+  "severity": "critical",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x3f95ff80"
+ },
+ {
+  "ref": "F38",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (CNG blob), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x3f7f3c0"
+ },
+ {
+  "ref": "F39",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1536 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x3ebcc10"
+ },
+ {
+  "ref": "F40",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x4e2e240"
+ },
+ {
+  "ref": "F41",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0xad22910"
+ },
+ {
+  "ref": "F42",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0xad236a3"
+ },
+ {
+  "ref": "F43",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0xfad9f68"
+ },
+ {
+  "ref": "F44",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0xfadf91a"
+ },
+ {
+  "ref": "F45",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0xfae0293"
+ },
+ {
+  "ref": "F46",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0xfae0719"
+ },
+ {
+  "ref": "F47",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x17aaddcb"
+ },
+ {
+  "ref": "F48",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size",
+  "severity": "critical",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x195fd617"
+ },
+ {
+  "ref": "F49",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x3d0f4192"
+ },
+ {
+  "ref": "F50",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x3d0f495f"
+ },
+ {
+  "ref": "F51",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x71ac93d9"
+ },
+ {
+  "ref": "F52",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x71e3b3b3"
+ },
+ {
+  "ref": "F53",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x71e46291"
+ },
+ {
+  "ref": "F54",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x71e4675d"
+ },
+ {
+  "ref": "F55",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x71e482db"
+ },
+ {
+  "ref": "F56",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=43147 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x71e51b68"
+ },
+ {
+  "ref": "F57",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x71e64d0a"
+ },
+ {
+  "ref": "F58",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-4096 key e=3 (DER SPKI), strength 100/100 (128-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x71e65378"
+ },
+ {
+  "ref": "F59",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x71e65de1"
+ },
+ {
+  "ref": "F60",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x75a20163"
+ },
+ {
+  "ref": "F61",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x75a20e64"
+ },
+ {
+  "ref": "F62",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0xddea5892"
+ },
+ {
+  "ref": "F63",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0xddfa4dad"
+ },
+ {
+  "ref": "F64",
+  "module": "rsa",
+  "kind": "rsa_summary",
+  "title": "477 RSA keys with no weaknesses and 6 corrupt key-like structures in memory.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F65",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "200 high-entropy regions (1081344 bytes) in memory.dmp",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\ramnit\\temp_extract_dir\\memory.dmp",
+  "location": "0x165000"
+ },
+ {
+  "ref": "F66",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=65537 (CNG blob) in ChromeSetup.ex (PID 4628), strength None/100 (None-bit security, None): invalid modulus",
+  "severity": "info",
+  "source": "..\\data\\ramnit\\out\\procs\\pid.4628.dmp",
+  "location": "0x20759f90"
+ },
+ {
+  "ref": "F67",
+  "module": "rsa",
+  "kind": "key_recovery",
+  "title": "RSA prime search skipped in ChromeSetup.ex (PID 4628): 529 MB process, 56 RSA key(s) assessed but not tested for leftover primes",
+  "severity": "info",
+  "source": "..\\data\\ramnit\\out\\procs\\pid.4628.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F68",
+  "module": "crypto",
+  "kind": "aes_key",
+  "title": "AES-128 key of ChromeSetup.ex (PID 4628) recovered from its expanded key schedule at 0x164ca960, key id 996c4ee5be0f: data encrypted under this key can be decrypted",
+  "severity": "info",
+  "source": "..\\data\\ramnit\\out\\procs\\pid.4628.dmp",
+  "location": "0x164ca960"
+ },
+ {
+  "ref": "F69",
+  "module": "crypto",
+  "kind": "aes_key",
+  "title": "AES-128 key of ChromeSetup.ex (PID 4628) recovered from its expanded key schedule at 0x1d437aa0 (2 copies), key id 69daecf5c89f: data encrypted under this key can be decrypted",
+  "severity": "info",
+  "source": "..\\data\\ramnit\\out\\procs\\pid.4628.dmp",
+  "location": "0x1d437aa0"
+ },
+ {
+  "ref": "F70",
+  "module": "crypto",
+  "kind": "aes_key",
+  "title": "AES-256 key of ChromeSetup.ex (PID 4628) recovered from its expanded key schedule at 0x1672bbb0, key id 858f7c634419: data encrypted under this key can be decrypted",
+  "severity": "info",
+  "source": "..\\data\\ramnit\\out\\procs\\pid.4628.dmp",
+  "location": "0x1672bbb0"
+ }
+]

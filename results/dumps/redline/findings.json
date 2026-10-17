@@ -1,0 +1,380 @@
+[
+ {
+  "ref": "F1",
+  "module": "memory",
+  "kind": "processes",
+  "title": "processes: 100 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F2",
+  "module": "memory",
+  "kind": "cmdlines",
+  "title": "cmdlines: 100 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F3",
+  "module": "memory",
+  "kind": "network",
+  "title": "network: 113 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F4",
+  "module": "memory",
+  "kind": "injected",
+  "title": "injected: 3 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F5",
+  "module": "memory",
+  "kind": "usb",
+  "title": "usb: 25 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F6",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5704 RuntimeBroker.: 1 RWX/injected region(s): 1 x region starts with zero bytes, no code at the region base",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "5704"
+ },
+ {
+  "ref": "F7",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 5896 oneetx.exe: 1 RWX/injected region(s): 1 x contains a PE header (MZ), likely injected DLL/EXE",
+  "severity": "critical",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "5896"
+ },
+ {
+  "ref": "F8",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 7540 smartscreen.ex: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process",
+  "severity": "high",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "7540"
+ },
+ {
+  "ref": "F9",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.5704.vad.0x21ddbca0000-0x21ddbcaffff.dmp: entropy 1.982, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\redline\\out\\malfind\\pid.5704.vad.0x21ddbca0000-0x21ddbcaffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F10",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.5896.vad.0x400000-0x437fff.dmp: entropy 0.397, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\redline\\out\\malfind\\pid.5896.vad.0x400000-0x437fff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F11",
+  "module": "static",
+  "kind": "binary",
+  "title": "pid.7540.vad.0x2505c140000-0x2505c15ffff.dmp: entropy 0.257, crypto imports [], yara []",
+  "severity": "info",
+  "source": "..\\data\\redline\\out\\malfind\\pid.7540.vad.0x2505c140000-0x2505c15ffff.dmp",
+  "location": ""
+ },
+ {
+  "ref": "F12",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES identified (99.9%, implementation constants) in MemoryDump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x5946360"
+ },
+ {
+  "ref": "F13",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC P-256 identified (99.0%, implementation constants) in MemoryDump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x3e2191c"
+ },
+ {
+  "ref": "F14",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES-GCM identified (95.5%, API/string references only) in MemoryDump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x60db2a"
+ },
+ {
+  "ref": "F15",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC secp256k1 identified (92.8%, implementation constants) in MemoryDump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x3f75bfc"
+ },
+ {
+  "ref": "F16",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "RSA identified (92.8%, implementation constants) in MemoryDump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x2a44ff"
+ },
+ {
+  "ref": "F17",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "generic identified (83.2%, API/string references only) in MemoryDump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0xbda47b"
+ },
+ {
+  "ref": "F18",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "3DES identified (72.0%, API/string references only) in MemoryDump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0xf09d5e5"
+ },
+ {
+  "ref": "F19",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ChaCha20/Salsa20 identified (70.0%, implementation constants) in MemoryDump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x2a5ac3c0"
+ },
+ {
+  "ref": "F20",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "DES identified (60.0%, implementation constants) in MemoryDump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x2687f00"
+ },
+ {
+  "ref": "F21",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "Curve25519 identified (40.0%, API/string references only) in MemoryDump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x26646f0"
+ },
+ {
+  "ref": "F22",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x868d4cc"
+ },
+ {
+  "ref": "F23",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (CAPI blob), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x128b41a0"
+ },
+ {
+  "ref": "F24",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-512 key e=65537 (CAPI blob), strength 0/100 (0-bit security, broken): modulus size",
+  "severity": "critical",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x13e8a840"
+ },
+ {
+  "ref": "F25",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-512 key e=65537 (CAPI blob), strength 0/100 (0-bit security, broken): modulus size",
+  "severity": "critical",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x7d17e350"
+ },
+ {
+  "ref": "F26",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (CNG blob), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x3f7d3c0"
+ },
+ {
+  "ref": "F27",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x77f77b"
+ },
+ {
+  "ref": "F28",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x19b0464"
+ },
+ {
+  "ref": "F29",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x19b09e8"
+ },
+ {
+  "ref": "F30",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x19b2c3b"
+ },
+ {
+  "ref": "F31",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x386e192"
+ },
+ {
+  "ref": "F32",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x386e95f"
+ },
+ {
+  "ref": "F33",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x49d994b"
+ },
+ {
+  "ref": "F34",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1024 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x10f9040c"
+ },
+ {
+  "ref": "F35",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-1536 key e=65537 (DER SPKI), strength 62/100 (80-bit security, disallowed (legacy use only)): modulus size",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x1f0ab8e0"
+ },
+ {
+  "ref": "F36",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=3 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x2039f573"
+ },
+ {
+  "ref": "F37",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-512 key e=65537 (DER SPKI), strength 0/100 (0-bit security, broken): modulus size",
+  "severity": "critical",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x585ec377"
+ },
+ {
+  "ref": "F38",
+  "module": "rsa",
+  "kind": "rsa_summary",
+  "title": "130 RSA keys with no weaknesses and 9 corrupt key-like structures in MemoryDump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": ""
+ },
+ {
+  "ref": "F39",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "200 high-entropy regions (864256 bytes) in MemoryDump.mem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x1d000"
+ },
+ {
+  "ref": "F40",
+  "module": "credentials",
+  "kind": "JWT",
+  "title": "JWT eyJ0eX...8PgA: token expired",
+  "severity": "medium",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x13785461"
+ },
+ {
+  "ref": "F41",
+  "module": "credentials",
+  "kind": "JWT",
+  "title": "JWT eyJ0eX...1m-w: token expired",
+  "severity": "medium",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x26580041"
+ },
+ {
+  "ref": "F42",
+  "module": "credentials",
+  "kind": "JWT",
+  "title": "JWT eyJ0eX...zUuQ: token expired",
+  "severity": "medium",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\redline\\temp_extract_dir\\MemoryDump.mem",
+  "location": "0x385ef181"
+ }
+]

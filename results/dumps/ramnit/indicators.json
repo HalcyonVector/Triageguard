@@ -1,0 +1,127 @@
+[
+ {
+  "type": "process",
+  "value": "lockapp.exe",
+  "label": "process LockApp.exe"
+ },
+ {
+  "type": "process",
+  "value": "chromesetup.ex",
+  "label": "process ChromeSetup.ex"
+ },
+ {
+  "type": "process",
+  "value": "skypeapp.exe",
+  "label": "process SkypeApp.exe"
+ },
+ {
+  "type": "process",
+  "value": "wwahost.exe",
+  "label": "process WWAHost.exe"
+ },
+ {
+  "type": "process",
+  "value": "winstore.app.e",
+  "label": "process WinStore.App.e"
+ },
+ {
+  "type": "process",
+  "value": "microsoftedgeu",
+  "label": "process MicrosoftEdgeU"
+ },
+ {
+  "type": "ip",
+  "value": "2.18.162.9",
+  "label": "connection to 2.18.162.9"
+ },
+ {
+  "type": "ip",
+  "value": "13.107.6.156",
+  "label": "connection to 13.107.6.156"
+ },
+ {
+  "type": "ip",
+  "value": "52.184.213.21",
+  "label": "connection to 52.184.213.21"
+ },
+ {
+  "type": "ip",
+  "value": "52.179.219.14",
+  "label": "connection to 52.179.219.14"
+ },
+ {
+  "type": "ip",
+  "value": "2.18.40.152",
+  "label": "connection to 2.18.40.152"
+ },
+ {
+  "type": "ip",
+  "value": "95.101.226.54",
+  "label": "connection to 95.101.226.54"
+ },
+ {
+  "type": "ip",
+  "value": "13.107.42.16",
+  "label": "connection to 13.107.42.16"
+ },
+ {
+  "type": "ip",
+  "value": "2.16.149.135",
+  "label": "connection to 2.16.149.135"
+ },
+ {
+  "type": "ip",
+  "value": "95.100.200.202",
+  "label": "connection to 95.100.200.202"
+ },
+ {
+  "type": "ip",
+  "value": "152.199.19.161",
+  "label": "connection to 152.199.19.161"
+ },
+ {
+  "type": "ip",
+  "value": "40.115.3.253",
+  "label": "connection to 40.115.3.253"
+ },
+ {
+  "type": "ip",
+  "value": "58.64.204.181",
+  "label": "connection to 58.64.204.181"
+ },
+ {
+  "type": "ip",
+  "value": "20.199.120.85",
+  "label": "connection to 20.199.120.85"
+ },
+ {
+  "type": "ip",
+  "value": "13.67.191.143",
+  "label": "connection to 13.67.191.143"
+ },
+ {
+  "type": "ip",
+  "value": "192.229.221.95",
+  "label": "connection to 192.229.221.95"
+ },
+ {
+  "type": "ip",
+  "value": "20.189.173.16",
+  "label": "connection to 20.189.173.16"
+ },
+ {
+  "type": "key",
+  "value": "996c4ee5be0f",
+  "label": "same AES key (996c4ee5be0f)"
+ },
+ {
+  "type": "key",
+  "value": "69daecf5c89f",
+  "label": "same AES key (69daecf5c89f)"
+ },
+ {
+  "type": "key",
+  "value": "858f7c634419",
+  "label": "same AES key (858f7c634419)"
+ }
+]

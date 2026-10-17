@@ -1,0 +1,87 @@
+[
+ {
+  "type": "process",
+  "value": "outline.exe",
+  "label": "process Outline.exe"
+ },
+ {
+  "type": "process",
+  "value": "tun2socks.exe",
+  "label": "process tun2socks.exe"
+ },
+ {
+  "type": "process",
+  "value": "skypeapp.exe",
+  "label": "process SkypeApp.exe"
+ },
+ {
+  "type": "process",
+  "value": "hxtsr.exe",
+  "label": "process HxTsr.exe"
+ },
+ {
+  "type": "process",
+  "value": "skypebackgroun",
+  "label": "process SkypeBackgroun"
+ },
+ {
+  "type": "process",
+  "value": "oneetx.exe",
+  "label": "process oneetx.exe"
+ },
+ {
+  "type": "ip",
+  "value": "20.22.207.36",
+  "label": "connection to 20.22.207.36"
+ },
+ {
+  "type": "ip",
+  "value": "38.121.43.65",
+  "label": "connection to 38.121.43.65"
+ },
+ {
+  "type": "ip",
+  "value": "204.79.197.203",
+  "label": "connection to 204.79.197.203"
+ },
+ {
+  "type": "ip",
+  "value": "52.182.143.208",
+  "label": "connection to 52.182.143.208"
+ },
+ {
+  "type": "ip",
+  "value": "52.159.127.243",
+  "label": "connection to 52.159.127.243"
+ },
+ {
+  "type": "ip",
+  "value": "204.79.197.237",
+  "label": "connection to 204.79.197.237"
+ },
+ {
+  "type": "ip",
+  "value": "104.119.188.96",
+  "label": "connection to 104.119.188.96"
+ },
+ {
+  "type": "ip",
+  "value": "77.91.124.20",
+  "label": "connection to 77.91.124.20"
+ },
+ {
+  "type": "ip",
+  "value": "204.79.197.200",
+  "label": "connection to 204.79.197.200"
+ },
+ {
+  "type": "pattern",
+  "value": "pe-in:oneetx.exe",
+  "label": "PE injected into oneetx.exe"
+ },
+ {
+  "type": "code",
+  "value": "046f88d2b599814f104a7116d5ea42b110093cb31f02a5be91877d7cafcc9cde",
+  "label": "same code (046f88d2b599)"
+ }
+]

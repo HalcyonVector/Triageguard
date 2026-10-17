@@ -1,0 +1,12 @@
+{
+ "title": "Ramnit (Windows, CyberDefenders)",
+ "os": "windows",
+ "source": "CyberDefenders CTF: Ramnit",
+ "size": "4.0 GB",
+ "pcap": "",
+ "order": 13,
+ "findings": 70,
+ "risk": 90,
+ "compromise": 80,
+ "exposure": 95
+}
