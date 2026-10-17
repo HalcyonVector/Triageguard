@@ -652,3 +652,8 @@ def test_chacha20_key_finder():
     hits = {(h["layout"], h["key"], h["verified"]) for h in c.find_keys(data)}
     assert hits == {("openssl", key, True), ("state", key[::-1], True)}
     assert c.find_keys(os.urandom(1 << 20)) == []
+
+
+def test_score_in_brackets_is_read_not_skipped():
+    # "(55/100)" is the score itself; the gap used to skip it and read the next number (RSA-512)
+    assert defences.EXPOSURE_RE.search("**Crypto Exposure (55/100):** a critical RSA-512 key").group(1) == "55"

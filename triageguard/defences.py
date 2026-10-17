@@ -208,7 +208,7 @@ def check_citations(text, findings):
 # a plain [^0-9] gap read that row's number as the overall risk.
 # The number itself may not be part of a finding id ("F6"), a key size ("0-bit security")
 # or a scale ("Score (0-100)" in a table header).
-_GAP = (r"(?:\s*\([^)]*\))?(?:(?!compromise|exposure|overall)[^0-9]){0,60}?"
+_GAP = (r"(?:\s*\((?![^)]*\d+\s*/\s*100)[^)]*\))?(?:(?!compromise|exposure|overall)[^0-9]){0,60}?"
         r"(?<![A-Za-z])(\d{1,3})(?!\d|\s*[-\u2010-\u2014]?\s*bit|\s*[-\u2010-\u2014]\s*\d)")
 RISK_RE = re.compile(r"risk\s*score" + _GAP, re.I)
 OVERALL_RE = re.compile(r"overall(?=[\s*]*(?:risk|score|\|))(?:[\s*]*risk)?(?:[\s*]*score)?" + _GAP, re.I)
