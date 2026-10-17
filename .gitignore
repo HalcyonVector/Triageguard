@@ -9,6 +9,12 @@ samples/*.mem
 *.pcap
 .env
 redteam_results/
+/redteam_v2/
+demo_out/
+.pytest_cache/
+.tools/
+# stray Volatility region dumps from runs before the --dump-regions fix
+/pid.*.dmp
 
 # Office lock files
 ~$*

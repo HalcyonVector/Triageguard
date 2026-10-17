@@ -202,7 +202,7 @@ def extract(dump, outdir):
             start = time.time()
             print(f"      {name} ...", end=" ", flush=True)  # a 4 GB image can sit in one plugin for minutes
             try:
-                results[label] = run_plugin(dump, name, extra, outdir if "--dump" in extra else None)
+                results[label] = run_plugin(dump, name, extra, outdir if any(e.startswith("--dump") for e in extra) else None)
                 print(f"{time.time() - start:.0f}s", flush=True)
                 if results[label] or label != "network":
                     break
@@ -216,7 +216,8 @@ def extract(dump, outdir):
         for label in results:
             if label != "_os":
                 results[label] = _linux_rows(results[label])
-    # malfind --dump writes one .dmp per injected region; these go to crypto/static analysis
+    # malfind --dump (Linux: --dump-regions) writes one .dmp per injected region; these go to
+    # crypto/static analysis. Without -o, Volatility writes them into the current folder.
     dumped = sorted(outdir.glob("*.dmp"))
     return results, dumped
 
