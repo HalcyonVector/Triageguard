@@ -1,14 +1,11 @@
 # Incident Report  
 
-**Date:** 2026‑10‑16  
-**Analyst:** Malware Triage Team  
+**Date:** 2026‑10‑17  
 
 ---  
 
 ## Summary  
-Memory analysis uncovered three high‑severity processes that contain injected RWX code, indicating active process‑injection attacks (ATT&CK T1055) and, for PowerShell, command‑line abuse (ATT&CK T1059.001) [F7][F8][F10].  
-Clear‑text credential artefacts were also found: a symmetric JWT (HS256), an AWS access‑key ID, and a bearer token, all of which are searchable in memory and usable for offline attacks [F76][F77][F78].  
-A large set of legacy RSA keys (1024‑bit and 1023‑bit) and several 2048‑/4096‑bit keys with non‑standard exponents (e = 3) were extracted, exposing weak cryptography [F38‑F67].  
+The memory image shows a **high‑severity PowerShell process** (PID 5096) with **five RWX‑injected memory regions** containing unique executable code, indicating process injection (ATT&CK T1055, T1059.001) [F10]. In addition, three clear‑text credentials were recovered: a JWT signed with HS256 [F76], an AWS access‑key ID [F77], and a Bearer token [F78]. The image also contains **numerous legacy RSA keys** (1024‑, 1023‑, 1536‑, 2048‑, 4096‑bit) many of which use a small exponent (e = 3) [F38]‑[F71]. These artifacts together point to an active compromise with significant cryptographic exposure.  
 
 ---  
 
@@ -18,101 +15,75 @@ A large set of legacy RSA keys (1024‑bit and 1023‑bit) and several 2048‑/4
 
 | Algorithm | Confidence | Basis | Finding |
 |-----------|------------|-------|---------|
-| RSA (various key sizes) | 99.2% | implementation constants | [F38] |
-| HMAC‑SHA‑256 (HS256) | 98.5% | API/string references only | [F76] |
+| RSA‑1024 | 99.0% | implementation constants | [F38] |
+| RSA‑1023 | 99.0% | implementation constants | [F44] |
+| RSA‑1536 | 99.0% | implementation constants | [F51] |
+| RSA‑2048 | 99.0% | implementation constants | [F46] |
+| RSA‑4096 | 99.0% | implementation constants | [F61] |
+| HS256 (JWT) | 99.0% | API/string references only | [F76] |
 
 ### RSA Key Details  
 
 | Key size | Exponent | Strength | Issue | Finding |
 |----------|----------|----------|-------|---------|
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F38] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F39] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F40] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F41] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F42] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F43] |
-| 1023 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F44] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F45] |
-| 2048 bits | 3 | 88/100 | non‑compliant exponent (e = 3) | [F46] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F47] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F48] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F49] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F50] |
-| 1536 bits | 65537 | 62/100 | weak size (≤2048 bits) | [F51] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F52] |
-| 2048 bits | 3 | 88/100 | non‑compliant exponent (e = 3) | [F53] |
-| 2048 bits | 3 | 88/100 | non‑compliant exponent (e = 3) | [F54] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F55] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F56] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F57] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F58] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F59] |
-| 1024 bits | 65537 | 62/100 | weak size (≤1024 bits) | [F60] |
-| 4096 bits | 3 | 100/100 | non‑compliant exponent (e = 3) | [F61] |
-| 4096 bits | 3 | 100/100 | non‑compliant exponent (e = 3) | [F62] |
-| 4096 bits | 3 | 100/100 | non‑compliant exponent (e = 3) | [F63] |
-| 2048 bits | 3 | 88/100 | non‑compliant exponent (e = 3) | [F64] |
-| 4096 bits | 62353 | 100/100 | non‑standard exponent | [F65] |
-| 2048 bits | 3 | 88/100 | non‑compliant exponent (e = 3) | [F66] |
-| 2048 bits | 43147 | 88/100 | non‑standard exponent | [F67] |
+| 1024 bits | 65537 | 62/100 | weak modulus size (≤1024 bits) | [F38] |
+| 1023 bits | 65537 | 62/100 | non‑standard size (≤1024 bits) | [F44] |
+| 1536 bits | 65537 | 62/100 | weak modulus size (≤2048 bits) | [F51] |
+| 2048 bits | 3 | 88/100 | small exponent (non‑compliant) | [F46] |
+| 4096 bits | 3 | 100/100 | small exponent (non‑compliant) | [F61] |
+| 4096 bits | 62353 | 100/100 | non‑standard exponent (non‑FIPS) | [F65] |
 
 ---  
 
 ## Credentials  
 
 | Type | Value (truncated) | ATT&CK Technique(s) | Finding |
-|------|-------------------|---------------------|---------|
-| JWT (HS256) | `eyJhbG...8Sus` | T1528, T1552 | [F76] |
-| AWS Access Key ID | `AKIAIW...H53A` | T1552 | [F77] |
-| Bearer token | `585d36...ca1d` | T1528, T1552 | [F78] |
+|------|-------------------|----------------------|---------|
+| JWT (HS256) | `eyJhbG…8Sus` (expired) | T1528, T1552 | [F76] |
+| AWS Access Key ID | `AKIAIW…H53A` | T1552 | [F77] |
+| Bearer token | `585d36…ca1d` | T1528, T1552 | [F78] |
 
-All three artefacts appear in clear‑text memory, making them trivially reusable by an attacker [F76][F77][F78].  
+All three tokens are present in clear text in the captured memory and can be used for authentication or lateral movement [F76] [F77] [F78].  
 
 ---  
 
 ## Processes and Network  
 
-| PID | Process | Suspicious Behaviour | ATT&CK Technique(s) | Finding |
-|-----|---------|----------------------|---------------------|---------|
-| 5104 | SearchApp.exe | 2 RWX injected regions with unique code | T1055 | [F7] |
-| 6716 | smartscreen.exe | 2 RWX injected regions with unique code | T1055 | [F8] |
-| 5096 | powershell.exe | 5 RWX injected regions; command‑line usage | T1055, T1059.001 | [F10] |
-| 1156 | MsMpEng.exe | 7 RWX regions but identified as known JIT process (expected) | – | [F6] |
-| 6988 | OneDrive.exe | 1 RWX region starting with zero bytes, no code at base | – | [F9] |
+| PID | Process | Observation | ATT&CK Technique(s) | Severity | Finding |
+|-----|---------|-------------|----------------------|----------|---------|
+| 5096 | `powershell.exe` | 5 RWX‑injected regions with unique code | T1055, T1059.001 | **High** | [F10] |
+| 1156 | `MsMpEng.exe` | 7 RWX regions (expected JIT) | T1055 (expected) | Low | [F6] |
+| 5104 | `SearchApp.exe` | 2 RWX regions with unique code | T1055 | Low | [F7] |
+| 6716 | `smartscreen.ex` | 2 RWX regions with unique code | T1055 | Low | [F8] |
+| 6988 | `OneDrive.exe` | 1 RWX region starts with zero bytes, no code | T1055 (suspicious) | Low | [F9] |
 
-The high‑severity injected processes (F7, F8, F10) demonstrate active malicious code execution on the host.  
+No network sockets or outbound connections were reported in the findings.  
 
 ---  
 
 ## Risk Score  
 
-| Component | Score (0‑100) | Justification |
-|-----------|---------------|---------------|
-| Overall | 89 (rule‑based) | The supplied rule‑based score aligns with the observed high‑severity injections and weak cryptography [F7][F8][F10][F38] |
-| Compromise | 80 | High‑severity injected processes provide clear evidence of compromise [F7][F8][F10] |
-| Crypto Exposure | 93 | Numerous legacy RSA keys (strength ≤ 62) and non‑standard exponents increase exposure [F38][F46][F61] |
+| Component | Score (0‑100) |
+|-----------|---------------|
+| Overall | 89 |
+| Compromise | 80 |
+| Crypto Exposure | 93 |
 
-No cited finding forces a deviation from the provided scores, so the rule‑based values are retained.  
+(The scores are taken directly from the rule‑based risk score supplied in the prompt.)  
 
 ---  
 
 ## Recommendations  
 
-- **Terminate injected processes** (SearchApp.exe, smartscreen.exe, powershell.exe) and isolate the host from the network [F7]  
-- **Perform a full memory dump** and run a secondary forensic scan for additional code‑cave injections [F10]  
-- **Revoke and rotate** the exposed JWT, AWS access key, and bearer token; store new secrets in a dedicated secret‑management system [F76]  
-- **Replace all RSA‑1024/1023 keys** with RSA‑2048 or larger keys using the standard exponent e = 65537 [F38]  
-- **Regenerate any 2048‑/4096‑bit keys** that currently use exponent e = 3 or other non‑standard values, conforming to FIPS‑186‑5 [F46]  
-- **Apply the latest Windows patches** for Search, SmartScreen, and PowerShell to mitigate known injection vectors [F8]  
-- **Deploy EDR alerts** for creation of RWX memory regions in trusted processes [F9]  
-- **Enable logging** for credential access (AWS IAM, JWT generation) and set up alerts for anomalous token usage [F77]  
-- **Enforce a policy** prohibiting storage of secrets in plaintext memory or files [F76]  
-- **Conduct developer training** on secure key management and the risks of legacy cryptography [F38]  
+* **Terminate the injected PowerShell process** (PID 5096) and isolate the host from the network [F10].  
+* **Revoke and rotate** the exposed JWT, AWS access key, and Bearer token; enforce MFA and short‑lived tokens for future use [F76] [F77] [F78].  
+* **Replace all legacy RSA keys** (≤2048 bits or with exponent 3) with RSA‑3072 or ECC keys using a public exponent of 65537; regenerate keys that currently use e = 3 or other non‑standard exponents [F38]‑[F71].  
+* **Upgrade TLS** to version 1.3 across all services and deprecate CAPI blobs that embed weak RSA parameters [F38]‑[F71].  
+* **Enforce code‑integrity policies** (e.g., Windows Defender Application Control) to block RWX memory allocations for non‑trusted binaries [F10].  
+* **Enable PowerShell Constrained Language Mode** and activate script‑block logging to detect future abuse [F10].  
+* **Deploy EDR alerts** for RWX memory regions in `powershell.exe` and for the use of the leaked AWS key or Bearer token in cloud logs [F10] [F77] [F78].  
+* **Apply the latest Windows updates** to the affected components (MsMpEng, SearchApp, SmartScreen, OneDrive) to reduce the attack surface [F6] [F7] [F8] [F9].  
 
 ---  
 
-*Prepared by the Malware Triage Team.*
-
-## Validation notes (automatic)
-Rule-based risk score: 89/100. This report failed these checks, treat the points below as unverified:
-- only 85% of claims carry a citation
+*Prepared by the Malware Triage Team*  

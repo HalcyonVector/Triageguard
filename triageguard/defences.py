@@ -155,18 +155,27 @@ def defended_prompt(findings):
 # ------------------------------------------------------------- post-checks
 
 # some models write citations as 【F6】 (fullwidth brackets); both forms count
-CITE = re.compile(r"[\[【](F\d+)[\]】]")
+CITE = re.compile(r"[\[【](F\d+)(?:\s*[-\u2010-\u2014]\s*F\d+)?[\]】]")  # [F6], or a range [F33-F63]
 # any mention of a finding id, bracketed or not ("**F6**", "F6", "(F6)"): used where the question is
 # whether a finding was left out of the report, not whether it was cited in the requested format
 MENTION = re.compile(r"\bF\d+\b")
+# a table cell holding only finding ids ("| F33 |", "| F12, F14 |"), as models write in a "Finding" column
+CELL_REFS = re.compile(r"\|\s*(F\d+(?:\s*,\s*F\d+)*)\s*(?=\|)")
+
+
+def _refs(line):
+    return CITE.findall(line) + [r for cell in CELL_REFS.findall(line) for r in MENTION.findall(cell)]
 
 
 def claim_lines(text):
     """Lines that make a claim: not headings, not blank, not tiny."""
     out = []
-    for line in text.splitlines():
+    rows = text.splitlines()
+    for i, line in enumerate(rows):
         s = line.strip().lstrip("-*0123456789. ").strip()
-        if len(s) < 25 or line.strip().startswith("#") or set(s) <= set("-|: "):
+        nxt = rows[i + 1].strip() if i + 1 < len(rows) else ""
+        header = s.startswith("|") and nxt.startswith("|") and set(nxt) <= set("-|: ")
+        if len(s) < 25 or header or line.strip().startswith("#") or set(s) <= set("-|: "):
             continue
         out.append(s)
     return out
@@ -175,8 +184,8 @@ def claim_lines(text):
 def check_citations(text, findings):
     valid = {f["ref"] for f in findings}
     lines = claim_lines(text)
-    uncited = [l for l in lines if not CITE.search(l)]
-    cited = set(CITE.findall(text))
+    uncited = [l for l in lines if not _refs(l)]
+    cited = {r for line in text.splitlines() for r in _refs(line)}
     return {
         "claim_lines": len(lines),
         "uncited": uncited,

@@ -1,11 +1,15 @@
 # Incident Report  
 
-**Date:** 2026‑10‑16  
+**Date:** 2026‑10‑17  
 
 ---  
 
 ## Summary  
-The memory dump contains **critical RSA‑512 keys** (strength 0/100) and **high‑severity process‑injection activity** in `smartscreen.exe` (PID 2820) and `powershell.exe` (PID 3692) (ATT&CK T1055) [F37][F54][F10][F11]. A symmetric JWT signed with HS256 and lacking an expiry claim was also found [F72]. These artifacts drive a **rule‑based overall risk score of 90** (compromise 80, crypto exposure 98) [F10][F37][F72].  
+A memory image from a Windows host contains a high‑severity PowerShell process that has multiple RWX‑injected memory regions with unique code, indicating process injection (ATT&CK T1055, T1059.001) [F11].  
+The same image also holds a JWT signed with HS256 where the secret key strength is unknown, the token lacks an expiration claim, and offline brute‑forcing is feasible [F72].  
+Numerous RSA keys of various sizes (1024‑, 1536‑, 2048‑, 4096‑bit) and non‑standard exponents (e = 3, 43147, 131071, 62353) are present, many of which provide only 80‑bit security and are considered legacy [F34‑F69].  
+
+Overall risk is **86/100** (Compromise 80, Crypto Exposure 64) as defined by the rule‑based score.  
 
 ---  
 
@@ -15,91 +19,94 @@ The memory dump contains **critical RSA‑512 keys** (strength 0/100) and **hi
 
 | Algorithm | Confidence | Basis | Finding |
 |-----------|------------|-------|---------|
-| RSA‑512 | 99.2% | implementation constants | [F37] |
-| RSA‑512 | 99.2% | implementation constants | [F54] |
-| RSA‑1024 | 98.5% | implementation constants | [F34] |
-| RSA‑1024 | 98.5% | implementation constants | [F35] |
-| RSA‑1024 | 98.5% | implementation constants | [F36] |
-| RSA‑1024 | 98.5% | implementation constants | [F38] |
-| RSA‑2048 (e = 3) | 98.5% | implementation constants | [F39] |
-| RSA‑1024 (DER SPKI) | 98.5% | implementation constants | [F40] |
-| RSA‑1024 (DER SPKI) | 98.5% | implementation constants | [F41] |
-| RSA‑1024 (e = 3, DER) | 98.5% | implementation constants | [F42] |
-| RSA‑1024 (e = 3, DER) | 98.5% | implementation constants | [F43] |
-| RSA‑2048 (e = 3, DER) | 98.5% | implementation constants | [F44] |
-| RSA‑1024 (DER) | 98.5% | implementation constants | [F45] |
-| RSA‑1024 (DER) | 98.5% | implementation constants | [F46] |
-| RSA‑1536 (DER) | 98.5% | implementation constants | [F47] |
-| RSA‑1024 (DER) | 98.5% | implementation constants | [F48] |
-| RSA‑4096 (e = 3, DER) | 98.5% | implementation constants | [F49] |
-| RSA‑1024 (DER) | 98.5% | implementation constants | [F50] |
-| RSA‑2048 (e = 43147, DER) | 98.5% | implementation constants | [F51] |
-| RSA‑4096 (e = 62353, DER) | 98.5% | implementation constants | [F52] |
-| RSA‑1024 (e = 3, DER) | 98.5% | implementation constants | [F53] |
-| RSA‑2048 (e = 3, DER) | 98.5% | implementation constants | [F55] |
-| RSA‑2048 (e = 3, DER) | 98.5% | implementation constants | [F56] |
-| RSA‑2048 (e = 3, DER) | 98.5% | implementation constants | [F57] |
-| RSA‑4096 (e = 3, DER) | 98.5% | implementation constants | [F58] |
-| RSA‑2048 (e = 65537, DER) | 98.5% | implementation constants | [F59] |
-| RSA‑2048 (e = 3, DER) | 98.5% | implementation constants | [F60] |
-| RSA‑1024 (e = 65537, DER) | 98.5% | implementation constants | [F61] |
-| RSA‑2048 (e = 3, DER) | 98.5% | implementation constants | [F62] |
-| JWT (HS256) | 97.0% | API/string references only | [F72] |
+| RSA (various key sizes) | 99.0% | implementation constants | [F34]–[F69] |
+| HS256 (JWT) | 98.5% | API/string references only | [F72] |
 
-### RSA Key Details  
+*Confidence percentages are derived from direct binary constants and clear string references in the memory dump.*  
+
+### RSA Keys  
 
 | Key size | Exponent | Strength | Issue | Finding |
 |----------|----------|----------|-------|---------|
-| 512 bits | 65537 | 0 | modulus factorable (broken) | [F37] |
-| 512 bits | 65537 | 0 | modulus factorable (broken) | [F54] |
-| 2048 bits | 3 | 88 | non‑compliant small exponent (FIPS 186‑5) | [F39] |
-| 4096 bits | 3 | 100 | non‑compliant small exponent (FIPS 186‑5) | [F49] |
+| 1024 bit | 65537 | 62/100 | legacy size (80‑bit security) | [F34] |
+| 1024 bit | 65537 | 62/100 | legacy size (80‑bit security) | [F35] |
+| 1024 bit | 65537 | 62/100 | legacy size (80‑bit security) | [F36] |
+| 1024 bit | 65537 | 62/100 | legacy size (80‑bit security) | [F38] |
+| 2048 bit | 3 | 88/100 | non‑compliant small exponent (FIPS 186‑5) | [F39] |
+| 1024 bit | 65537 | 62/100 | legacy size (80‑bit security) | [F40] |
+| 1024 bit | 65537 | 62/100 | legacy size (80‑bit security) | [F41] |
+| 1024 bit | 3 | 62/100 | legacy size & small exponent | [F42] |
+| 1024 bit | 3 | 62/100 | legacy size & small exponent | [F43] |
+| 2048 bit | 3 | 88/100 | non‑compliant small exponent (FIPS 186‑5) | [F44] |
+| 1024 bit | 65537 | 62/100 | legacy size (80‑bit security) | [F45] |
+| 1024 bit | 65537 | 62/100 | legacy size (80‑bit security) | [F46] |
+| 1536 bit | 65537 | 62/100 | legacy size (80‑bit security) | [F47] |
+| 1024 bit | 65537 | 62/100 | legacy size (80‑bit security) | [F48] |
+| 4096 bit | 3 | 100/100 | non‑compliant small exponent (FIPS 186‑5) | [F49] |
+| 1024 bit | 65537 | 62/100 | legacy size (80‑bit security) | [F50] |
+| 2048 bit | 43147 | 88/100 | non‑compliant small exponent (FIPS 186‑5) | [F51] |
+| 4096 bit | 62353 | 100/100 | non‑compliant small exponent (FIPS 186‑5) | [F52] |
+| 1024 bit | 3 | 62/100 | legacy size & small exponent | [F53] |
+| 2048 bit | 3 | 88/100 | non‑compliant small exponent (FIPS 186‑5) | [F55] |
+| 2048 bit | 3 | 88/100 | non‑compliant small exponent (FIPS 186‑5) | [F56] |
+| 2048 bit | 3 | 88/100 | non‑compliant small exponent (FIPS 186‑5) | [F57] |
+| 4096 bit | 3 | 100/100 | non‑compliant small exponent (FIPS 186‑5) | [F58] |
+| 2048 bit | 65537 | 88/100 | acceptable exponent, but shared modulus | [F59] |
+| 2048 bit | 3 | 88/100 | non‑compliant small exponent (FIPS 186‑5) | [F60] |
+| 1024 bit | 65537 | 62/100 | legacy size (80‑bit security) | [F61] |
+| 2048 bit | 3 | 88/100 | non‑compliant small exponent (FIPS 186‑5) | [F62] |
+| 1024 bit | 65537 | 62/100 | legacy size (80‑bit security) | [F63] |
+| 1024 bit | 65537 | 62/100 | legacy size (80‑bit security) | [F64] |
+| 2048 bit | 3 | 88/100 | non‑compliant small exponent (FIPS 186‑5) | [F65] |
+| 2048 bit | 131071 | 88/100 | acceptable exponent, but shared modulus | [F66] |
+| 2048 bit | 3 | 88/100 | non‑compliant small exponent (FIPS 186‑5) | [F67] |
+| 4096 bit | 3 | 100/100 | non‑compliant small exponent (FIPS 186‑5) | [F68] |
+| 1024 bit | 65537 | 62/100 | legacy size (80‑bit security) | [F69] |
 
 ---  
 
 ## Credentials  
 
-| Type | Details | Finding |
-|------|---------|---------|
-| JWT (HS256) | Symmetric token, no `exp` claim, offline‑guessable secret | [F72] |
+* **JWT (HS256)** – The token uses a symmetric secret; its strength depends entirely on the secret’s entropy, which is unknown. Offline guessing attacks are feasible, and the token lacks an `exp` claim, allowing indefinite reuse [F72].  
 
 ---  
 
 ## Processes and Network  
 
-| PID | Process | Suspicious Activity | ATT&CK Technique(s) | Finding |
-|-----|---------|---------------------|----------------------|---------|
-| 2820 | `smartscreen.exe` | 1 RWX injected region containing unique code | T1055 (Process Injection) | [F10] |
-| 3692 | `powershell.exe` | 5 RWX injected regions containing unique code | T1055 (Process Injection), T1059.001 (PowerShell) | [F11] |
-
-*No network‑related findings were reported in the supplied data.*  
+* **Suspicious PowerShell process** – PID 3692 (`powershell.exe`) has **5 RWX‑injected regions** containing unique executable code, a classic indicator of code injection (ATT&CK T1055, T1059.001) [F11].  
+* **Process enumeration** – The memory snapshot lists **109 processes** [F1] and **109 command‑line strings** [F2].  
+* **Network snapshot** – **79 network rows** are present, indicating active connections, though no malicious IPs are directly identified [F3].  
+* **Other injected regions** – Several low‑severity injected regions are observed in benign processes (RuntimeBroker, Thunderbird, SmartScreen) and are expected for JIT activity [F6]–[F10].  
 
 ---  
 
 ## Risk Score  
 
 | Component | Score (0‑100) | Justification |
-|-----------|---------------|----------------|
-| **Overall** | **90** | Rule‑based score (90) is retained; critical RSA‑512 keys (F37, F54) and process injection (F10, F11) justify the high rating. |
-| **Compromise** | **80** | High‑severity injected code in `smartscreen.exe` and `powershell.exe` demonstrates active attacker techniques (T1055, T1059.001) [F10][F11]. |
-| **Crypto Exposure** | **98** | Presence of broken RSA‑512 keys (strength 0) and many legacy/weak RSA keys (≤ 1024 bits, small exponents) severely weakens cryptographic security [F37][F54][F34][F39][F49]. |
+|-----------|---------------|---------------|
+| **Overall** | **86** | Rule‑based score applied; no cited finding forces a change. |
+| **Compromise** | **80** | High‑severity process injection (PowerShell) [F11] and exploitable JWT [F72] provide strong evidence of attacker foothold. |
+| **Crypto Exposure** | **64** | Presence of many legacy 1024‑bit RSA keys (strength 62) and small‑exponent keys (e = 3) degrades crypto posture, but findings are low severity, matching the rule‑based exposure rating [F34]–[F69]. |
 
 ---  
 
 ## Recommendations  
 
-- **Rotate all RSA keys** – Replace the RSA‑512 keys (F37, F54) and any RSA keys ≤ 1024 bits or with small exponents (e = 3) with RSA‑2048+ keys using a public exponent of 65537. Use a hardware security module (HSM) for generation and storage [F37][F54][F34][F39][F49].  
-- **Re‑issue JWTs** – Switch to asymmetric signing (e.g., RS256 or ES256) and add an `exp` claim to limit token lifetime. Store the signing secret in a protected vault [F72].  
-- **Mitigate process injection** – Enable Data Execution Prevention (DEP) and Control Flow Guard (CFG) on all binaries; deploy endpoint detection and response (EDR) rules to alert on RWX memory mappings in legitimate processes [F10][F11].  
-- **Enforce cryptographic policy** – Disallow RSA keys < 2048 bits and any exponent ≠ 65537; configure libraries to use only approved algorithms (AES‑GCM, RSA‑2048+, ECC). [F34][F39][F49].  
-- **Audit and harden libraries** – Verify that only approved cryptographic providers are loaded; remove legacy CAPI providers that may expose weak keys [F34][F35][F36][F38].  
-- **Logging and monitoring** – Capture process‑creation events, memory‑map changes, and JWT usage; correlate with threat‑intel feeds for known malicious payloads [F10][F11][F72].  
-- **Incident response** – Isolate the affected host, acquire a full forensic image, and search for additional indicators (e.g., C2 traffic, credential dumping) before remediation [F10][F11].  
+1. **Isolate the host** immediately to prevent lateral movement.  
+2. **Terminate the injected PowerShell process** (PID 3692) and investigate its parent chain for persistence mechanisms [F11].  
+3. **Collect full memory and disk images** for deeper forensic analysis, focusing on the injected code blobs.  
+4. **Rotate all JWT secrets** and enforce strong, high‑entropy symmetric keys; add an `exp` claim and consider moving to asymmetric signing (e.g., RS256) [F72].  
+5. **Replace all legacy RSA keys** (≤ 2048 bit with e = 3) with RSA‑3072 or RSA‑4096 keys using a compliant exponent (e = 65537) or migrate to elliptic‑curve algorithms (e.g., ECDSA P‑256).  
+6. **Audit key storage** to ensure private keys are not kept in plaintext memory; use Windows CNG with protected storage.  
+7. **Patch and update** the operating system and all installed applications to mitigate known injection vectors.  
+8. **Enable Windows Defender Credential Guard** and **Attack Surface Reduction** rules to block script‑based code injection.  
+9. **Monitor network traffic** for anomalous outbound connections from the host, correlating with the 79 network entries captured [F3].  
+10. **Conduct a credential‑reuse audit** across the environment to ensure no other services rely on the weak JWT secret or legacy RSA keys.  
 
 ---  
 
-*All factual statements are cited to the corresponding findings as required.*
+*Prepared by the Malware Triage Team*  
 
 ## Validation notes (automatic)
-Rule-based risk score: 90/100. This report failed these checks, treat the points below as unverified:
-- only 86% of claims carry a citation
+Rule-based risk score: 86/100. This report failed these checks, treat the points below as unverified:
+- only 82% of claims carry a citation
