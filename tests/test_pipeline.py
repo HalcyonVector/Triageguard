@@ -161,3 +161,12 @@ def test_risk_is_evidence_fusion_over_independent_sources():
     assert report.risk_score(both) == round(100 * (1 - 0.45 * (1 - 0.5 * 0.95)))
     assert report.risk_score([f("F1", "critical", "rsa")]) < 50  # weak crypto alone is not an attack
     assert report.risk_band(95) == "critical" and report.risk_band(64) == "medium"
+
+
+def test_libffi_trampoline_is_not_injection():
+    from triageguard.memory import suspicious_processes
+    # the region malfind reported in unattended-upgrades on a clean Ubuntu 24.04 VM
+    ffi = ("00 00 00 00 00 00 00 00 53 00 00 00 00 00 00 00 f3 0f 1e fa 4c 8d 15 f5 ff ff ff ff 25 07 00 00 00 "
+           "0f 1f 80 00 00 00 00 ec 5c 7c 0d f7 74 00 00 68 5a 6d 1e 00 00 00 00 10 f5 87 0d f7 74 00 00")
+    vol = {"injected": [{"PID": 843, "Process": "unattended-upgr", "Start": 0x1000, "Protection": "rwx", "Hexdump": ffi}]}
+    assert [f["severity"] for f in suspicious_processes(vol)] == ["low"]

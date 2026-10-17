@@ -232,6 +232,11 @@ LINUX_JIT = {"java", "node", "chrome", "firefox", "dotnet", "qemu-system-x86", "
 LINUX_JIT_PREFIXES = ("Isolated Web Co", "Isolated Servic", "Web Content", "WebExtensions", "Privileged Cont",
                       "RDD Process", "Socket Process", "Utility Process", "Forked Child", "gjs", "gnome-terminal",
                       "chromium", "thunderbird")
+# libffi (3.4+, x86-64 with CET) builds each closure as "endbr64; lea -11(%rip),%r10;
+# jmp *7(%rip)" in an RWX page. Python's ctypes and cffi use it, so any Python program with a
+# C callback (unattended-upgrades on every Ubuntu install) has one. Injected code never
+# needs this exact stub, and it only jumps to a pointer stored beside it.
+LIBFFI_TRAMPOLINE = bytes.fromhex("f30f1efa4c8d15f5ffffffff2507000000")
 LINUX_SHELLS = {"sh", "bash", "dash", "zsh", "ksh", "busybox"}
 # a shell whose parent is a network service is the classic web shell or exploited daemon
 SERVICE_PARENTS = {"apache2", "httpd", "nginx", "php-fpm", "php", "mysqld", "postgres", "java", "tomcat", "node", "python3", "perl"}
@@ -309,6 +314,8 @@ def suspicious_processes(results):
                 sev, why = "critical", "contains a PE header (MZ), likely injected DLL/EXE"
             elif head.startswith(b"\x7fELF"):
                 sev, why = "critical", "contains an ELF header, likely a loaded-from-memory binary"
+            elif LIBFFI_TRAMPOLINE in head:
+                sev, why = "low", "libffi closure trampolines (Python ctypes/cffi callbacks), RWX by design"
             elif name.lower() in JIT_PROCESSES or name in LINUX_JIT or name.startswith(LINUX_JIT_PREFIXES):
                 sev, why = "low", "known JIT process, RWX private memory is expected"
             elif not head[:16].strip(b"\x00"):
