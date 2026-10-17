@@ -11,6 +11,7 @@ import json
 import os
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import time
@@ -71,6 +72,24 @@ def _vol():
     return None
 
 
+def _run(cmd, limit):
+    """subprocess.run with a timeout that also works on Windows. There vol.exe is a pip
+    launcher that starts python.exe as a child; run() kills only the launcher, the child
+    keeps the output pipes open and run() then waits on them forever. Kill the whole tree."""
+    kw = {} if os.name == "nt" else {"start_new_session": True}
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, **kw)
+    try:
+        out, err = proc.communicate(timeout=limit)
+    except subprocess.TimeoutExpired:
+        if os.name == "nt":
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)], capture_output=True)
+        else:
+            os.killpg(proc.pid, signal.SIGKILL)
+        proc.communicate()
+        raise
+    return subprocess.CompletedProcess(cmd, proc.returncode, out, err)
+
+
 def _cache_file(dump, plugin, extra):
     """Where a plugin's output for this exact image is kept: next to the image, named by its
     size and modification time, so a re-run after a code change skips Volatility."""
@@ -111,7 +130,7 @@ def run_plugin(dump, plugin, extra=(), outdir=None):
     cmd += [plugin, *extra]
     limit = PLUGIN_TIMEOUT.get(plugin, TIMEOUT)
     try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=limit)
+        proc = _run(cmd, limit)
     except subprocess.TimeoutExpired:
         msg = f"{plugin} timed out after {limit // 60} minutes"
         if cache:

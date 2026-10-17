@@ -529,7 +529,7 @@ def test_volatility_output_is_cached_next_to_the_image(tmp_path, monkeypatch):
         returncode, stdout, stderr = 0, '[{"PID": 1}]', ""
 
     monkeypatch.setattr(memory, "_vol", lambda: "vol")
-    monkeypatch.setattr(memory.subprocess, "run", lambda *a, **k: calls.append(a) or P())
+    monkeypatch.setattr(memory, "_run", lambda *a, **k: calls.append(a) or P())
     assert memory.run_plugin(img, "linux.pslist") == [{"PID": 1}]
     assert memory.run_plugin(img, "linux.pslist") == [{"PID": 1}]
     assert len(calls) == 1
@@ -549,14 +549,14 @@ def test_files_a_cached_plugin_wrote_come_back_on_a_cache_hit(tmp_path, monkeypa
     class P:
         returncode, stdout, stderr = 0, "[]", ""
 
-    def run(cmd, **k):
+    def run(cmd, *a, **k):
         (Path(cmd[cmd.index("-o") + 1]) / "pid.1.vad.0x1000.dmp").write_bytes(b"MZ")
         return P()
 
     monkeypatch.setattr(memory, "_vol", lambda: "vol")
-    monkeypatch.setattr(memory.subprocess, "run", run)
+    monkeypatch.setattr(memory, "_run", run)
     memory.run_plugin(img, "windows.malfind", ["--dump"], out1)
-    monkeypatch.setattr(memory.subprocess, "run", lambda *a, **k: 1 / 0)  # must not run again
+    monkeypatch.setattr(memory, "_run", lambda *a, **k: 1 / 0)  # must not run again
     memory.run_plugin(img, "windows.malfind", ["--dump"], out2)
     assert (out2 / "pid.1.vad.0x1000.dmp").read_bytes() == b"MZ"
 
@@ -617,7 +617,7 @@ def test_plugin_timeout_is_cached_so_reruns_do_not_wait_again(tmp_path, monkeypa
         raise subprocess.TimeoutExpired(a, 600)
 
     monkeypatch.setattr(memory, "_vol", lambda: "vol")
-    monkeypatch.setattr(memory.subprocess, "run", slow)
+    monkeypatch.setattr(memory, "_run", slow)
     for _ in range(2):
         try:
             memory.run_plugin(img, "linux.sockstat")
