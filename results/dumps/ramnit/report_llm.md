@@ -1,19 +1,19 @@
 # Incident Report  
 
-**Date:** 2026‑10‑17  
-
----  
-
 ## Summary  
-A memory image from a Windows workstation shows multiple suspicious processes with injected RWX memory regions, most notably `RuntimeBroker.` (PID 7068) that contains unique executable code (ATT&CK T1055) [F7].  The system also contains a large number of legacy RSA keys, many of which are 1024‑bit or use non‑standard small exponents, reducing cryptographic strength [F33‑F63].  No clear credential leakage was observed.  
+A memory image from a Windows workstation shows multiple signs of malicious activity.  
+- A high‑severity injected code region was found in **RuntimeBroker.exe** (PID 7068) with a RWX memory page containing unique executable code, matching ATT&CK technique **T1055 – Process Injection**【F7】.  
+- Numerous low‑severity processes also contain RWX injected regions (SearchApp.exe, smartscreen.ex, OneDrive.exe, WWAHost.exe)【F6】【F8】【F9】【F10】, and a Chrome installer is executing from a user‑writable folder【F11】.  
+- Crypto analysis reveals the presence of a single AES implementation (100 % confidence)【F23】 and a large set of weak RSA keys, many 1024‑bit with 80‑bit security and several keys using non‑standard small exponents (e = 3)【F33‑F63】.  
+- The system hosts 127 processes, 127 command‑line entries, and 86 network connections【F1】【F2】【F3】.  
 
-Overall risk score is **82** (Compromise 80, Crypto Exposure 20) as defined by the rule‑based scoring, and the evidence supports this rating.  
+These artifacts indicate a compromised host with active code injection and extensive use of legacy, non‑compliant cryptographic material.
 
----  
+---
 
 ## Cryptography  
 
-### Algorithms Detected  
+### Algorithms  
 
 | Algorithm | Confidence | Basis | Finding |
 |-----------|------------|-------|---------|
@@ -23,102 +23,83 @@ Overall risk score is **82** (Compromise 80, Crypto Exposure 20) as define
 
 | Key size | Exponent | Strength | Issue | Finding |
 |----------|----------|----------|-------|---------|
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F33 |
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F34 |
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F35 |
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F36 |
-| 2048 bits | 3 | 88 | Small exponent (non‑compliant) | F38 |
-| 1536 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F39 |
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F40 |
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F41 |
-| 2048 bits | 3 | 88 | Small exponent (non‑compliant) | F42 |
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F43 |
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F44 |
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F45 |
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F46 |
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F47 |
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F49 |
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F50 |
-| 2048 bits | 3 | 88 | Small exponent (non‑compliant) | F51 |
-| 4096 bits | 3 | 100 | Small exponent (non‑compliant) | F52 |
-| 2048 bits | 3 | 88 | Small exponent (non‑compliant) | F53 |
-| 2048 bits | 3 | 88 | Small exponent (non‑compliant) | F54 |
-| 2048 bits | 3 | 88 | Small exponent (non‑compliant) | F55 |
-| 2048 bits | 43147 | 88 | Small exponent (non‑compliant) | F56 |
-| 4096 bits | 3 | 100 | Small exponent (non‑compliant) | F57 |
-| 4096 bits | 3 | 100 | Small exponent (non‑compliant) | F58 |
-| 2048 bits | 3 | 88 | Small exponent (non‑compliant) | F59 |
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F60 |
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F61 |
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F62 |
-| 1024 bits | 65537 | 62 | 80‑bit security (legacy, disallowed) | F63 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F33 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F34 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F35 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F36 |
+| 2048 bit | 3 | 88 | small exponent (non‑compliant) | F38 |
+| 1536 bit | 65537 | 62 | modulus size (legacy, disallowed) | F39 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F40 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F41 |
+| 2048 bit | 3 | 88 | small exponent (non‑compliant) | F42 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F43 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F44 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F45 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F46 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F47 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F49 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F50 |
+| 2048 bit | 3 | 88 | small exponent (non‑compliant) | F51 |
+| 4096 bit | 3 | 100 | small exponent (non‑compliant) | F52 |
+| 2048 bit | 3 | 88 | small exponent (non‑compliant) | F53 |
+| 2048 bit | 3 | 88 | small exponent (non‑compliant) | F54 |
+| 2048 bit | 3 | 88 | small exponent (non‑compliant) | F55 |
+| 2048 bit | 43147 | 88 | non‑standard exponent (non‑compliant) | F56 |
+| 4096 bit | 3 | 100 | small exponent (non‑compliant) | F57 |
+| 4096 bit | 3 | 100 | small exponent (non‑compliant) | F58 |
+| 2048 bit | 3 | 88 | small exponent (non‑compliant) | F59 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F60 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F61 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F62 |
+| 1024 bit | 65537 | 62 | modulus size (legacy, disallowed) | F63 |
 
----  
+---
 
 ## Credentials  
-No credential artifacts (passwords, hashes, tokens) were identified in the memory image.  
+No credential artifacts (passwords, hashes, tokens) were extracted from the memory image.  
 
----  
+---
 
 ## Processes and Network  
 
-| Category | Details | Finding |
-|----------|---------|---------|
-| Total processes | 127 process entries captured | F1 |
-| Command‑line strings | 127 command‑line records captured | F2 |
-| Network connections | 86 network rows captured (no obvious malicious endpoints) | F3 |
-| Injected memory regions | 11 injected regions overall | F4 |
-| USB devices | 28 USB device records observed | F5 |
-| **High‑severity suspicious process** | `RuntimeBroker.` (PID 7068) has 1 RWX injected region with unique executable code – indicative of process injection (ATT&CK T1055) | F7 |
-| Other suspicious processes (low severity) | `SearchApp.exe` (PID 2128), `smartscreen.ex` (PID 7484), `OneDrive.exe` (PID 7780), `WWAHost.exe` (PID 5912) each show RWX regions or unusual memory patterns | F6, F8, F9, F10 |
-| Unusual executable location | `ChromeSetup.ex` runs from user‑writable `C:\Users\alex\Downloads\ChromeSetup.exe` | F11 |
-| Static binary analysis – entropy & imports | Various dumped VAD regions show low entropy and no crypto imports, suggesting packed or custom code | F12‑F21, F22 |
-| Crypto algorithm detection | AES identified via implementation constants | F23 |
+- **Process inventory:** 127 processes observed【F1】.  
+- **Command‑line snapshot:** 127 distinct command‑line strings captured【F2】.  
+- **Network activity:** 86 network rows (connections, sockets) present【F3】.  
 
----  
+### Suspicious Processes  
+
+| PID | Process | Issue | ATT&CK Technique | Finding |
+|-----|---------|-------|------------------|---------|
+| 7068 | RuntimeBroker. | RWX injected region with unique code | T1055 – Process Injection | F7 |
+| 2128 | SearchApp.exe | RWX region; code shared across 3 processes (system‑wide hook) | T1055 | F6 |
+| 7484 | smartscreen.ex | Multiple RWX regions; some unique code | T1055 | F8 |
+| 7780 | OneDrive.exe | RWX region starting with zero bytes (potential placeholder) | T1055 | F9 |
+| 5912 | WWAHost.exe | RWX region; shared code hook | T1055 | F10 |
+| 4628 | ChromeSetup.ex | Executable run from user‑writable Downloads folder | – | F11 |
+
+---
 
 ## Risk Score  
 
-**Overall Risk Score:** **82** (Rule‑based)  
+- **Overall risk score:** **82** (rule‑based)【Rule‑based risk score】.  
+- **Compromise component:** **80** – justified by the high‑severity injected RuntimeBroker process (F7) and multiple additional injected regions (F6‑F10) indicating active exploitation【F7】【F6】【F8】【F9】【F10】.  
+- **Crypto exposure component:** **20** – driven by the abundance of weak RSA keys (strength 62–88, many 1024‑bit, small exponents)【F33‑F63】 and the presence of only a single AES implementation (F23). No evidence suggests the score should be adjusted beyond the rule‑based values.
 
-- **Compromise (80)** – Justified by the presence of a high‑severity injected RWX region in a trusted system process (`RuntimeBroker.`) and multiple other processes with injected code, matching ATT&CK T1055 [F7, F6, F8, F9, F10].  
-- **Crypto Exposure (20)** – Numerous legacy RSA keys (1024‑bit) and keys with small, non‑compliant exponents reduce cryptographic strength, but the system does not appear to be actively using them for high‑value services; thus exposure remains moderate [F33‑F63].
-
-No findings contradict the rule‑based scores, so the default values are retained.  
-
----  
+---
 
 ## Recommendations  
 
-1. **Contain and Remediate Process Injection**  
-   - Isolate the affected host from the network immediately. [F7]  
-   - Terminate the compromised `RuntimeBroker.` process and any other processes with RWX injected regions (`SearchApp.exe`, `smartscreen.ex`, `OneDrive.exe`, `WWAHost.exe`). [F6‑F10]  
-   - Perform a full system scan with an up‑to‑date AV/EDR solution and consider a clean OS reinstall.  
+- **Terminate and investigate the injected RuntimeBroker process** (PID 7068) and any other processes with RWX memory pages (SearchApp.exe, smartscreen.ex, OneDrive.exe, WWAHost.exe)【F7】【F6】【F8】【F9】【F10】.  
+- **Conduct a full malware scan** and collect forensic images of the affected processes to identify the payload and its persistence mechanisms.  
+- **Enforce DEP and ASLR** system‑wide; block execution from writable directories to prevent user‑downloaded binaries like ChromeSetup.exe from running【F11】.  
+- **Replace all RSA‑1024 keys** with RSA‑2048 or RSA‑3072 keys using the standard exponent 65537; deprecate any keys with exponent 3 or other non‑standard values【F33‑F63】.  
+- **Re‑issue certificates or tokens** that rely on the weak RSA keys to eliminate legacy cryptographic exposure.  
+- **Audit application code** for hard‑coded cryptographic constants; ensure only approved algorithms (e.g., AES with secure key sizes) are used【F23】.  
+- **Monitor network connections** for anomalous outbound traffic from the compromised host (86 rows observed)【F3】 and apply host‑based intrusion detection rules for process‑injection patterns.  
+- **Update all software** to the latest patches, especially components that may be targeted for code injection (e.g., RuntimeBroker, SearchApp, smartscreen).  
 
-2. **Secure Cryptographic Assets**  
-   - Replace all RSA‑1024 keys with RSA‑3072 or RSA‑4096 keys using a standard exponent (65537). [F33‑F63]  
-   - Re‑generate RSA keys that currently use small exponents (e = 3 or 43147) to comply with FIPS 186‑5. [F38‑F42, F51‑F59, F56]  
-   - Review applications that load these keys; update libraries to use modern TLS configurations (TLS 1.3, AEAD ciphers).  
-
-3. **Hardening Execution Policies**  
-   - Enforce “Block executable content from unknown sources” and disable execution from user‑writable directories (e.g., `Downloads`). [F11]  
-   - Enable Windows Defender Application Control (WDAC) or AppLocker to restrict unsigned binaries.  
-
-4. **Monitoring & Logging**  
-   - Enable detailed process creation and module load auditing (Event ID 4688, 4689) to detect future injection attempts.  
-   - Deploy network traffic analysis to flag anomalous outbound connections from the host.  
-
-5. **Credential Hygiene**  
-   - Although no credentials were found, enforce credential protection policies (LSA protection, Credential Guard) to prevent future leakage.  
-
-6. **Incident Documentation**  
-   - Preserve the memory image and all extracted artifacts for forensic chain‑of‑custody.  
-   - Record the remediation steps taken and update the incident response playbook with this injection scenario.  
-
----  
-
-*Prepared by the Malware Triage Team*  
+Implementing these actions will mitigate the immediate compromise, reduce the attack surface, and bring the cryptographic posture into compliance with modern security standards.
 
 ## Validation notes (automatic)
 Rule-based risk score: 82/100. This report failed these checks, treat the points below as unverified:
-- only 71% of claims carry a citation
+- only 86% of claims carry a citation

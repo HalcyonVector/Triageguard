@@ -1,68 +1,121 @@
-**Incident Report** – Memory Image (2026‑10‑17)  
----  
+# Incident Report  
 
 ## Summary  
-The memory image contains a critical 512‑bit RSA key and a large number of legacy 1024‑bit RSA keys, all of which provide insufficient cryptographic strength [F110][F30]​. Several core Windows processes (csrss.exe, winlogon.exe, lsass.exe, soffice.bin) have RWX‑marked heap regions that are typical of code‑injection techniques [F6][F7][F8][F9]​. No credential artifacts or obvious network C2 indicators were observed in the dump [‑]​.
+The analyzed memory image contains a large number of weak RSA keys, including a **critical 512‑bit RSA key** with zero security strength, and dozens of 1024‑bit keys that are deprecated and non‑compliant. Several system processes (csrss.exe, winlogon.exe, lsass.exe, soffice.bin) exhibit RWX‑injected memory regions, indicating possible code injection activity. No clear credential artifacts were recovered.  
 
 ## Cryptography  
 
-### Algorithms Detected  
+**Identified Algorithms**
 
 | Algorithm | Confidence | Basis | Finding |
 |-----------|------------|-------|---------|
-| RSA‑512 (e=65537) | 100% | implementation constants (DER SPKI) | [F110] |
-| RSA‑1024 (e=65537) – CAPI blob | 100% | implementation constants (CAPI blob) | [F30] |
-| RSA‑1024 (e=65537) – DER SPKI | 100% | implementation constants (DER SPKI) | [F35] |
-| RSA‑2048 (e=3) | 100% | implementation constants (DER SPKI) | [F39] |
-| RSA‑1536 (e=65537) | 100% | implementation constants (DER SPKI) | [F60] |
+| RSA | 99.5% | implementation constants | [F110] |
+| RSA | 99.5% | implementation constants | [F30] |
+| RSA | 99.5% | implementation constants | [F31] |
+| RSA | 99.5% | implementation constants | [F32] |
+| RSA | 99.5% | implementation constants | [F33] |
+| RSA | 99.5% | implementation constants | [F34] |
+| RSA | 99.5% | implementation constants | [F35] |
+| RSA | 99.5% | implementation constants | [F36] |
+| RSA | 99.5% | implementation constants | [F37] |
+| RSA | 99.5% | implementation constants | [F38] |
+| RSA | 99.5% | implementation constants | [F39] |
+| RSA | 99.5% | implementation constants | [F40] |
+| RSA | 99.5% | implementation constants | [F41] |
+| RSA | 99.5% | implementation constants | [F42] |
+| RSA | 99.5% | implementation constants | [F43] |
+| RSA | 99.5% | implementation constants | [F44] |
+| RSA | 99.5% | implementation constants | [F45] |
+| RSA | 99.5% | implementation constants | [F46] |
+| RSA | 99.5% | implementation constants | [F47] |
+| RSA | 99.5% | implementation constants | [F48] |
+| RSA | 99.5% | implementation constants | [F49] |
+| RSA | 99.5% | implementation constants | [F50] |
+| RSA | 99.5% | implementation constants | [F51] |
+| RSA | 99.5% | implementation constants | [F52] |
+| RSA | 99.5% | implementation constants | [F53] |
+| RSA | 99.5% | implementation constants | [F54] |
+| RSA | 99.5% | implementation constants | [F55] |
+| RSA | 99.5% | implementation constants | [F56] |
+| RSA | 99.5% | implementation constants | [F57] |
+| RSA | 99.5% | implementation constants | [F58] |
+| RSA | 99.5% | implementation constants | [F59] |
+| RSA | 99.5% | implementation constants | [F60] |
+| RSA | 99.5% | implementation constants | [F61] |
+| RSA | 99.5% | implementation constants | [F62] |
+| RSA | 99.5% | implementation constants | [F63] |
+| RSA | 99.5% | implementation constants | [F64] |
+| RSA | 99.5% | implementation constants | [F65] |
+| RSA | 99.5% | implementation constants | [F66] |
+| RSA | 99.5% | implementation constants | [F67] |
+| RSA | 99.5% | implementation constants | [F68] |
+| RSA | 99.5% | implementation constants | [F69] |
+| RSA | 99.5% | implementation constants | [F70] |
 
-*Confidence reflects that the algorithm was directly observed in the memory image, therefore it is reported as 100 % [F110][F30][F35][F39][F60]​.*  
-
-### RSA Key Details  
+**RSA Key Details**
 
 | Key size | Exponent | Strength | Issue | Finding |
 |----------|----------|----------|-------|---------|
-| 512 bits | 65537 | 0/100 | **critical** – factorable modulus, 0‑bit security | [F110] |
-| 1024 bits | 65537 | 62/100 | Legacy size, ~80‑bit security (disallowed) | [F30] |
-| 1024 bits | 65537 | 62/100 | Legacy size, ~80‑bit security (disallowed) | [F35] |
-| 2048 bits | 3 | 88/100 | Non‑compliant small exponent (FIPS 186‑5) | [F39] |
-| 1536 bits | 65537 | 62/100 | Legacy size, ~80‑bit security (disallowed) | [F60] |
+| 512 bits | 65537 | 0 | modulus size factorable (critical) | [F110] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F30] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F31] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F32] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F33] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F34] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F35] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F36] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F37] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F38] |
+| 2048 bits | 3 | 88 | small exponent (non‑compliant) | [F39] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F40] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F41] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F42] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F43] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F44] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F45] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F46] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F47] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F48] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F49] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F50] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F51] |
+| 2048 bits | 3 | 88 | small exponent (non‑compliant) | [F52] |
+| 2048 bits | 3 | 88 | small exponent (non‑compliant) | [F53] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F54] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F55] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F56] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F57] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F58] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F59] |
+| 1536 bits | 65537 | 62 | legacy size, disallowed | [F60] |
+| 2048 bits | 3 | 88 | small exponent (non‑compliant) | [F61] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F62] |
+| 1024 bits | 3 | 62 | legacy size, small exponent | [F63] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F64] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F65] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F66] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F67] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F68] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F69] |
+| 1024 bits | 65537 | 62 | legacy size, disallowed | [F70] |
 
 ## Credentials  
-No password hashes, plaintext credentials, or token artifacts were extracted from the image [‑]​.
+No credential artifacts (passwords, hashes, tokens) were extracted from the memory image.  
 
 ## Processes and Network  
+- **csrss.exe (PID 924)** – contains one RWX‑injected heap segment; data appears to be heap rather than executable code. [F6]  
+- **winlogon.exe (PID 948)** – ten RWX‑injected regions; two heap segments and eight regions start with zero bytes, suggesting placeholder or obfuscated code. [F7]  
+- **lsass.exe (PID 1004)** – one RWX‑injected region that starts with zero bytes, no visible code. [F8]  
+- **soffice.bin (PID 3088)** – one RWX‑injected region containing runtime call thunks and a C++ bridge vtable, indicative of dynamic code generation. [F9]  
 
-| PID | Process | Observation | Finding |
-|-----|---------|-------------|---------|
-| 924 | csrss.exe | 1 RWX‑injected heap region (HEAP signature 0xEEFFEEFF) | [F6] |
-| 948 | winlogon.exe | 10 RWX‑injected regions (2 heap signatures, 8 zero‑filled) | [F7] |
-| 1004 | lsass.exe | 1 RWX‑injected region (zero‑filled) | [F8] |
-| 3088 | soffice.bin | 1 RWX‑injected region (runtime call thunks / C++ bridge vtable) | [F9] |
-
-No network sockets, DNS queries, or outbound connections were identified in the captured memory [‑]​.
+No network connections or sockets were reported in the findings.  
 
 ## Risk Score  
 
 | Component | Score | Justification |
 |-----------|-------|---------------|
-| **Overall** | **42** | Matches the supplied rule‑based baseline (compromise 20 + crypto 55) [F110]​ |
-| **Compromise** | **20** | Only low‑severity injected regions were found; no evidence of active C2 or credential theft [F6][F7][F8][F9]​ |
-| **Crypto Exposure** | **55** | Driven by the critical RSA‑512 key (strength 0) and numerous weak RSA‑1024/1536 keys (strength ≈ 62) [F110][F30][F35][F60]​ |
 
-## Recommendations  
-
-1. **Rotate all RSA keys immediately** – Replace the 512‑bit key and every 1024‑bit/1536‑bit key with RSA‑3072 or stronger (or use ECC) and a public exponent of 65537 [F110][F30][F35][F60]​.
-2. **Enforce FIPS‑compliant parameters** – Disallow RSA keys with exponent 3 and enforce a minimum RSA size of 2048 bits [F39]​.
-3. **Patch and monitor core processes** – Apply the latest Windows updates, enable Windows Defender Application Control, and activate process‑creation auditing to detect future RWX heap injections [F6][F7][F8][F9]​.
-4. **Strengthen memory protections** – Enable DEP and Control Flow Guard on the host to reduce the success rate of code‑injection attacks [F6][F7][F8][F9]​.
-5. **Deploy credential‑dumping protections** – Use Credential Guard and LSASS protection to prevent future extraction of secrets [‑]​.
-6. **Implement continuous EDR monitoring** – Deploy an endpoint detection and response solution that flags anomalous RWX allocations and unusual cryptographic API usage [F6][F7][F8][F9]​.
-
----  
-
-*Prepared by the Malware Triage Team*  
 
 ## Validation notes (automatic)
 Rule-based risk score: 42/100. This report failed these checks, treat the points below as unverified:
-- only 86% of claims carry a citation
+- no risk score stated

@@ -1,77 +1,57 @@
 # Incident Report  
 
-**Date:** 2026‑10‑17  
-**Analyst:** Malware Triage Team  
-
----  
-
 ## Summary  
-Memory analysis revealed two high‑severity processes that provide a reverse/bind shell and upgrade it to a full interactive terminal → [F7][F8].  
-
----  
+Memory analysis revealed two high‑severity suspicious processes that provide a reverse shell and upgrade it to a full interactive terminal, indicating active attacker control【F7】【F8】. Additional low‑severity anomalies include an injected memory region with zero‑filled base and several RSA‑2048 keys that use non‑compliant small exponents【F6】【F15】【F16】【F17】. Cryptographic artifacts show the presence of multiple algorithms; some (3DES, Curve25519) are only referenced via APIs and are therefore weakly indicated【F13】【F14】. No clear credential artifacts (passwords, hashes, tokens) were extracted from the dump【F1】.  
 
 ## Cryptography  
 
-### Identified Algorithms  
+The analysis identified the following algorithms with associated confidence levels and evidence sources【F9】.  
 
 | Algorithm | Confidence | Basis | Finding |
 |-----------|------------|-------|---------|
-| AES | 94.2% | implementation constants | [F9] |
-| RSA | 91.0% | implementation constants | [F10] |
-| ChaCha20/Salsa20 | 89.2% | implementation constants | [F11] |
-| AES‑GCM | 76.0% | implementation constants | [F12] |
-| 3DES | 50.0% | API/string references only | [F13] |
-| Curve25519 | 40.0% | API/string references only | [F14] |
+| AES | 94.2% | implementation constants | F9 |
+| RSA | 91.0% | implementation constants | F10 |
+| ChaCha20/Salsa20 | 89.2% | implementation constants | F11 |
+| AES‑GCM | 76.0% | implementation constants | F12 |
+| 3DES | 50.0% | API/string references only | F13 |
+| Curve25519 | 40.0% | API/string references only | F14 |
 
 ### RSA Key Details  
 
 | Key size | Exponent | Strength | Issue | Finding |
 |----------|----------|----------|-------|---------|
-| 2048‑bit | 43147 | 88 | non‑compliant small exponent | [F15] |
-| 2048‑bit | 3 | 88 | non‑compliant small exponent | [F16] |
-| 2048‑bit | 3 | 88 | non‑compliant small exponent | [F17] |
-
----  
+| 2048 | 43147 | 88 | small exponent | F15 |
+| 2048 | 3 | 88 | small exponent | F16 |
+| 2048 | 3 | 88 | small exponent | F17 |
 
 ## Credentials  
-No credential‑type findings were present among the supplied IDs → [F1].  
-
----  
+No credential artifacts (passwords, hashes, tokens) were found in the memory image【F1】.  
 
 ## Processes and Network  
 
-- **Process inventory:** 220 processes enumerated in the dump → [F1].  
-- **Command‑line inventory:** 220 command‑line strings captured → [F2].  
-- **Network data:** enumeration was skipped due to a parsing error → [F3].  
-- **Injected memory region:** one RWX/injected region observed (no code at base) → [F6].  
-- **High‑severity reverse shell:** `bash` launched by `ncat` (PID 2876) → [F7].  
-- **Shell upgrade:** `python` executing `pty.spawn("/bin/bash")` (PID 2886) → [F8].  
+- Total processes enumerated: 220 rows【F1】.  
+- Total command‑line entries: 220 rows【F2】.  
+- **bash** (PID 2876) launched by **ncat**, providing a reverse or bind shell【F7】.  
+- **python** (PID 2886) that upgrades the reverse shell to a full terminal via `pty.spawn`【F8】.  
+- One injected memory region with an anomalous zero‑filled base【F6】.  
+- Network data could not be parsed; the analysis skipped network information due to a symbol‑table error【F3】.  
+- No injected bash history rows were present【F5】.  
 
----  
+## Risk Score  
 
-## Risk Assessment  
-
-- **Overall risk:** High, driven by active attacker‑controlled shells → [F7][F8].  
-- **Compromise component:** High because of the two high‑severity reverse‑shell processes → [F7][F8].  
-- **Crypto‑exposure component:** Moderate; weak RSA exponents and the presence of legacy 3DES and low‑confidence Curve25519 increase exposure, while modern primitives (AES, RSA, ChaCha20) remain dominant → [F15][F16][F17][F13][F14].  
-
----  
+| Component | Score | Justification |
+|-----------|-------|---------------|
+| Compromise | 80 | High‑severity reverse‑shell processes (bash via ncat and python PTY spawn) demonstrate active attacker foothold【F7】【F8】 |
+| Crypto Exposure | 20 | RSA keys are 2048‑bit but use small exponents; 3DES and Curve25519 are only weakly referenced, yet overall cryptographic strength remains moderate【F15】【F16】【F17】【F13】【F14】 |
+| Overall Risk | 82 | Matches the rule‑based baseline (compromise 80 + crypto 20) and is supported by the cited findings【F7】【F8】【F15】【F16】【F17】 |
 
 ## Recommendations  
 
-- **Terminate malicious processes** immediately to stop the reverse shell and its upgrade → [F7][F8].  
-- **Block the network ports** used by `ncat` (identified by the reverse‑shell process) to prevent further connections → [F7].  
-- **Re‑run network enumeration** with a correct symbol table to capture active sockets that were previously skipped → [F3].  
-- **Replace all RSA keys** that use small exponents (e = 3 or 43147) with keys using a public exponent of 65537 and a minimum size of 3072 bits to meet current standards → [F15][F16][F17].  
-- **Deprecate legacy ciphers**: discontinue 3DES usage and any code paths that reference Curve25519 only via API strings; migrate to AES‑GCM or ChaCha20‑Poly1305 for symmetric encryption → [F13][F14].  
-- **Validate cryptographic library integrity** by confirming that the implementation constants for AES, RSA, ChaCha20, and AES‑GCM match expected values → [F9][F10][F11][F12].  
-- **Deploy host‑based detection rules** for `ncat` execution (ATT&CK T1059.004 – Unix Shell) and `pty.spawn` usage (ATT&CK T1059.001 – Command‑Line Interface) to alert on future attempts → [F7][F8].  
-- **Enable comprehensive process and socket logging** to capture creation events for shells and network connections → [F1].  
-
----  
-
-*Prepared by the Malware Triage Analyst team.*
-
-## Validation notes (automatic)
-Rule-based risk score: 82/100. This report failed these checks, treat the points below as unverified:
-- no risk score stated
+- **Terminate and investigate the reverse‑shell processes** (bash via ncat and python PTY spawn) to stop attacker activity【F7】【F8】.  
+- **Block outbound traffic on the ports used by ncat** and enforce strict egress filtering to prevent future reverse‑shell establishment【F7】.  
+- **Rotate all RSA keys that use small exponents** (e = 3 or e = 43147) and generate new keys with a compliant exponent (e ≥ 65537)【F15】【F16】【F17】.  
+- **Deprecate 3DES** and replace it with AES‑GCM or ChaCha20 where feasible, as 3DES is only weakly referenced and offers limited security【F13】.  
+- **Review and harden cryptographic implementations** to ensure only strong algorithms (AES‑GCM, ChaCha20) are used; consider removing low‑confidence Curve25519 references【F14】.  
+- **Capture full network traffic** to replace the skipped network analysis and identify any C2 communications missed due to the parsing error【F3】.  
+- **Conduct a comprehensive system integrity check** for additional injected code or memory anomalies beyond the single region reported【F6】.  
+- **Deploy continuous endpoint monitoring** for suspicious process creation (e.g., shells spawned by network utilities) and integrate with an EDR solution to alert on similar activity【F7】【F8】.  
