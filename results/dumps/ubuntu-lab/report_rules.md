@@ -1,7 +1,7 @@
 # TriageGuard report (rule-based)
 
-**Risk score:** 86/100 (high, CVSS v3.1 bands)
-- Compromise: 80/100 (high), evidence of attacker activity
+**Risk score:** 67/100 (medium, CVSS v3.1 bands)
+- Compromise: 55/100 (medium), evidence of attacker activity
 - Crypto exposure: 55/100 (medium), weak keys, tokens and TLS; counts half in the overall score
 **Weakest RSA key strength:** 88/100
 
@@ -9,17 +9,17 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 
 | Score | Evidence source | Findings | Strongest | Mass |
 |---|---|---|---|---|
-| compromise | memory/suspicious_process | 6 | [F6] | 0.80 |
+| compromise | memory/suspicious_process | 6 | [F7] | 0.55 |
 | exposure | rsa/rsa_key | 2 | [F27] | 0.55 |
 
 ## Cipher identification
 - [F12] **info** AES identified (100.0%, implementation constants) in ubuntu-lab-Snapshot1.vmem
-- [F13] **info** ECC P-256 identified (99.1%, implementation constants) in ubuntu-lab-Snapshot1.vmem
-- [F14] **info** AES-GCM identified (97.6%, implementation constants) in ubuntu-lab-Snapshot1.vmem
-- [F15] **info** ChaCha20/Salsa20 identified (95.5%, implementation constants) in ubuntu-lab-Snapshot1.vmem
-- [F16] **info** ECC secp256k1 identified (92.8%, implementation constants) in ubuntu-lab-Snapshot1.vmem
-- [F17] **info** DES identified (80.0%, implementation constants) in ubuntu-lab-Snapshot1.vmem
-- [F18] **info** Curve25519 identified (78.4%, API/string references only) in ubuntu-lab-Snapshot1.vmem
+- [F13] **info** Curve25519 identified (99.7%, implementation constants) in ubuntu-lab-Snapshot1.vmem
+- [F14] **info** ECC P-256 identified (99.1%, implementation constants) in ubuntu-lab-Snapshot1.vmem
+- [F15] **info** AES-GCM identified (97.6%, implementation constants) in ubuntu-lab-Snapshot1.vmem
+- [F16] **info** ChaCha20/Salsa20 identified (95.5%, implementation constants) in ubuntu-lab-Snapshot1.vmem
+- [F17] **info** ECC secp256k1 identified (92.8%, implementation constants) in ubuntu-lab-Snapshot1.vmem
+- [F18] **info** DES identified (80.0%, implementation constants) in ubuntu-lab-Snapshot1.vmem
 - [F19] **info** RSA identified (70.0%, implementation constants) in ubuntu-lab-Snapshot1.vmem
 - [F20] **info** 3DES identified (50.0%, API/string references only) in ubuntu-lab-Snapshot1.vmem
 
@@ -50,7 +50,7 @@ Risk is the Dempster-Shafer combination of independent evidence sources, each co
 - [F3] **info** network: 299 rows
 - [F4] **info** injected: 1 rows
 - [F5] **info** bash: 15 rows
-- [F6] **high** PID 931 unattended-upgr: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process
+- [F6] **low** PID 931 unattended-upgr: 1 RWX/injected region(s): 1 x libffi closure trampolines (Python ctypes/cffi callbacks), RWX by design
 - [F7] **medium** PID 1275 updater: command line mentions 'encrypt': /tmp/tglab/updater -c 
 import os, sys
 case, key = sys.argv[1], bytes.fromhex(sys.argv[2])
@@ -86,5 +86,4 @@ if case != "control":
 
 | Tactic | Technique | Findings |
 |---|---|---|
-| Defense Evasion | T1055 Process Injection | [F6] |
 | Impact | T1486 Data Encrypted for Impact | [F7], [F8], [F9], [F10], [F11] |

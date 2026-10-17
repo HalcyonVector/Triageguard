@@ -48,8 +48,8 @@
   "ref": "F6",
   "module": "memory",
   "kind": "suspicious_process",
-  "title": "PID 931 unattended-upgr: 1 RWX/injected region(s): 1 x executable private memory with code unique to this process",
-  "severity": "high",
+  "title": "PID 931 unattended-upgr: 1 RWX/injected region(s): 1 x libffi closure trampolines (Python ctypes/cffi callbacks), RWX by design",
+  "severity": "low",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
   "location": "931"
  },
@@ -111,13 +111,22 @@
   "ref": "F13",
   "module": "crypto",
   "kind": "algorithm",
+  "title": "Curve25519 identified (99.7%, implementation constants) in ubuntu-lab-Snapshot1.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
+  "location": "0x822f940"
+ },
+ {
+  "ref": "F14",
+  "module": "crypto",
+  "kind": "algorithm",
   "title": "ECC P-256 identified (99.1%, implementation constants) in ubuntu-lab-Snapshot1.vmem",
   "severity": "info",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
   "location": "0x82338a4"
  },
  {
-  "ref": "F14",
+  "ref": "F15",
   "module": "crypto",
   "kind": "algorithm",
   "title": "AES-GCM identified (97.6%, implementation constants) in ubuntu-lab-Snapshot1.vmem",
@@ -126,7 +135,7 @@
   "location": "0x8e4e54"
  },
  {
-  "ref": "F15",
+  "ref": "F16",
   "module": "crypto",
   "kind": "algorithm",
   "title": "ChaCha20/Salsa20 identified (95.5%, implementation constants) in ubuntu-lab-Snapshot1.vmem",
@@ -135,7 +144,7 @@
   "location": "0xa7499b0"
  },
  {
-  "ref": "F16",
+  "ref": "F17",
   "module": "crypto",
   "kind": "algorithm",
   "title": "ECC secp256k1 identified (92.8%, implementation constants) in ubuntu-lab-Snapshot1.vmem",
@@ -144,22 +153,13 @@
   "location": "0x8233250"
  },
  {
-  "ref": "F17",
+  "ref": "F18",
   "module": "crypto",
   "kind": "algorithm",
   "title": "DES identified (80.0%, implementation constants) in ubuntu-lab-Snapshot1.vmem",
   "severity": "info",
   "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
   "location": "0xf39a6e0"
- },
- {
-  "ref": "F18",
-  "module": "crypto",
-  "kind": "algorithm",
-  "title": "Curve25519 identified (78.4%, API/string references only) in ubuntu-lab-Snapshot1.vmem",
-  "severity": "info",
-  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot1.vmem",
-  "location": "0x6f18110"
  },
  {
   "ref": "F19",

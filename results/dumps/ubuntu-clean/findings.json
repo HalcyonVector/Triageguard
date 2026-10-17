@@ -1,0 +1,164 @@
+[
+ {
+  "ref": "F1",
+  "module": "memory",
+  "kind": "processes",
+  "title": "processes: 244 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F2",
+  "module": "memory",
+  "kind": "cmdlines",
+  "title": "cmdlines: 244 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F3",
+  "module": "memory",
+  "kind": "network",
+  "title": "network: 308 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F4",
+  "module": "memory",
+  "kind": "injected",
+  "title": "injected: 1 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F5",
+  "module": "memory",
+  "kind": "bash",
+  "title": "bash: 11 rows",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F6",
+  "module": "memory",
+  "kind": "suspicious_process",
+  "title": "PID 843 unattended-upgr: 1 RWX/injected region(s): 1 x libffi closure trampolines (Python ctypes/cffi callbacks), RWX by design",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": "843"
+ },
+ {
+  "ref": "F7",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES identified (100.0%, implementation constants) in ubuntu-lab-Snapshot2.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": "0x8de2e5"
+ },
+ {
+  "ref": "F8",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "Curve25519 identified (99.9%, implementation constants) in ubuntu-lab-Snapshot2.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": "0x1753c940"
+ },
+ {
+  "ref": "F9",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC P-256 identified (99.1%, implementation constants) in ubuntu-lab-Snapshot2.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": "0xc9198a4"
+ },
+ {
+  "ref": "F10",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "AES-GCM identified (97.6%, implementation constants) in ubuntu-lab-Snapshot2.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": "0x8e4e54"
+ },
+ {
+  "ref": "F11",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ChaCha20/Salsa20 identified (95.5%, implementation constants) in ubuntu-lab-Snapshot2.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": "0xf57fa40"
+ },
+ {
+  "ref": "F12",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "ECC secp256k1 identified (92.8%, implementation constants) in ubuntu-lab-Snapshot2.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": "0xc919250"
+ },
+ {
+  "ref": "F13",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "RSA identified (91.0%, implementation constants) in ubuntu-lab-Snapshot2.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": "0xf5940b"
+ },
+ {
+  "ref": "F14",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "DES identified (80.0%, implementation constants) in ubuntu-lab-Snapshot2.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": "0xe49d6e0"
+ },
+ {
+  "ref": "F15",
+  "module": "crypto",
+  "kind": "algorithm",
+  "title": "3DES identified (50.0%, API/string references only) in ubuntu-lab-Snapshot2.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": "0xc92f400"
+ },
+ {
+  "ref": "F16",
+  "module": "rsa",
+  "kind": "rsa_key",
+  "title": "RSA-2048 key e=43147 (DER SPKI), strength 88/100 (112-bit security, non-compliant exponent (FIPS 186-5)): small exponent",
+  "severity": "low",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": "0xcba3454"
+ },
+ {
+  "ref": "F17",
+  "module": "rsa",
+  "kind": "rsa_summary",
+  "title": "95 RSA keys with no weaknesses and 0 corrupt key-like structures in ubuntu-lab-Snapshot2.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": ""
+ },
+ {
+  "ref": "F18",
+  "module": "crypto",
+  "kind": "entropy",
+  "title": "200 high-entropy regions (18993152 bytes) in ubuntu-lab-Snapshot2.vmem",
+  "severity": "info",
+  "source": "D:\\College\\Year3\\Sem5\\Information Security\\Information Security Lab\\Project\\data\\vm\\ubuntu-lab\\ubuntu-lab-Snapshot2.vmem",
+  "location": "0x71000"
+ }
+]

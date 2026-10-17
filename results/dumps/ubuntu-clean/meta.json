@@ -1,0 +1,12 @@
+{
+ "title": "Ubuntu 24.04 lab (clean baseline)",
+ "os": "Ubuntu 24.04, kernel 6.8.0-146",
+ "source": "Self-built VMware VM, no planted keys",
+ "size": "2.0 GB",
+ "pcap": "",
+ "order": 14,
+ "findings": 18,
+ "risk": 28,
+ "compromise": 20,
+ "exposure": 20
+}

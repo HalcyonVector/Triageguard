@@ -1,122 +1,95 @@
 # Incident Report  
 
-**System:** Ubuntu‑lab (snapshot `ubuntu‑lab‑Snapshot1.vmem`)  
-**Analysis date:** 2026‑10‑16  
+**Date:** 2026‑10‑17  
 
 ---  
 
 ## Summary  
-- A **high‑severity** injected code region was discovered in process **`unattended‑upgr`** (PID 931), indicating process‑injection (ATT&CK T1055)【F6】.  
-- Two RSA‑2048 keys use **small public exponents** (e = 3 and e = 43147), which are non‑compliant with FIPS 186‑5 and vulnerable to Hastad‑style attacks【F27】【F21】.  
-- Five processes (`updater`, `syncd`, `keysvc`, `legacy_rsa`, `python3`) execute custom encryption code and contain the string “encrypt” on their command lines, matching ATT&CK T1486 (Data Encrypted for Impact)【F7】【F8】【F9】【F10】【F11】.  
-- Private keys for **`keysvc`** and **`legacy_rsa`** and an **AES‑256 key** for `updater` were recovered from memory, allowing decryption of data encrypted by those processes【F26】【F28】【F29】.  
-
-These artifacts collectively demonstrate an active compromise with cryptographic misuse.  
+The memory image contains five processes that invoke the Python `cryptography` library and include the word “encrypt” on their command lines, matching ATT&CK technique **T1486 – Data Encrypted for Impact** [F7]. A high‑severity RSA‑2048 key with exponent e = 3 was found in the `legacy_rsa` process, which is non‑compliant with FIPS 186‑5 and vulnerable to Hastad broadcast attacks [F27]. Two additional RSA keys with small exponents were identified, and private keys for `keysvc` and `legacy_rsa` were recovered from residual prime data, allowing decryption of any data encrypted with those keys [F21][F26][F28]. Symmetric keys for AES‑256 were also extracted from `updater` and `keysvc` [F29][F30]. Deprecated ciphers DES and 3DES appear in the memory image [F18][F20].  
 
 ---  
 
 ## Cryptography  
 
-### Identified Algorithms  
+### Algorithms Detected  
 
 | Algorithm | Confidence | Basis | Finding |
 |-----------|------------|-------|---------|
-| AES | 100.0% | implementation constants | 【F12】 |
-| ECC P‑256 | 99.1% | implementation constants | 【F13】 |
-| AES‑GCM | 97.6% | implementation constants | 【F14】 |
-| ChaCha20/Salsa20 | 95.5% | implementation constants | 【F15】 |
-| secp256k1 | 92.8% | implementation constants | 【F16】 |
-| DES | 80.0% | implementation constants | 【F17】 |
-| Curve25519 | 78.4% | API/string references only | 【F18】 |
-| RSA | 70.0% | implementation constants | 【F19】 |
-| 3DES | 50.0% | API/string references only | 【F20】 |
+| AES | 100.0% | implementation constants | [F12] |
+| Curve25519 | 99.7% | implementation constants | [F13] |
+| ECC P‑256 | 99.1% | implementation constants | [F14] |
+| AES‑GCM | 97.6% | implementation constants | [F15] |
+| ChaCha20/Salsa20 | 95.5% | implementation constants | [F16] |
+| ECC secp256k1 | 92.8% | implementation constants | [F17] |
+| DES | 80.0% | implementation constants | [F18] |
+| RSA | 70.0% | implementation constants | [F19] |
+| 3DES | 50.0% | API/string references only | [F20] |
 
 ### RSA Key Details  
 
 | Key size | Exponent | Strength | Issue | Finding |
 |----------|----------|----------|-------|---------|
-| 2048 bits | 3 | 88 | small exponent (vulnerable to Hastad attacks) | 【F27】 |
-| 2048 bits | 43147 | 88 | small exponent (non‑compliant) | 【F21】 |
+| 2048 bits | 3 | 88 | small exponent (vulnerable to Hastad attacks) | [F27] |
+| 2048 bits | 43 147 | 88 | small exponent (non‑compliant) | [F21] |
 
 ---  
 
 ## Credentials  
-No credential artifacts (passwords, tokens, or secret strings) were extracted from the memory image; the findings list only cryptographic keys and process information【F1】【F2】.  
+No plaintext credentials, tokens, or password hashes were recovered from the memory image [F4].  
 
 ---  
 
 ## Processes and Network  
 
-| PID | Process | ATT&CK technique | Evidence |
-|-----|---------|------------------|----------|
-| 931 | unattended‑upgr | T1055 – Process Injection (RWX injected region) | 【F6】 |
-| 1275 | updater | T1486 – Data Encrypted for Impact (command line contains “encrypt”) | 【F7】 |
-| 1276 | syncd | T1486 – Data Encrypted for Impact (command line contains “encrypt”) | 【F8】 |
-| 1277 | keysvc | T1486 – Data Encrypted for Impact (command line contains “encrypt”) | 【F9】 |
-| 1278 | legacy_rsa | T1486 – Data Encrypted for Impact (command line contains “encrypt”) | 【F10】 |
-| 1279 | python3 | T1486 – Data Encrypted for Impact (command line contains “encrypt”) | 【F11】 |
+* The snapshot lists **252 processes** [F1].  
+* **252 command‑line strings** were captured [F2].  
+* **299 network entries** (sockets, connections) were observed [F3].  
+* One RWX injected region (libffi closure trampolines) was found in PID 931, which is typical for Python ctypes/cffi usage [F6].  
+* Bash history contains **15 entries** [F5].  
 
-Network information is present (299 rows) but no malicious connections are identified in the supplied findings【F3】.  
+### Encryption‑Related Processes  
+
+| PID | Process | Observation | ATT&CK |
+|-----|---------|-------------|--------|
+| 1275 | `updater` | Command line includes “encrypt” and imports `cryptography.hazmat.primitives` | T1486 [F7] |
+| 1276 | `syncd` | Same pattern as above | T1486 [F8] |
+| 1277 | `keysvc` | Same pattern as above | T1486 [F9] |
+| 1278 | `legacy_rsa` | Same pattern as above | T1486 [F10] |
+| 1279 | `python3` (generic) | Same pattern as above | T1486 [F11] |
+
+### Key Recovery  
+
+* Private RSA‑2048 key of `keysvc` (PID 1277) was reconstructed from a residual prime, enabling decryption of data encrypted with that key [F26].  
+* Private RSA‑2048 key of `legacy_rsa` (PID 1278) was similarly reconstructed [F28].  
+* AES‑256 key of `updater` (PID 1275) was extracted from its expanded key schedule [F29].  
+* Two copies of the AES‑256 key of `keysvc` (PID 1277) were extracted [F30].  
 
 ---  
 
 ## Risk Score  
 
-- **Overall risk:** **86** (rule‑based)【F1】.  
-- **Compromise component:** **80** (rule‑based) – supported by the injected process (F6) and the suite of suspicious encryption processes (F7‑F11)【F6】【F7】【F8】【F9】【F10】【F11】.  
-- **Crypto exposure component:** **55** (rule‑based) – supported by weak RSA exponents (F27, F21), presence of legacy ciphers (DES, 3DES) (F17, F20), and recovered private keys that enable decryption (F26, F28, F29)【F27】【F21】【F17】【F20】【F26】【F28】【F29】.  
-
-No cited finding contradicts the supplied rule‑based scores, so they are retained.  
-
----  
-
-## Compromise (Score 80) – Justification  
-
-- **Process injection** in `unattended‑upgr` provides direct evidence of attacker‑controlled code execution (ATT&CK T1055)【F6】.  
-- **Multiple processes** running custom encryption commands indicate deliberate data encryption activity, matching ATT&CK T1486 (Data Encrypted for Impact)【F7】【F8】【F9】【F10】【F11】.  
-
-These observations satisfy a high likelihood of active compromise.  
-
----  
-
-## Crypto Exposure (Score 55) – Justification  
-
-- **Small RSA exponents** (e = 3, e = 43147) are non‑compliant with FIPS 186‑5 and expose the keys to Hastad broadcast attacks, reducing effective security despite the 2048‑bit size【F27】【F21】.  
-- **Legacy ciphers** DES and 3DES are present, both considered insecure and unsuitable for protecting sensitive data【F17】【F20】.  
-- **Recovered private keys** (keysvc, legacy_rsa) and an AES‑256 key for `updater` allow decryption of data that was encrypted by the compromised software, demonstrating a concrete exposure【F26】【F28】【F29】.  
-
-These factors justify the moderate crypto‑exposure rating.  
+| Component | Score (0‑100) | Justification |
+|-----------|---------------|---------------|
+| **Overall** | 67 | The supplied rule‑based score is 67 (Compromise 55, Crypto Exposure 55) [F1]. |
+| **Compromise** | 55 | Multiple processes are performing encryption with suspicious command lines and match ATT&CK T1486, indicating possible ransomware activity [F7][F8][F9][F10][F11]. |
+| **Crypto Exposure** | 55 | Presence of RSA keys with small exponents, recovered private keys, and deprecated ciphers (DES, 3DES) increase the likelihood of successful decryption by an adversary [F27][F21][F18][F20]. |
 
 ---  
 
 ## Recommendations  
 
-1. **Containment & Eradication**  
-   - Immediately terminate the injected process `unattended‑upgr` (PID 931) and all suspicious encryption processes (PIDs 1275‑1279) to stop further malicious activity【F6】【F7】【F8】【F9】【F10】【F11】.  
-   - Reboot the host from trusted media to clear any residual injected code from memory【F6】.  
+1. **Regenerate RSA keys** with a compliant exponent (e = 65537) and replace the vulnerable keys [F27][F21].  
+2. **Securely erase residual key material** by zero‑ing memory after use and employing `mlock`/`munlock` to prevent key leakage [F26][F28][F29][F30].  
+3. **Disable DES and 3DES** in all libraries and configurations; enforce modern ciphers such as AES‑GCM or ChaCha20 [F18][F20].  
+4. **Deploy endpoint detection** that flags processes loading `cryptography` modules with “encrypt” in the command line and correlates with ATT&CK T1486 [F7][F8][F9][F10][F11].  
+5. **Review network activity** for the 299 observed connections and block any outbound traffic from the suspicious processes [F3].  
+6. **Patch cryptographic libraries** to the latest versions and enable FIPS‑mode where required [F12][F13][F14][F15][F16][F17].  
+7. **Audit injected code regions** even when they appear legitimate (e.g., PID 931) to ensure no malicious payloads are present [F6].  
 
-2. **Key Management**  
-   - Regenerate all RSA key pairs with a **public exponent of 65537** and a minimum key size of **3072 bits**; replace the compromised keys identified in F27 and F21【F27】【F21】.  
-   - Rotate the recovered AES‑256 key (updater) and any other symmetric keys disclosed in the findings【F29】.  
-   - Store private keys in hardware‑backed keystores (TPM or HSM) to prevent future memory exposure【F26】【F28】.  
+---  
 
-3. **Algorithm Hardening**  
-   - Deprecate and remove **DES** and **3DES** from all code bases; migrate to **AES‑GCM** or **ChaCha20‑Poly1305** for symmetric encryption【F17】【F20】【F14】【F15】.  
-   - Enforce RSA encryption with OAEP padding and approved exponents, or switch to elliptic‑curve schemes (e.g., P‑256, Curve25519) that are already present with high confidence【F13】【F18】.  
-
-4. **Monitoring & Detection**  
-   - Deploy host‑based intrusion detection rules that alert on RWX memory regions and process‑injection events (T1055)【F6】.  
-   - Log all invocations of the `cryptography` library and command‑line arguments containing the word “encrypt” to detect future misuse【F7】【F8】【F9】【F10】【F11】.  
-
-5. **Patch & Update**  
-   - Apply the latest OS security patches and update the Python `cryptography` package to the newest stable version to mitigate known vulnerabilities【F5】.  
-
-6. **Forensic Follow‑up**  
-   - Conduct a full forensic review of the disk image to locate any persisted malicious binaries or scheduled tasks that may have survived the memory wipe【F4】.  
-   - Correlate the 299 network rows with external threat‑intel feeds to rule out command‑and‑control activity【F3】.  
-
-Implementing these actions will remove the current malicious foothold, eliminate weak cryptographic artifacts, and strengthen the environment against future compromise.  
+*Prepared by the Malware Triage Analyst*  
 
 ## Validation notes (automatic)
-Rule-based risk score: 86/100. This report failed these checks, treat the points below as unverified:
-- only 80% of claims carry a citation
+Rule-based risk score: 67/100. This report failed these checks, treat the points below as unverified:
+- only 88% of claims carry a citation
