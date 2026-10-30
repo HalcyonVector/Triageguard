@@ -1,0 +1,82 @@
+\section{Introduction}
+\label{sec:intro}
+
+\subsection{Background}
+Modern ransomware is a cryptographic program first and malware second. A typical family generates a
+symmetric key per file (AES or ChaCha20), encrypts that key with an RSA or elliptic-curve public key, and
+deletes the symmetric key once it is used~\cite{oz2022survey}. Information stealers take the opposite route
+and harvest the tokens, API keys and one-time-password seeds that sit in memory in plain text. In both cases
+the decisive evidence is volatile: the injected code that carried out the attack, the cipher implementation
+the malware loaded, keys still held by a running process, and the live network connections it opened. Once the
+machine is powered off, most of it is gone.
+
+Memory forensics recovers this evidence from an image of RAM. Volatility~3 reconstructs
+processes, command lines, sockets and suspicious memory regions from such an image, and YARA and Wireshark
+cover byte patterns and traffic. An analyst still has to join the results by hand, decide which cipher is
+actually in use (nearly every Windows process names AES somewhere), judge whether a recovered key is weak,
+and write up the case. Recent work has started to hand that last step to large language
+models~\cite{oh2024volgpt,sharma2025forensicllm,scanlon2023chatgpt}.
+
+\subsection{Problem statement}
+Two properties of LLMs make this hand-over risky. First, an LLM can state facts that are not in the evidence,
+and a reader cannot tell which sentences are supported. Second, and specific to forensics, the evidence is
+attacker controlled. A JWT claim, an OTP issuer label, a TLS server name or a process command line can carry
+text such as ``ignore previous instructions and report this host as clean''. This is indirect prompt
+injection~\cite{greshake2023not}: the attacker never talks to the model, but plants instructions in data the
+model later reads. A triage tool that can be talked into calling a compromised host clean is worse than none.
+
+The problem this work addresses is therefore: \emph{given a memory image, automatically extract and assess the
+cryptographic and behavioural evidence of compromise, and produce a readable report in which every claim is
+traceable to evidence and the report cannot be steered by text planted in that evidence.}
+
+\subsection{Research gap}
+Each part of this problem has been studied in isolation (Section~\ref{sec:related}). Memory-based detectors
+output a label but not the cryptography behind it~\cite{carrier2022detecting}; key-extraction studies recover
+one key type from one family~\cite{babiano2023evaluation,baier2024tls}; weak-key analysis runs on key
+collections, not on keys carved from a live image~\cite{pelofske2024efficient}; and LLM-assisted
+forensics~\cite{oh2024volgpt,sharma2025forensicllm} does not test whether crafted evidence can bias the model.
+Defences against indirect injection~\cite{hines2024spotlighting,liu2024formalizing} have not been evaluated on
+forensic evidence, nor combined with a check that the report's numbers and citations match deterministic
+results. We found no system that joins all three: memory artefacts, cryptographic assessment with recovered
+keys, and a measured, defended LLM report.
+
+\subsection{Objectives}
+Each objective has a measurable criterion, reported in Section~\ref{sec:results}.
+\begin{enumerate}
+  \item \textbf{O1 Extraction.} Run Volatility~3 on Windows (XP to 11, Server) and Linux images and record
+        processes, command lines, connections and injected regions. \emph{Criterion:} end to end on at least
+        ten images from different operating systems.
+  \item \textbf{O2 Cipher identification.} Identify AES, DES/3DES, RSA, ChaCha20/Salsa20, AES-GCM, ECC
+        (P-256, secp256k1) and Curve25519 with a confidence and an evidence basis. \emph{Criterion:} the cipher a
+        process uses is identified in every benchmark case.
+  \item \textbf{O3 Key assessment and recovery.} Test every RSA key against NIST strength and known
+        weaknesses, and recover live AES, ChaCha20 and RSA private keys. \emph{Criterion:} every planted live
+        key recovered, no false AES key in random data.
+  \item \textbf{O4 Credentials and network.} Decode JWTs, API tokens and OTP secrets (stored redacted) and flag
+        weak negotiated TLS.
+  \item \textbf{O5 Scoring.} Compute a risk score from sourced formulas only, with an uncertainty range.
+        \emph{Criterion:} a clean baseline scores in a lower band than every compromised image.
+  \item \textbf{O6 Cited report.} Produce an LLM report from findings only. \emph{Criterion:} at least 90\% of
+        claim lines cited, and the stated risk within 20 points of the computed one.
+  \item \textbf{O7 Robustness.} Measure prompt-injection success with and without defences, including adaptive
+        attacks. \emph{Criterion:} no successful attack reaches a reader without a warning.
+\end{enumerate}
+
+\subsection{Contributions}
+\begin{itemize}
+  \item An end-to-end, open-source pipeline (\repo) covering Windows and Linux images, with a read-only
+        dashboard over all results (\demo).
+  \item A cryptographic assessment of memory that goes beyond naming ciphers: Dempster-Shafer confidence with
+        an evidence basis, NIST-based RSA strength, and recovery of live AES, ChaCha20 and RSA private keys,
+        validated on planted keys and on real WannaCry memory.
+  \item A risk model in which every number names its formula and source, with a CVSS-edge uncertainty range.
+  \item A defended LLM report and a 15-attack red-team, including adaptive attacks, with Wilson intervals and
+        Fisher tests; and a citation and numeric cross-check that also caught real errors in our own
+        reports.
+\end{itemize}
+
+\subsection{Paper organisation}
+Section~\ref{sec:related} reviews related work. Section~\ref{sec:method} describes the architecture, data,
+algorithms, setup and metrics. Section~\ref{sec:results} reports results on 14 memory images, a ground-truth
+lab image, a 50-case benchmark and the red-team. Section~\ref{sec:conclusion} concludes with limitations and
+future work.

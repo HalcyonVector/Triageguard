@@ -1,0 +1,69 @@
+% TriageGuard: final report. Compile on Overleaf with pdfLaTeX (Main document: main.tex).
+% Page 1 is the course cover page (sections/cover.tex); the paper itself uses the IEEE
+% conference template (IEEEtran). All diagrams are TikZ/pgfplots; the screenshots are in figures/.
+\documentclass[conference]{IEEEtran}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{cite}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{pifont}
+
+\newcommand{\done}{\ding{51}}
+\newcommand{\nope}{\ding{55}}
+\newcommand{\repo}{\url{https://github.com/HalcyonVector/Triageguard}}
+\newcommand{\fillin}[1]{\textcolor{red}{[#1]}}
+\newcommand{\demo}{\url{https://halcyonvector.github.io/Triageguard/}}
+
+\tikzset{
+  >={Stealth[length=2mm]},
+  blk/.style={draw, rounded corners=2pt, fill=blue!6, align=center, font=\footnotesize, minimum height=7mm, inner sep=3pt},
+  io/.style={draw, trapezium, trapezium left angle=72, trapezium right angle=108, fill=gray!12, align=center, font=\footnotesize, minimum height=7mm, inner sep=2pt},
+  db/.style={draw, cylinder, shape border rotate=90, aspect=0.25, fill=orange!12, align=center, font=\footnotesize, minimum height=9mm, minimum width=16mm},
+  llm/.style={draw, rounded corners=2pt, fill=red!8, align=center, font=\footnotesize, minimum height=7mm, inner sep=3pt},
+}
+
+\begin{document}
+
+\input{sections/cover}
+
+\title{TriageGuard: Evidence-Cited Memory Forensics and\\Cryptographic Malware Triage with an\\Injection-Resistant LLM Report}
+
+\author{\IEEEauthorblockN{Sagnik Basu}
+\IEEEauthorblockA{Dept.\ of Information and Communication Technology\\
+Manipal Institute of Technology, Manipal\\
+Reg.\ No.\ 240953528\\
+\fillin{college email}}
+\and
+\IEEEauthorblockN{Arjun Mittal}
+\IEEEauthorblockA{Dept.\ of Information and Communication Technology\\
+Manipal Institute of Technology, Manipal\\
+Reg.\ No.\ 240953440\\
+\fillin{college email}}}
+
+\maketitle
+
+\input{sections/00_abstract}
+\input{sections/01_introduction}
+\input{sections/02_related}
+\input{sections/03_methodology}
+\input{sections/04_results}
+\input{sections/05_conclusion}
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}

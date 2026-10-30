@@ -1,0 +1,87 @@
+\section{Related Work}
+\label{sec:related}
+
+We group prior work by the pillar of the problem it addresses and close with a comparison
+(Table~\ref{tab:compare}).
+
+\subsection{Memory forensics and AI-assisted triage}
+Volatility is the standard open framework for reconstructing operating-system state from
+RAM; its \texttt{malfind} plugin flags executable, writable memory not backed by a file, a classic sign of
+injected code, but also fires on just-in-time compilers and runtime stubs. Carrier et al.~\cite{carrier2022detecting}
+engineer features from memory dumps and detect obfuscated malware with 99\% accuracy, but the output is a
+label with no account of the cryptography involved. volGPT~\cite{oh2024volgpt} passes Volatility artefacts to
+an LLM to rank ransomware processes, and ForensicLLM~\cite{sharma2025forensicllm} shows that a fine-tuned local
+model can answer forensic questions as well as larger cloud models. Scanlon et al.~\cite{scanlon2023chatgpt}
+find GPT-4 useful for some forensic tasks but stress that the analyst must catch its mistakes. None of these
+asks whether planted evidence can bias the model, and none requires the model to cite evidence.
+
+\subsection{Keys and ciphers in memory and binaries}
+Halderman et al.\ (2008) showed that AES keys can be found in a memory image by searching for
+byte strings whose expansion matches the following key schedule, the basis of our AES key finder.
+Fernandez de Loaysa Babiano et al.~\cite{babiano2023evaluation} recover over 90\% of Salsa20 key and nonce
+pairs from the memory of running ransomware, and Baier et al.~\cite{baier2024tls} systematise how TLS key
+material is located in memory. These works each target one key type in one setting. Casino et
+al.~\cite{casino2025not} classify high-entropy file segments to separate encryption from compression, without
+naming the algorithm. Meijer et al.~\cite{meijer2021wheres} identify known and proprietary primitives in binary
+code with data-flow graphs, and Barnes and Ghafarian~\cite{barnes2026machine} detect ransomware from PE-header
+features; both operate on a single binary rather than a whole memory image. Entropy as a packing or
+encryption indicator goes back to Lyda and Hamrock (2007), whose measured averages (7.18 bits per
+byte for encrypted executables) set our threshold.
+
+\subsection{Cipher cost and weak keys}
+Baig et al.~\cite{baig2024comparative} measure the speed and memory
+cost of AES, 3DES and RSA, which explains why malware uses symmetric ciphers for bulk data and public
+keys only to wrap them~\cite{oz2022survey}. For RSA, Heninger et al.\ (2012) found widespread
+weak keys in network devices by computing pairwise GCDs, Pelofske~\cite{pelofske2024efficient} speeds up that
+batch GCD, and Ruzai et al.~\cite{ruzai2024concurrent} factor moduli linked by weak key equations. These operate
+on key collections or in theory; strength is judged against NIST SP~800-57 and the transition
+rules of SP~800-131A, with the 829-bit RSA-250 factorisation as the public
+record that marks a modulus as broken.
+
+\subsection{Tokens and credentials}
+Raghu~\cite{raghu2025context} quantifies the cost of hardening JWT and OAuth in production, and Rujichaikul and
+Rassameeroj~\cite{rujichaikul2025token} detect token misuse with rule-based signatures at 81.4\% accuracy.
+RFC~8725 and RFC~4226 define what makes a JWT or an OTP secret weak. Neither line of
+work looks for credentials left in memory.
+
+\subsection{LLM robustness to injected evidence}
+Greshake et al.~\cite{greshake2023not} introduced indirect prompt injection through data an application
+retrieves, which is exactly the forensic setting. Spotlighting~\cite{hines2024spotlighting} marks untrusted
+input with delimiters or encodings and cuts attack success substantially;
+Liu et al.~\cite{liu2024formalizing} benchmark attacks and defences and
+conclude that no single defence is sufficient. None of these is evaluated on forensic evidence or combined
+with a deterministic check of the model's claims and numbers.
+
+\subsection{Gap}
+Table~\ref{tab:compare} summarises the comparison. TriageGuard is, to our knowledge, the first system to
+combine memory artefacts, cipher identification with an evidence basis, recovery and NIST assessment of keys
+carved from the image, and an LLM report whose exposure to injection is both measured and defended.
+
+\textit{Why Table~\ref{tab:compare} has these columns and rows.} The six columns are the six capabilities our
+problem statement needs, in pipeline order: reading a memory image, identifying the cipher, recovering keys,
+judging key strength, writing a report with an LLM, and testing that report against injected evidence. A system
+missing any one of them cannot answer the question in Section~\ref{sec:intro}. The rows are the closest work for
+each capability from our 20-paper survey: for each column we kept the paper whose method is nearest to ours, so
+the table shows where each pillar is already solved and that no single work covers all six.
+
+\begin{table}[t]
+\centering
+\caption{Comparison with representative prior work}
+\label{tab:compare}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+Work & \rotatebox{90}{Memory image} & \rotatebox{90}{Cipher ID} & \rotatebox{90}{Key recovery} & \rotatebox{90}{Weak-key test} & \rotatebox{90}{LLM report} & \rotatebox{90}{Injection tested}\\
+\midrule
+Carrier et al.~\cite{carrier2022detecting} & \done & & & & & \\
+volGPT~\cite{oh2024volgpt} & \done & & & & \done & \\
+ForensicLLM~\cite{sharma2025forensicllm} & & & & & \done & \\
+Babiano et al.~\cite{babiano2023evaluation} & \done & & \done & & & \\
+Meijer et al.~\cite{meijer2021wheres} & & \done & & & & \\
+Spotlighting~\cite{hines2024spotlighting} & & & & & \done & \done\\
+\midrule
+\textbf{TriageGuard} & \done & \done & \done & \done & \done & \done\\
+\bottomrule
+\end{tabular}
+\end{table}

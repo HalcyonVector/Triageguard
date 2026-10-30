@@ -68,7 +68,7 @@ network capture. This is what each stage produced:
 | 3 Crypto | The whole 2 GB dump was scanned for cipher constants and key structures | 10 ciphers identified, 15 weak-ish RSA keys (mostly from Windows certificate stores), one 512-bit RSA key |
 | 4 Credentials | scanned for tokens | none found |
 | 5 Network | the pcap's first 50,000 packets were read | 546 TLS 1.2 handshakes, all with strong ECDHE and AES-GCM suites, so nothing flagged |
-| Score | 3 critical findings (two injections and the 512-bit key), plus low ones | risk 85 out of 100 |
+| Score | 3 critical findings (two injections and the 512-bit key), plus low ones | risk 96 out of 100 (crypto 95, exposure 20) |
 | Report | the LLM wrote a report citing finding numbers | checked by the validator, shown in the dashboard |
 
 The point of the example: the pipeline surfaced the injection into the print spooler without anyone telling
@@ -89,7 +89,9 @@ TriageGuard runs the **Volatility3** forensics framework as a subprocess and rea
 | `windows.registry.printkey` on USBSTOR | which USB storage devices were plugged in |
 
 Volatility finds the right Windows version by itself and downloads the matching symbol tables from Microsoft
-the first time. If a dump is not Windows, or Volatility is missing, the stage is skipped and the others still run.
+the first time. Linux images use `linux.pslist`, `linux.psaux`, `linux.sockstat`, `linux.malware.malfind` with
+`--dump-regions` and `linux.bash`; they need a kernel symbol file, which `tools/vol2_to_isf.py` can build from a
+Volatility 2 profile. If Volatility is missing or no symbols match, the stage is skipped and the others still run.
 
 **Why a raw malfind hit is not enough.** On real images malfind produces many false alarms, so we grade each
 region before calling it a finding:
@@ -219,7 +221,7 @@ Findings from one detector are not independent (40 certificates from one certifi
 only the strongest counts (Denoeux's cautious rule, 2008). Separate sources are independent and are combined with
 Dempster's rule. One critical source gives 95, two medium sources give 80, and the result falls in the same CVSS
 band (90+ critical, 70+ high, 40+ medium) as the evidence behind it. The rule-based report shows each source's
-mass. Saved dumps: Windows 7 64 (was 30), Windows 10 99 (was 85), Windows 11 99 (was 55).
+mass. The current score of every saved dump is in section 7, and the formulas are in `docs/FORMULAS.md`.
 
 
 ### 4.8 The reports
@@ -322,10 +324,14 @@ Things to be honest about:
   Hiding a finding now means not mentioning its id at all, in any format. After each fix we re-scored all 78
   saved reports without calling the LLM again, giving the numbers above.
 
+**Round 2 (90 trials per arm, stronger attacks).** Undefended 2 of 90, defended 0 of 90 (Fisher exact p = 0.497;
+round 1 above gives p = 0.115). Neither is significant at this size, which is why the paper reports Wilson
+intervals instead of a bare "0%". Files: `results/redteam_v2/`.
+
 ## 6. What real data taught us
 
 The synthetic sample is too clean. The first run on a real Windows 11 image gave 689 findings and a risk score
-of 100. After fixes it gives 80 findings and 55.
+of 100. After the fixes below it gave 80 findings (the score has since moved to the evidence-fusion formula in 4.7).
 
 | Problem on real data | Fix |
 |---|---|
@@ -338,16 +344,29 @@ of 100. After fixes it gives 80 findings and 55.
 | antivirus blocked reading extracted malware | record it as a finding and continue |
 | the same code in many processes (Windows 7) | treat as a system-wide component |
 
-## 7. The three dumps
+## 7. The 14 dumps
 
-| Dump | OS | Findings | Risk | What stands out |
-|---|---|---|---|---|
-| 13Cubed challenge, 4.3 GB, plus a TLS pcap | Windows 11 | 80 | 55 | RSA-512 key, Notepad opened `encryption_log.txt`, 4 expired JWTs, SSL 3.0 and 3DES in the pcap |
-| DFIR Madness case 001, 2 GB, plus a real 188 MB pcap | Windows 10 | 48 | 85 | PE header injected into `spoolsv.exe`, PowerShell with 5 injected regions |
-| Hacktoria Memory Mystery, 1 GB | Windows 7 x86 | 58 | 30 | identical code in 5 processes, a shell started by VMware Tools |
+| Dump | OS | Findings | Risk |
+|---|---|---|---|
+| 13Cubed challenge (plus TLS pcap) | Windows 11 24H2 | 80 | 74 |
+| DFIR Madness case 001 (plus 188 MB pcap) | Windows 10 | 48 | 96 |
+| DFIR Madness case 001, domain controller | Windows Server 2012 R2 | 124 | 96 |
+| Hacktoria Memory Mystery | Windows 7 SP1 x86 | 58 | 60 |
+| WannaCry | Windows 7 | 94 | 95 |
+| M57 insider case | Windows XP SP3 x86 | 116 | 42 |
+| CyberDefenders Brave | Windows 10 | 78 | 89 |
+| CyberDefenders Ramnit | Windows | 70 | 82 |
+| CyberDefenders RedLine | Windows | 42 | 97 |
+| CyberDefenders Reveal | Windows 10 | 72 | 86 |
+| 13Cubed Linux | Ubuntu 22.04 | 98 | 89 |
+| Seized intrusion | CentOS 7.7 | 19 | 82 |
+| Our lab VM, synthetic keys planted | Ubuntu 24.04 | 35 | 67 |
+| Our lab VM, clean baseline | Ubuntu 24.04 | 18 | 28 |
 
-All three are public training images. Nothing was executed, no real credentials were used, and keys and tokens
-in tests are synthetic.
+In total 952 findings, 447 RSA keys (12 broken), and 15 keys recovered. The lab pair is the ground truth: all 12
+planted items are found in the planted image and none in the clean one (`tools/plant_lab.py`, `tools/score_lab.py`).
+All other images are public training images. Nothing was executed, no real credentials were used, and keys and
+tokens in tests are synthetic.
 
 ## 8. The dashboard
 
@@ -363,16 +382,20 @@ loads, so regenerating a report and refreshing the page is enough.
 ```
 triageguard/        the code
   memory.py  static.py  credentials.py  network.py    stages 1, 2, 4, 5
-  crypto/            entropy.py  identify.py  signatures.py  rsa_weak.py     stage 3
-  store.py  report.py  defences.py  redteam.py         storage, reports, defences, red team
+  crypto/            entropy.py  identify.py  signatures.py  rsa_weak.py
+                     aes_keyfind.py  chacha_keyfind.py  key_recovery.py      stage 3
+  store.py  report.py  defences.py  redteam.py  attack.py   storage, reports, defences, red team
+  campaign.py  benchmark.py  health.py                 campaign links, benchmark, environment check
   pipeline.py  cli.py  dashboard.py                    wiring, commands, dashboard server
+tools/              plant_lab.py, score_lab.py (lab ground truth), vol2_to_isf.py (Linux symbols)
 rules/crypto.yar    YARA starter rules
 samples/            make_synthetic.py builds a test image with planted keys and tokens
-tests/              automated tests (35)
+tests/              automated tests (68)
 results/dumps/<name>/   findings.json, report_rules.md, report_llm.md, meta.json for each dump
-results/            redteam_summary.md and redteam_results.csv
+results/            red-team results (round 1 and redteam_v2/), benchmark and validation files
 dashboard/index.html    the dashboard page
-DEMO.md  README.md  docs/HOW_IT_WORKS.md
+papers/             final report, progress report, literature survey (TeX, Overleaf zips, PDFs)
+README.md  docs/HOW_IT_WORKS.md  docs/FORMULAS.md
 ```
 
 ## 10. Commands
@@ -406,7 +429,7 @@ a file or a chat.
 
 ## 12. Limits
 
-- Windows images only for the Volatility stage (other systems still get the crypto and credential scans).
+- Volatility needs matching symbols: automatic on Windows, a symbol file per kernel on Linux. macOS is not tested.
 - Memory images can be big and slow: the 4.3 GB image takes about 22 minutes, mostly Volatility.
 - Signature scanning finds known constants; a custom or obfuscated cipher would not match.
 - Only 6 red-team trials per cell, one LLM, synthetic payloads.

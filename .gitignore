@@ -22,3 +22,12 @@ demo_out/
 # Volatility symbol tables (ISF) for Linux images; large and kernel-specific
 symbols/
 site/
+
+# LaTeX build files
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.synctex.gz
