@@ -156,7 +156,6 @@ Triageguard/
 ├── tools/                Lab key planting and scoring, Volatility 2 to ISF converter
 ├── rules/                YARA rules
 ├── docs/                 HOW_IT_WORKS.md, FORMULAS.md, screenshot
-├── papers/               Final report, progress report and literature survey (PDF, LaTeX, Overleaf zip)
 ├── samples/              Synthetic test image generator, process dump helper
 ├── tests/                pytest suite
 ├── add_dump.ps1          Download, analyse and export a public image (Windows)

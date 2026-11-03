@@ -394,7 +394,6 @@ tests/              automated tests (68)
 results/dumps/<name>/   findings.json, report_rules.md, report_llm.md, meta.json for each dump
 results/            red-team results (round 1 and redteam_v2/), benchmark and validation files
 dashboard/index.html    the dashboard page
-papers/             final report, progress report, literature survey (TeX, Overleaf zips, PDFs)
 README.md  docs/HOW_IT_WORKS.md  docs/FORMULAS.md
 ```
 
