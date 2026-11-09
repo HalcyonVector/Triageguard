@@ -1,7 +1,5 @@
 # TriageGuard: Memory Forensics & Crypto Malware Triage
 
-[![Dashboard](https://github.com/HalcyonVector/Triageguard/actions/workflows/pages.yml/badge.svg)](https://github.com/HalcyonVector/Triageguard/actions/workflows/pages.yml)
-
 Takes a Windows or Linux memory image (plus an optional packet capture), finds injected code, suspicious processes, ciphers, weak or recoverable keys and leaked credentials, scores the risk with sourced formulas, and writes an incident report where every claim cites the finding behind it. The LLM never sees the raw dump, and a validator checks its report against the rule-based results before anyone reads it. Runs locally on free, public tooling: Volatility 3, Python and an optional free Groq key.
 
 > **Live demo:** [halcyonvector.github.io/Triageguard](https://halcyonvector.github.io/Triageguard/): read-only dashboard over all 14 analysed memory images, served from GitHub Pages.
